@@ -17,12 +17,16 @@ onMounted(() => {
 
 header,
 nav,
-.main-container {
-  @apply bg-gray-100;
+.container {
+  @apply bg-gray-200;
 }
 
-.main-container {
-  @apply p-4 rounded shadow;
+nav {
+  @apply border-r-2 border-solid border-gray-300;
+}
+
+.container {
+  @apply p-4;
 }
 
 #app {

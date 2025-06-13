@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import HomeView from "@/views/HomeView.vue";
 import LoginView from "@/views/auth/LoginView.vue";
 import MainLayout from "@/layouts/MainLayout.vue";
 import AuthLayout from "@/layouts/AuthLayout.vue";
@@ -7,6 +6,8 @@ import RegisterView from "@/views/auth/RegisterView.vue";
 import SettingsView from "@/views/settings/SettingsView.vue";
 import ProfileView from "@/views/profile/ProfileView.vue";
 import ResetPasswordView from "@/views/auth/ResetPasswordView.vue";
+import RoomsView from "@/views/rooms/RoomsView.vue";
+import ContactsView from "@/views/contacts/ContactsView.vue";
 import { useAuthStore } from "@/stores/auth";
 
 const routes: Array<RouteRecordRaw> = [
@@ -14,12 +15,16 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     component: MainLayout,
     meta: { requiresAuth: true },
-    redirect: "/home",
     children: [
       {
-        path: "home",
-        name: "home",
-        component: HomeView,
+        path: "rooms",
+        name: "rooms",
+        component: RoomsView,
+      },
+      {
+        path: "contacts",
+        name: "contacts",
+        component: ContactsView,
       },
       {
         path: "profile",

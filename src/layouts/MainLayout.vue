@@ -3,12 +3,13 @@ import FullScreenLoadingSpinner from "@/components/FullScreenLoadingSpinner.vue"
 import Sidebar from "@/layouts/SidebarLayout.vue";
 import Header from "@/components/HeaderBar.vue";
 import { onMounted, onUnmounted, ref } from "vue";
-import { useCustomerStore } from "@/stores/customer";
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
+import MessengerComponent from "@/components/chat/MessengerComponent.vue";
+const visible = ref(false);
 const authStore = useAuthStore();
-const customerStore = useCustomerStore();
 const router = useRouter();
+const route = useRoute();
 const tokenValidationInterval = 30 * 1000; // 30s
 let interval: number;
 let initialized = ref(false);
@@ -36,29 +37,48 @@ onMounted(async () => {
     await checkIfTokenIsValid();
   }, tokenValidationInterval);
 
-  await customerStore.initialize();
+  // await customerStore.initialize();
   initialized.value = true;
 });
 
 onUnmounted(() => {
   clearInterval(interval);
 });
+
+function toggleView(view: string) {
+  const currentView = route.name;
+  if (visible.value && currentView !== view) {
+    return;
+  }
+  visible.value = !visible.value;
+}
 </script>
 <template>
   <FullScreenLoadingSpinner v-if="!initialized" />
-  <div v-if="initialized" class="flex h-screen overflow-hidden">
-    <!-- Sidebar fijo -->
-    <Sidebar />
+  <main v-else class="flex flex-col h-screen">
+    <Header />
 
-    <!-- Contenedor principal -->
-    <div class="flex-1 flex flex-col">
-      <!-- Header fijo -->
-      <Header />
+    <div class="flex flex-1 overflow-hidden p-6">
+      <div class="flex flex-1 rounded shadow overflow-hidden">
+        <div>
+          <Sidebar @toggleView="toggleView" />
+        </div>
+        <div class="container p-0 flex-1 flex overflow-hidden h-full relative">
+          <div
+            class="container overflow-auto absolute w-full h-full left-0 min-h-full top-0 transition-all duration-500 transform"
+            :class="{
+              '-translate-x-full': !visible,
+              'translate-x-0': visible,
+            }"
+          >
+            <router-view />
+          </div>
 
-      <!-- Contenido scrollable -->
-      <div class="flex-1 overflow-auto p-6">
-        <router-view />
+          <div class="container w-full h-full overflow-auto">
+            <MessengerComponent />
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </main>
 </template>

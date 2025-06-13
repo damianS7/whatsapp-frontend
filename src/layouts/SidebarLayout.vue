@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import {
   Landmark as Home,
-  Wallet as Accounts,
-  CreditCard,
   UserPen as Profile,
   Settings,
   LogOut,
-  ReceiptText,
+  NotebookTabs,
+  Users,
+  MessageCircle,
 } from "lucide-vue-next";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import SidebarLink from "@/components/SidebarLink.vue";
+import { ref, defineEmits } from "vue";
+const emit = defineEmits(["toggleView"]);
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -21,19 +23,31 @@ function logout() {
 }
 </script>
 <template>
-  <nav
-    class="sidebar p-2 group w-14 hover:sm:w-64 transition-all duration-300 ease-in-out h-screen flex flex-col drop-shadow space-y-2"
-  >
-    <SidebarLink to="/home" :icon="Home" label="Home" />
-    <SidebarLink to="/accounts" :icon="Accounts" label="Accounts" />
-    <SidebarLink to="/cards" :icon="CreditCard" label="Cards" />
+  <nav class="h-full p-2 group w-14 flex flex-col space-y-2">
     <SidebarLink
-      to="/transactions"
-      :icon="ReceiptText"
-      label="Pending transactions"
+      @click="emit('toggleView', 'rooms')"
+      to="/rooms"
+      :icon="Users"
+      label="Rooms"
     />
-    <SidebarLink to="/profile" :icon="Profile" label="Profile" />
-    <SidebarLink to="/settings" :icon="Settings" label="Settings" />
+    <SidebarLink
+      @click="emit('toggleView', 'contacts')"
+      to="/contacts"
+      :icon="NotebookTabs"
+      label="Contacts"
+    />
+    <SidebarLink
+      @click="emit('toggleView', 'profile')"
+      to="/profile"
+      :icon="Profile"
+      label="Profile"
+    />
+    <SidebarLink
+      @click="emit('toggleView', 'settings')"
+      to="/settings"
+      :icon="Settings"
+      label="Settings"
+    />
     <a href="#" @click.prevent="logout">
       <div
         class="flex items-center gap-4 p-2 rounded hover:bg-gray-200 transition-colors"
