@@ -3,7 +3,7 @@ import { ref, computed } from "vue";
 import type Room from "@/types/Room.ts";
 import { useRoomStore } from "@/stores/room";
 const roomStore = useRoomStore();
-const rooms = computed(() => roomStore.getRooms) as Room[];
+const rooms = computed(() => roomStore.getRooms as Room[]);
 
 function joinRoom(id: number) {
   console.log("Joining room: " + id);
@@ -18,15 +18,23 @@ function joinRoom(id: number) {
       <h1>Rooms</h1>
     </section>
 
-    <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <section class="grid grid-cols-1 gap-2">
       <div
         v-for="(room, index) in rooms"
         :key="index"
-        class="rounded bg-gray-300 p-4 flex items-center justify-between"
+        class="rounded bg-gray-300 p-4 flex justify-between items-start"
       >
-        <img src="" alt="" class="w-10 h-10 rounded-full bg-white" />
-        <span class="ml-2 flex-1">{{ room.name }}</span>
-        <button @click="joinRoom(room.id)" class="btn btn-sm btn-blue">
+        <!-- Nombre y descripción en columna -->
+        <div class="flex flex-col flex-1">
+          <span class="font-semibold">{{ room.name }}</span>
+          <span class="text-xs text-gray-700">{{ room.description }}</span>
+        </div>
+
+        <!-- Botón a la derecha -->
+        <button
+          @click="joinRoom(room.id)"
+          class="btn btn-sm btn-blue ml-4 self-center"
+        >
           JOIN
         </button>
       </div>
