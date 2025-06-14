@@ -7,22 +7,23 @@ export const useFriendStore = defineStore("friend", {
     initialized: false,
   }),
 
-  getters: {},
+  getters: {
+    getFriends: (state) => {
+      return state.friends;
+    },
+  },
 
   actions: {
-    async getFriends(): Promise<Friend[]> {
+    async fetchFriends(): Promise<Friend[]> {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/friends`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         // if response is not 200, throw an error
         if (response.status !== 200) {
@@ -76,7 +77,7 @@ export const useFriendStore = defineStore("friend", {
         return;
       }
 
-      await this.getFriends()
+      await this.fetchFriends()
         .then((friends) => {
           this.setFriends(friends);
         })

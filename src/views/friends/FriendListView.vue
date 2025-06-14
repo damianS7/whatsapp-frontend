@@ -1,97 +1,9 @@
 <script setup lang="ts">
+import Friend from "@/types/Friend.ts";
+import { useFriendStore } from "@/stores/friend";
 import { computed } from "vue";
-const friends = [
-  {
-    name: "John",
-  },
-  {
-    name: "Donald",
-  },
-  {
-    name: "Marie",
-  },
-  {
-    name: "David",
-  },
-  {
-    name: "Malcom",
-  },
-  {
-    name: "John",
-  },
-  {
-    name: "Donald",
-  },
-  {
-    name: "Marie",
-  },
-  {
-    name: "David",
-  },
-  {
-    name: "Malcom",
-  },
-  {
-    name: "John",
-  },
-  {
-    name: "Donald",
-  },
-  {
-    name: "Marie",
-  },
-  {
-    name: "David",
-  },
-  {
-    name: "Malcom",
-  },
-  {
-    name: "John",
-  },
-  {
-    name: "Donald",
-  },
-  {
-    name: "Marie",
-  },
-  {
-    name: "David",
-  },
-  {
-    name: "Malcom",
-  },
-  {
-    name: "John",
-  },
-  {
-    name: "Donald",
-  },
-  {
-    name: "Marie",
-  },
-  {
-    name: "David",
-  },
-  {
-    name: "Malcom",
-  },
-  {
-    name: "John",
-  },
-  {
-    name: "Donald",
-  },
-  {
-    name: "Marie",
-  },
-  {
-    name: "David",
-  },
-  {
-    name: "Malcom",
-  },
-];
+const friendStore = useFriendStore();
+const friends = computed(() => friendStore.getFriends as Friend[]);
 
 function deleteFriend(id: string) {
   console.log(id);
@@ -105,15 +17,17 @@ function deleteFriend(id: string) {
       <h1>Friends</h1>
     </section>
 
-    <section class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div
         v-for="(friend, index) in friends"
         :key="index"
         class="rounded bg-gray-300 p-4 flex items-center justify-between"
       >
-        <img src="" alt="" class="w-10 h-10 rounded-full bg-white" />
+        <img src="" alt="" class="w-8 h-8 rounded-full bg-white" />
         <span class="ml-2 flex-1">{{ friend.name }}</span>
-        <button @click="deleteFriend" class="btn btn-sm btn-red">-</button>
+        <button @click="deleteFriend(friend.id)" class="btn btn-sm btn-red">
+          -
+        </button>
       </div>
     </section>
   </div>
