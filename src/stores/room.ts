@@ -3,7 +3,7 @@ import { Room } from "@/types/Room";
 
 export const useRoomStore = defineStore("room", {
   state: () => ({
-    rooms: [{}] as Room[],
+    rooms: [] as Room[],
     initialized: false,
   }),
 
@@ -14,7 +14,7 @@ export const useRoomStore = defineStore("room", {
   },
 
   actions: {
-    async getRooms(): Promise<Room[]> {
+    async fetchRooms(): Promise<Room[]> {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(`${process.env.VUE_APP_API_URL}/rooms`, {
@@ -39,7 +39,7 @@ export const useRoomStore = defineStore("room", {
         throw new Error("Failed to fetch rooms.");
       }
     },
-    async setRooms(rooms: any) {
+    async setRooms(rooms: Room[]) {
       this.rooms = rooms;
     },
     async initialize() {
@@ -47,8 +47,7 @@ export const useRoomStore = defineStore("room", {
       if (!token) {
         return;
       }
-
-      await this.getRooms()
+      await this.fetchRooms()
         .then((rooms) => {
           this.setRooms(rooms);
         })
