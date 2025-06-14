@@ -42,7 +42,9 @@ export const useCustomerStore = defineStore("customer", {
 
         return (await response.json()) as Customer;
       } catch (error: unknown) {
-        // handle errors
+        if (error instanceof Error) {
+          throw error;
+        }
         throw new Error("Failed to fetch customer.");
       }
     },
@@ -72,7 +74,9 @@ export const useCustomerStore = defineStore("customer", {
 
         return (await response.json()) as Profile;
       } catch (error: unknown) {
-        // handle errors
+        if (error instanceof Error) {
+          throw error;
+        }
         throw new Error("Failed to update profile.");
       }
     },
@@ -102,7 +106,9 @@ export const useCustomerStore = defineStore("customer", {
 
         return (await response.json()) as Customer;
       } catch (error: unknown) {
-        // handle errors
+        if (error instanceof Error) {
+          throw error;
+        }
         throw new Error("Failed to update email.");
       }
     },
@@ -127,7 +133,9 @@ export const useCustomerStore = defineStore("customer", {
           throw new Error("Failed to change password. " + jsonResponse.message);
         }
       } catch (error: unknown) {
-        // handle errors
+        if (error instanceof Error) {
+          throw error;
+        }
         throw new Error("Failed to change password.");
       }
     },
@@ -154,10 +162,9 @@ export const useCustomerStore = defineStore("customer", {
         return (await response.blob()) as Blob;
       } catch (error: unknown) {
         if (error instanceof Error) {
-          throw new Error(error.message);
-        } else {
-          throw new Error("Failed to get photo. Unknown error.");
+          throw error;
         }
+        throw new Error("Failed to get photo. Unknown error.");
       }
     },
     async uploadPhoto(currentPassword: string, file: any): Promise<Blob> {
@@ -186,7 +193,9 @@ export const useCustomerStore = defineStore("customer", {
 
         return (await response.blob()) as Blob;
       } catch (error: unknown) {
-        // handle errors
+        if (error instanceof Error) {
+          throw error;
+        }
         throw new Error("Failed to upload photo");
       }
     },
