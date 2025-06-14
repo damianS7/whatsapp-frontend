@@ -6,8 +6,8 @@ import RegisterView from "@/views/auth/RegisterView.vue";
 import SettingsView from "@/views/settings/SettingsView.vue";
 import ProfileView from "@/views/profile/ProfileView.vue";
 import ResetPasswordView from "@/views/auth/ResetPasswordView.vue";
-import RoomsView from "@/views/rooms/RoomsView.vue";
-import ContactsView from "@/views/contacts/ContactsView.vue";
+import RoomsView from "@/views/rooms/RoomListView.vue";
+import FriendListView from "@/views/friends/FriendListView.vue";
 import { useAuthStore } from "@/stores/auth";
 
 const routes: Array<RouteRecordRaw> = [
@@ -22,9 +22,9 @@ const routes: Array<RouteRecordRaw> = [
         component: RoomsView,
       },
       {
-        path: "contacts",
-        name: "contacts",
-        component: ContactsView,
+        path: "friends",
+        name: "friends",
+        component: FriendListView,
       },
       {
         path: "profile",
@@ -81,7 +81,6 @@ router.beforeEach((to, from, next) => {
       path: "/auth/login",
       query: { redirect: to.fullPath },
     });
-    // next({ path: "/auth/login" }); // opcional: guardar destino
   } else {
     next();
   }
