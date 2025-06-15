@@ -1,7 +1,7 @@
-name: words
+name: whatsapp
 services:
   frontend:
-    container_name: words-frontend
+    container_name: whatsapp-frontend
     build:
       context: .
       dockerfile: Dockerfile.frontend

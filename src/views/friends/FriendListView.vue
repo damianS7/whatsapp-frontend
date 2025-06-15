@@ -1,11 +1,40 @@
 <script setup lang="ts">
-import Friend from "@/types/Friend.ts";
+import { Friend } from "@/types/Friend";
 import { useFriendStore } from "@/stores/friend";
 import { computed } from "vue";
+import { useChatStore } from "@/stores/chat";
+import { Chat } from "@/types/Chat";
+import { MessageCircle } from "lucide-vue-next";
+const chatStore = useChatStore();
 const friendStore = useFriendStore();
 const friends = computed(() => friendStore.getFriends as Friend[]);
 
-function deleteFriend(id: string) {
+function openConversation(name: string) {
+  const existingChat = chatStore.getChat(name);
+  if (existingChat) {
+    // set as defaulttab
+    return;
+  }
+
+  const chat = {
+    name: name,
+    type: "CONVERSATION",
+    history: [
+      {
+        sender: "DAMIAN",
+        message: "Hey!",
+      },
+      {
+        sender: "RONALD",
+        message: "Hello brother!",
+      },
+    ],
+    participants: [{ name: "RONALD" }],
+  } as Chat;
+  chatStore.addChat(chat);
+}
+
+function deleteFriend(id: number) {
   console.log(id);
 }
 </script>
@@ -25,6 +54,12 @@ function deleteFriend(id: string) {
       >
         <img src="" alt="" class="w-8 h-8 rounded-full bg-white" />
         <span class="ml-2 flex-1">{{ friend.name }}</span>
+        <button
+          @click="openConversation(friend.name)"
+          class="btn btn-sm btn-success"
+        >
+          <MessageCircle :size="20" />
+        </button>
         <button @click="deleteFriend(friend.id)" class="btn btn-sm btn-red">
           -
         </button>

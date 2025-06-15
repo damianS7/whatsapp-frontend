@@ -1,6 +1,6 @@
-# words-frontend
+# WhatsApp
 
-Frontend for a simple chat app with rooms
+This is the frontend for the WhatsApp clone
 
 ## Project setup
 

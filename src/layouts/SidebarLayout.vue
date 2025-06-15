@@ -31,10 +31,10 @@ function logout() {
       label="Rooms"
     />
     <SidebarLink
-      @click="emit('toggleView', 'contacts')"
-      to="/contacts"
+      @click="emit('toggleView', 'friends')"
+      to="/friends"
       :icon="NotebookTabs"
-      label="Contacts"
+      label="Friends"
     />
     <SidebarLink
       @click="emit('toggleView', 'profile')"

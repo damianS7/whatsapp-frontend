@@ -11,6 +11,11 @@ export const useRoomStore = defineStore("room", {
     getRooms: (state) => {
       return state.rooms;
     },
+    getRoom: (state) => {
+      return (id: number) => {
+        return state.rooms.find((room) => room.id === id);
+      };
+    },
   },
 
   actions: {

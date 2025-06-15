@@ -4,10 +4,16 @@ import Sidebar from "@/layouts/SidebarLayout.vue";
 import Header from "@/components/HeaderBar.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import { useRoomStore } from "@/stores/room";
+import { useCustomerStore } from "@/stores/customer";
+import { useFriendStore } from "@/stores/friend";
 import { useRoute, useRouter } from "vue-router";
-import MessengerComponent from "@/components/chat/MessengerComponent.vue";
+import Chat from "@/layouts/chat/ChatLayout.vue";
 const visible = ref(false);
+const customerStore = useCustomerStore();
 const authStore = useAuthStore();
+const roomStore = useRoomStore();
+const friendStore = useFriendStore();
 const router = useRouter();
 const route = useRoute();
 const tokenValidationInterval = 30 * 1000; // 30s
@@ -37,7 +43,9 @@ onMounted(async () => {
     await checkIfTokenIsValid();
   }, tokenValidationInterval);
 
-  // await customerStore.initialize();
+  await customerStore.initialize();
+  await friendStore.initialize();
+  await roomStore.initialize();
   initialized.value = true;
 });
 
@@ -74,8 +82,8 @@ function toggleView(view: string) {
             <router-view />
           </div>
 
-          <div class="container w-full h-full overflow-auto">
-            <MessengerComponent />
+          <div class="container p-0 w-full h-full overflow-hidden">
+            <Chat />
           </div>
         </div>
       </div>
