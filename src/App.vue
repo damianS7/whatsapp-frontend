@@ -54,8 +54,16 @@ nav a.router-link-exact-active {
   @apply font-bold p-1 px-2 rounded text-xs;
 }
 
+.btn-xs {
+  @apply font-bold text-xs px-1.5 py-0.5 rounded;
+}
+
 .btn-blue {
   @apply bg-blue-600 text-white;
+}
+
+.btn-success {
+  @apply bg-green-600 text-white;
 }
 
 .btn-blue:hover {
