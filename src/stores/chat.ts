@@ -26,16 +26,19 @@ export const useChatStore = defineStore("chat", {
   actions: {
     async appendMessage(chatName: string, message: ChatMessage) {
       this.getChat(chatName)?.history.push(message);
+      localStorage.setItem("chats", JSON.stringify(this.chats));
     },
     async addChat(newChat: Chat) {
       const chatExists = this.chats.find((chat) => chat.name === newChat.name);
       if (!chatExists) {
         this.chats.push(newChat);
       }
+      localStorage.setItem("chats", JSON.stringify(this.chats));
     },
     async deleteChat(chatName: string) {
       const index = this.chats.findIndex((chat) => chat.name === chatName);
       this.chats.splice(index, 1);
+      localStorage.setItem("chats", JSON.stringify(this.chats));
     },
     async subscribeToRoom(room: string) {
       const token = localStorage.getItem("token");
@@ -71,10 +74,15 @@ export const useChatStore = defineStore("chat", {
       }
     },
     async initialize() {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return;
+      // const token = localStorage.getItem("token");
+      // if (!token) {
+      //   return;
+      // }
+      const storedChats = localStorage.getItem("chats");
+      if (storedChats) {
+        this.chats = JSON.parse(storedChats);
       }
+
       this.initialized = true;
     },
   },

@@ -7,11 +7,13 @@ import { useAuthStore } from "@/stores/auth";
 import { useGroupStore } from "@/stores/group";
 import { useCustomerStore } from "@/stores/customer";
 import { useContactStore } from "@/stores/contact";
+import { useChatStore } from "@/stores/chat";
 import { useRoute, useRouter } from "vue-router";
 const visible = ref(false);
 const customerStore = useCustomerStore();
 const authStore = useAuthStore();
 const groupStore = useGroupStore();
+const chatStore = useChatStore();
 const contactStore = useContactStore();
 const router = useRouter();
 const route = useRoute();
@@ -45,6 +47,7 @@ onMounted(async () => {
   await customerStore.initialize();
   await contactStore.initialize();
   await groupStore.initialize();
+  await chatStore.initialize();
   initialized.value = true;
 });
 
