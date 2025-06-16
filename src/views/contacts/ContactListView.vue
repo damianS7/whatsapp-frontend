@@ -41,12 +41,12 @@ function deleteContact(id: number) {
 <template>
   <div class="main-container shadow-none rounded-none">
     <section
-      class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1 mb-4"
+      class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
     >
       <h1>Contacts</h1>
     </section>
 
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <section class="container grid grid-cols-1 md:grid-cols-3 gap-4">
       <div
         v-for="(contact, index) in contacts"
         :key="index"

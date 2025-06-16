@@ -31,12 +31,12 @@ function joinGroup(id: number) {
 <template>
   <div class="main-container shadow-none rounded-none">
     <section
-      class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1 mb-4"
+      class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
     >
       <h1>Groups</h1>
     </section>
 
-    <section class="grid grid-cols-1 gap-2">
+    <section class="container grid grid-cols-1 gap-2">
       <div
         v-for="(group, index) in groups"
         :key="index"
