@@ -1,13 +1,12 @@
-export const types = ["CONVERSATION", "ROOM"] as const;
+import { ChatMessage } from "@/types/ChatMessage";
+
+export const types = ["CONVERSATION", "GROUP"] as const;
 export type ChatType = (typeof types)[number];
 
 export interface Chat {
   name: string;
   type: ChatType;
-  history: Array<{
-    sender: string;
-    message: string;
-  }>;
+  history: Array<ChatMessage>;
   participants: Array<{
     name: string;
   }>;
