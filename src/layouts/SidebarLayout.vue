@@ -25,6 +25,12 @@ function logout() {
 <template>
   <nav class="h-full p-2 group w-14 flex flex-col space-y-2">
     <SidebarLink
+      @click="emit('toggleView', 'chats')"
+      to="/chats"
+      :icon="MessageCircle"
+      label="Chats"
+    />
+    <SidebarLink
       @click="emit('toggleView', 'groups')"
       to="/groups"
       :icon="Users"

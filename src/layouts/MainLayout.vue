@@ -8,7 +8,6 @@ import { useGroupStore } from "@/stores/group";
 import { useCustomerStore } from "@/stores/customer";
 import { useContactStore } from "@/stores/contact";
 import { useRoute, useRouter } from "vue-router";
-import ChatLayout from "@/layouts/ChatLayout.vue";
 const visible = ref(false);
 const customerStore = useCustomerStore();
 const authStore = useAuthStore();
@@ -58,7 +57,7 @@ function toggleView(view: string) {
   if (visible.value && currentView !== view) {
     return;
   }
-  visible.value = !visible.value;
+  // visible.value = !visible.value;
 }
 </script>
 <template>
@@ -80,12 +79,10 @@ function toggleView(view: string) {
               '-translate-x-full': !visible,
               'translate-x-0': visible,
             }"
-          >
-            <router-view />
-          </div>
+          ></div>
 
           <div class="container p-0 w-full h-full overflow-hidden">
-            <ChatLayout />
+            <router-view />
           </div>
         </div>
       </div>
