@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { useChatStore } from "@/stores/chat";
+import Chat from "@/types/Chat";
+import { ref, defineProps } from "vue";
+const props = defineProps({
+  chat: Chat,
+});
 const chatStore = useChatStore();
 const textarea = ref("");
 function send() {
-  const selectedTab = "name";
-  chatStore.appendMessage("Friends", "DAMIAN", textarea.value);
+  chatStore.appendMessage(props.chat.name, "DAMIAN", textarea.value);
   textarea.value = "";
   return;
 }

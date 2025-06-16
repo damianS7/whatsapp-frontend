@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ChatInputBox from "@/components/chat/ChatInputBox.vue";
-import ChatHistory from "@/components/chat/ChatHistory.vue";
-import ChatList from "@/components/chat/ChatList.vue";
-import ChatHeader from "@/components/chat/ChatHeader.vue";
-import RoomUserList from "@/components/chat/ChatRoomUserList.vue";
+import ChatInputBox from "@/views/chats/components/ChatInputBox.vue";
+import ChatHistory from "@/views/chats/components/ChatHistory.vue";
+import ChatList from "@/views/chats/components/ChatList.vue";
+import ChatHeader from "@/views/chats/components/ChatHeader.vue";
+import RoomUserList from "@/views/chats/components/ChatRoomUserList.vue";
 import { ref, watch, onMounted } from "vue";
 import { useChatStore } from "@/stores/chat";
 import { Chat } from "@/types/Chat";

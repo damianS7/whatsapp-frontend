@@ -2,7 +2,7 @@
 import { Chat } from "@/types/Chat";
 import { computed, defineEmits } from "vue";
 import { useChatStore } from "@/stores/chat";
-const emit = defineEmits(["selectTab"]);
+const emit = defineEmits(["selectChat"]);
 const chatStore = useChatStore();
 const chats = computed(() => chatStore.getChats as Chat[]);
 
@@ -14,13 +14,19 @@ function deleteTab(name: string) {
 </script>
 <template>
   <div class="border-r-2 border-gray-300">
-    <div v-for="(chat, index) in chats" :key="index" class="tab">
-      <a href="#" @click="emit('selectTab', chat.name)">{{ chat.name }}</a>
-      &nbsp;
-      <button class="btn btn-xs btn-red" @click="deleteTab(chat.name)">
-        &#x2717;
-      </button>
-    </div>
+    <a
+      v-for="(chat, index) in chats"
+      :key="index"
+      href="#"
+      @click="emit('selectChat', chat.name)"
+    >
+      <div class="tab">
+        {{ chat.name }} &nbsp;
+        <button class="btn btn-xs btn-red" @click="deleteTab(chat.name)">
+          &#x2717;
+        </button>
+      </div>
+    </a>
   </div>
 </template>
 <style>
