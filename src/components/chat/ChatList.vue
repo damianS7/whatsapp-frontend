@@ -13,7 +13,7 @@ function deleteTab(name: string) {
 }
 </script>
 <template>
-  <div class="flex gap-1 border-b-2 border-gray-300">
+  <div class="border-r-2 border-gray-300">
     <div v-for="(chat, index) in chats" :key="index" class="tab">
       <a href="#" @click="emit('selectTab', chat.name)">{{ chat.name }}</a>
       &nbsp;
@@ -26,8 +26,9 @@ function deleteTab(name: string) {
 <style>
 .tab {
   @apply flex items-center;
-  @apply bg-gray-300;
+  @apply bg-gray-100;
   @apply py-1 px-2;
   @apply text-sm;
+  @apply border-b-2 border-gray-400;
 }
 </style>

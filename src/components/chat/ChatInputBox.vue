@@ -11,7 +11,7 @@ function send() {
 }
 </script>
 <template>
-  <div class="overflow-auto p-4 border-t-2 border-gray-300">
+  <div class="overflow-auto p-2 border-t-2 border-gray-300">
     <textarea
       class="w-full h-full p-2"
       v-model="textarea"

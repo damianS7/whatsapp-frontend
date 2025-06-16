@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ChatInputBox from "@/components/chat/ChatInputBox.vue";
 import ChatHistory from "@/components/chat/ChatHistory.vue";
-import TabLayout from "@/layouts/chat/TabLayout.vue";
+import ChatList from "@/components/chat/ChatList.vue";
 import RoomUserList from "@/components/chat/ChatRoomUserList.vue";
 import { ref, watch } from "vue";
 import { useChatStore } from "@/stores/chat";
@@ -20,30 +20,18 @@ function selectTab(tabName: string) {
 }
 </script>
 <template>
-  <div class="grid grid-rows-[2rem_28rem_1fr] h-full">
-    <div class="grid overflow-auto">
-      <TabLayout @selectTab="selectTab" />
+  <div class="grid grid-cols-[20%_80%] h-full">
+    <div class="grid overflow-auto h-full">
+      <ChatList @selectTab="selectTab" />
     </div>
-    <div
-      v-if="currentChat && currentChat.type === 'CONVERSATION'"
-      class="grid overflow-auto p-4"
-    >
-      <ChatHistory :messages="currentChat?.history" />
-    </div>
-    <div v-else class="grid grid-cols-[80%_20%]">
-      <!-- Columna 1 -->
-      <div class="overflow-auto p-4">
+    <div class="grid grid-rows-[90%_10%] overflow-auto">
+      <div class="grid overflow-auto p-4">
         <ChatHistory :messages="currentChat?.history" />
       </div>
 
-      <!-- Columna 2 -->
-      <div class="overflow-auto p-4 border-l-2 border-gray-300">
-        <RoomUserList :participants="currentChat?.participants" />
+      <div class="grid">
+        <ChatInputBox />
       </div>
-    </div>
-
-    <div class="grid overflow-auto">
-      <ChatInputBox />
     </div>
   </div>
 </template>

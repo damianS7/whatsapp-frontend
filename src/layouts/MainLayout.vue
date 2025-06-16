@@ -8,7 +8,7 @@ import { useGroupStore } from "@/stores/group";
 import { useCustomerStore } from "@/stores/customer";
 import { useContactStore } from "@/stores/contact";
 import { useRoute, useRouter } from "vue-router";
-import Chat from "@/layouts/chat/ChatLayout.vue";
+import ChatLayout from "@/layouts/ChatLayout.vue";
 const visible = ref(false);
 const customerStore = useCustomerStore();
 const authStore = useAuthStore();
@@ -67,7 +67,9 @@ function toggleView(view: string) {
     <Header />
 
     <div class="flex flex-1 overflow-hidden p-6">
-      <div class="flex flex-1 rounded shadow overflow-hidden">
+      <div
+        class="flex flex-1 rounded shadow overflow-hidden border-2 border-gray-300"
+      >
         <div>
           <Sidebar @toggleView="toggleView" />
         </div>
@@ -83,7 +85,7 @@ function toggleView(view: string) {
           </div>
 
           <div class="container p-0 w-full h-full overflow-hidden">
-            <Chat />
+            <ChatLayout />
           </div>
         </div>
       </div>
