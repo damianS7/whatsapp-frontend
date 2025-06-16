@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, defineProps, onUpdated } from "vue";
+import type ChatMessage from "@/types/ChatMessage";
 defineProps({
-  messages: { sender: String, message: String },
+  messages: [] as ChatMessage[],
 });
 const chatContainer = ref<HTMLElement | null>(null);
 const scrollToBottom = () => {
@@ -18,9 +19,11 @@ onUpdated(scrollToBottom);
 </script>
 <template>
   <div v-for="(message, index) in messages" :key="index" ref="chatContainer">
-    <p v-if="message.sender === 'DAMIAN'" class="text-right">
-      {{ message.sender }}: {{ message.message }}
+    <p v-if="message.senderName === 'DAMIAN'" class="text-right">
+      {{ message.senderName }}: {{ message.message }}
     </p>
-    <p v-else class="text-left">{{ message.sender }}: {{ message.message }}</p>
+    <p v-else class="text-left">
+      {{ message.senderName }}: {{ message.message }}
+    </p>
   </div>
 </template>
