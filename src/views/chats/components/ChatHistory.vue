@@ -1,29 +1,41 @@
 <script setup lang="ts">
 import { ref, defineProps, onUpdated } from "vue";
 import type ChatMessage from "@/types/ChatMessage";
-defineProps({
-  messages: [] as ChatMessage[],
-});
+import type { Customer } from "@/types/Customer";
+interface Props {
+  user: Customer;
+  messages: ChatMessage[];
+}
+const props = defineProps<Props>();
 const chatContainer = ref<HTMLElement | null>(null);
 const scrollToBottom = () => {
-  console.log("scrolling to botton");
-  console.log("scrolling to botton" + chatContainer.value);
   if (chatContainer.value) {
-    chatContainer.value.scrollTop = 10;
+    chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
   }
 };
 
+function customerName() {
+  return props.user.profile.firstName;
+}
 onUpdated(scrollToBottom);
-// TODO: get current user
 // TODO: caret to end
 </script>
 <template>
-  <div v-for="(message, index) in messages" :key="index" ref="chatContainer">
-    <p v-if="message.senderName === 'DAMIAN'" class="text-right">
-      {{ message.senderName }}: {{ message.message }}
-    </p>
-    <p v-else class="text-left">
-      {{ message.senderName }}: {{ message.message }}
-    </p>
+  <div ref="chatContainer" class="overflow-x-hidden overflow-y-auto">
+    <div v-for="(message, index) in messages" :key="index">
+      <div
+        v-if="message.senderName === customerName()"
+        class="mb-4 rounded text-right"
+      >
+        <span
+          class="bg-green-300 p-2 rounded text-right break-words justify-normal"
+        >
+          {{ message.senderName }}: {{ message.message }}
+        </span>
+      </div>
+      <div v-else class="text-left">
+        {{ message.senderName }}: {{ message.message }}
+      </div>
+    </div>
   </div>
 </template>
