@@ -16,6 +16,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     component: MainLayout,
     meta: { requiresAuth: true },
+    redirect: "/chats",
     children: [
       {
         path: "groups",
