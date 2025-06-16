@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { Chat } from "@/types/Chat";
+import { ChatMessage } from "@/types/ChatMessage";
 
 export const useChatStore = defineStore("chat", {
   state: () => ({
@@ -23,11 +24,14 @@ export const useChatStore = defineStore("chat", {
   },
 
   actions: {
-    async appendMessage(name: string, sender: string, message: string) {
-      this.getChat(name)?.history.push({ sender, message });
+    async appendMessage(chatName: string, message: ChatMessage) {
+      this.getChat(chatName)?.history.push(message);
     },
-    async addChat(chat: Chat) {
-      this.chats.push(chat);
+    async addChat(newChat: Chat) {
+      const chatExists = this.chats.find((chat) => chat.name === newChat.name);
+      if (!chatExists) {
+        this.chats.push(newChat);
+      }
     },
     async deleteChat(chatName: string) {
       const index = this.chats.findIndex((chat) => chat.name === chatName);
