@@ -18,23 +18,28 @@ function customerName() {
   return props.user.profile.firstName;
 }
 onUpdated(scrollToBottom);
-// TODO: caret to end
 </script>
 <template>
-  <div ref="chatContainer" class="overflow-x-hidden overflow-y-auto">
-    <div v-for="(message, index) in messages" :key="index">
-      <div
-        v-if="message.senderName === customerName()"
-        class="mb-4 rounded text-right"
-      >
-        <span
-          class="bg-green-300 p-2 rounded text-right break-words justify-normal"
-        >
-          {{ message.senderName }}: {{ message.message }}
-        </span>
-      </div>
-      <div v-else class="text-left">
-        {{ message.senderName }}: {{ message.message }}
+  <div
+    ref="chatContainer"
+    class="overflow-x-hidden overflow-y-auto p-4 space-y-4"
+  >
+    <div
+      v-for="(message, index) in messages"
+      :key="index"
+      :class="{
+        'flex justify-end': message.senderName === customerName(),
+        'flex justify-start': message.senderName !== customerName(),
+      }"
+    >
+      <div class="max-w-xs sm:max-w-md bg-white rounded-lg p-2 shadow-md">
+        <p class="text-sm font-semibold mb-1 text-gray-700">
+          {{ message.senderName }}
+        </p>
+        <p class="text-base break-words mb-1">
+          {{ message.message }}
+        </p>
+        <p class="text-xs italic text-gray-300 text-right">10-10-2025</p>
       </div>
     </div>
   </div>
