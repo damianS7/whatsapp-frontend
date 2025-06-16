@@ -7,6 +7,7 @@ import { ChatMessage } from "@/types/ChatMessage";
 export const useChatStore = defineStore("chat", {
   state: () => ({
     chats: [] as Chat[],
+    selectedChat: 0,
     socket: null as WebSocket | null,
     stompClient: null as Client | null,
     initialized: false,
@@ -24,7 +25,7 @@ export const useChatStore = defineStore("chat", {
   },
 
   actions: {
-    async appendMessage(chatName: string, message: ChatMessage) {
+    async sendMessage(chatName: string, message: ChatMessage) {
       this.getChat(chatName)?.history.push(message);
       localStorage.setItem("chats", JSON.stringify(this.chats));
     },

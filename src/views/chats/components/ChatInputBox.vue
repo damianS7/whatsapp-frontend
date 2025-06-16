@@ -1,16 +1,23 @@
 <script setup lang="ts">
 import { useChatStore } from "@/stores/chat";
-import Chat from "@/types/Chat";
+import type Chat from "@/types/Chat";
+import type Customer from "@/types/Customer";
 import { ref, defineProps } from "vue";
-const props = defineProps({
-  chat: Chat,
-});
+interface Props {
+  user: Customer;
+  chat: Chat;
+}
+const props = defineProps<Props>();
+
 const chatStore = useChatStore();
 const textarea = ref("");
 function send() {
-  chatStore.appendMessage(props.chat.name, "DAMIAN", textarea.value);
+  chatStore.sendMessage(props.chat.name, {
+    senderCustomerId: props.user.id,
+    senderName: props.user.profile.firstName,
+    message: textarea.value,
+  });
   textarea.value = "";
-  return;
 }
 </script>
 <template>
