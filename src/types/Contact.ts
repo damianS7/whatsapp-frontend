@@ -1,6 +1,6 @@
-export interface Friend {
+export interface Contact {
   id: number;
-  friendCustomerId: number;
+  contactCustomerId: number;
   name: string;
   avatarFilename: string;
 }

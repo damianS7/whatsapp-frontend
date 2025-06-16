@@ -4,16 +4,16 @@ import Sidebar from "@/layouts/SidebarLayout.vue";
 import Header from "@/components/HeaderBar.vue";
 import { onMounted, onUnmounted, ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { useRoomStore } from "@/stores/room";
+import { useGroupStore } from "@/stores/group";
 import { useCustomerStore } from "@/stores/customer";
-import { useFriendStore } from "@/stores/friend";
+import { useContactStore } from "@/stores/contact";
 import { useRoute, useRouter } from "vue-router";
 import Chat from "@/layouts/chat/ChatLayout.vue";
 const visible = ref(false);
 const customerStore = useCustomerStore();
 const authStore = useAuthStore();
-const roomStore = useRoomStore();
-const friendStore = useFriendStore();
+const groupStore = useGroupStore();
+const contactStore = useContactStore();
 const router = useRouter();
 const route = useRoute();
 const tokenValidationInterval = 30 * 1000; // 30s
@@ -44,8 +44,8 @@ onMounted(async () => {
   }, tokenValidationInterval);
 
   await customerStore.initialize();
-  await friendStore.initialize();
-  await roomStore.initialize();
+  await contactStore.initialize();
+  await groupStore.initialize();
   initialized.value = true;
 });
 

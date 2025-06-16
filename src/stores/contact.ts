@@ -1,42 +1,45 @@
 import { defineStore } from "pinia";
-import type { Friend } from "@/types/Friend";
+import type { Contact } from "@/types/Contact";
 
-export const useFriendStore = defineStore("friend", {
+export const useContactStore = defineStore("contact", {
   state: () => ({
-    friends: [{}] as Friend[],
+    contacts: [{}] as Contact[],
     initialized: false,
   }),
 
   getters: {
-    getFriends: (state) => {
-      return state.friends;
+    getContacts: (state) => {
+      return state.contacts;
     },
   },
 
   actions: {
-    async fetchFriends(): Promise<Friend[]> {
+    async fetchContacts(): Promise<Contact[]> {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/friends`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `${process.env.VUE_APP_API_URL}/contacts`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         // if response is not 200, throw an error
         if (response.status !== 200) {
           const jsonResponse = await response.json();
-          throw new Error("Failed to fetch friends. " + jsonResponse.message);
+          throw new Error("Failed to fetch contacts. " + jsonResponse.message);
         }
 
-        return (await response.json()) as Friend[];
+        return (await response.json()) as Contact[];
       } catch (error: unknown) {
         if (error instanceof Error) {
           throw error;
         }
-        throw new Error("Failed to fetch friends.");
+        throw new Error("Failed to fetch contacts.");
       }
     },
     async getPhoto(filename: string): Promise<Blob> {
@@ -62,14 +65,13 @@ export const useFriendStore = defineStore("friend", {
         return (await response.blob()) as Blob;
       } catch (error: unknown) {
         if (error instanceof Error) {
-          throw new Error(error.message);
-        } else {
-          throw new Error("Failed to get photo. Unknown error.");
+          throw error;
         }
+        throw new Error("Failed to get photo. Unknown error.");
       }
     },
-    async setFriends(friends: any) {
-      this.friends = friends;
+    async setContacts(contacts: any) {
+      this.contacts = contacts;
     },
     async initialize() {
       const token = localStorage.getItem("token");
@@ -77,9 +79,9 @@ export const useFriendStore = defineStore("friend", {
         return;
       }
 
-      await this.fetchFriends()
-        .then((friends) => {
-          this.setFriends(friends);
+      await this.fetchContacts()
+        .then((contacts) => {
+          this.setContacts(contacts);
         })
         .catch((error) => {
           console.log(error);

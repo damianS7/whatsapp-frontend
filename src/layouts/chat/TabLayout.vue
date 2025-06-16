@@ -18,7 +18,7 @@ function deleteTab(name: string) {
       <a href="#" @click="emit('selectTab', chat.name)">{{ chat.name }}</a>
       &nbsp;
       <button class="btn btn-xs btn-red" @click="deleteTab(chat.name)">
-        &#x2715;
+        &#x2717;
       </button>
     </div>
   </div>

@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import type { Room } from "@/types/Room";
+import type { Group } from "@/types/Group";
 import type { Chat, ChatType } from "@/types/Chat";
-import { useRoomStore } from "@/stores/room";
+import { useGroupStore } from "@/stores/group";
 import { useChatStore } from "@/stores/chat";
-const roomStore = useRoomStore();
+const groupStore = useGroupStore();
 const chatStore = useChatStore();
-const rooms = computed(() => roomStore.getRooms as Room[]);
+const groups = computed(() => groupStore.getGroups as Group[]);
 
-function joinRoom(id: number) {
-  const room = roomStore.getRoom(id);
+function joinGroup(id: number) {
+  const group = groupStore.getGroup(id);
   const chat = {
-    name: room?.name,
-    type: "ROOM",
+    name: group?.name,
+    type: "GROUP",
     history: [
       {
         sender: "DAMIAN",
@@ -33,22 +33,22 @@ function joinRoom(id: number) {
     <section
       class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1 mb-4"
     >
-      <h1>Rooms</h1>
+      <h1>Groups</h1>
     </section>
 
     <section class="grid grid-cols-1 gap-2">
       <div
-        v-for="(room, index) in rooms"
+        v-for="(group, index) in groups"
         :key="index"
         class="rounded bg-gray-300 p-4 flex justify-between items-start"
       >
         <div class="flex flex-col flex-1">
-          <span class="font-semibold">{{ room.id }} - {{ room.name }}</span>
-          <span class="text-xs text-gray-700">{{ room.description }}</span>
+          <span class="font-semibold">{{ group.id }} - {{ group.name }}</span>
+          <span class="text-xs text-gray-700">{{ group.description }}</span>
         </div>
 
         <button
-          @click="joinRoom(room.id)"
+          @click="joinGroup(group.id)"
           class="btn btn-sm btn-blue ml-4 self-center"
         >
           JOIN

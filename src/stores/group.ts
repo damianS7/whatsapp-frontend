@@ -1,28 +1,28 @@
 import { defineStore } from "pinia";
-import { Room } from "@/types/Room";
+import { Group } from "@/types/Group";
 
-export const useRoomStore = defineStore("room", {
+export const useGroupStore = defineStore("group", {
   state: () => ({
-    rooms: [] as Room[],
+    groups: [] as Group[],
     initialized: false,
   }),
 
   getters: {
-    getRooms: (state) => {
-      return state.rooms;
+    getGroups: (state) => {
+      return state.groups;
     },
-    getRoom: (state) => {
+    getGroup: (state) => {
       return (id: number) => {
-        return state.rooms.find((room) => room.id === id);
+        return state.groups.find((group) => group.id === id);
       };
     },
   },
 
   actions: {
-    async fetchRooms(): Promise<Room[]> {
+    async fetchGroups(): Promise<Group[]> {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/rooms`, {
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/groups`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -33,28 +33,28 @@ export const useRoomStore = defineStore("room", {
         // if response is not 200, throw an error
         if (response.status !== 200) {
           const jsonResponse = await response.json();
-          throw new Error("Failed to fetch rooms. " + jsonResponse.message);
+          throw new Error("Failed to fetch groups. " + jsonResponse.message);
         }
 
-        return (await response.json()) as Room[];
+        return (await response.json()) as Group[];
       } catch (error: unknown) {
         if (error instanceof Error) {
           throw error;
         }
-        throw new Error("Failed to fetch rooms.");
+        throw new Error("Failed to fetch groups.");
       }
     },
-    async setRooms(rooms: Room[]) {
-      this.rooms = rooms;
+    async setGroups(groups: Group[]) {
+      this.groups = groups;
     },
     async initialize() {
       const token = localStorage.getItem("token");
       if (!token) {
         return;
       }
-      await this.fetchRooms()
-        .then((rooms) => {
-          this.setRooms(rooms);
+      await this.fetchGroups()
+        .then((groups) => {
+          this.setGroups(groups);
         })
         .catch((error) => {
           console.log(error);

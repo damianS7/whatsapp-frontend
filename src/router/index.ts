@@ -6,8 +6,8 @@ import RegisterView from "@/views/auth/RegisterView.vue";
 import SettingsView from "@/views/settings/SettingsView.vue";
 import ProfileView from "@/views/profile/ProfileView.vue";
 import ResetPasswordView from "@/views/auth/ResetPasswordView.vue";
-import RoomsView from "@/views/rooms/RoomListView.vue";
-import FriendListView from "@/views/friends/FriendListView.vue";
+import GroupListView from "@/views/groups/GroupListView.vue";
+import ContactListView from "@/views/contacts/ContactListView.vue";
 import { useAuthStore } from "@/stores/auth";
 
 const routes: Array<RouteRecordRaw> = [
@@ -17,14 +17,14 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
     children: [
       {
-        path: "rooms",
-        name: "rooms",
-        component: RoomsView,
+        path: "groups",
+        name: "groups",
+        component: GroupListView,
       },
       {
-        path: "friends",
-        name: "friends",
-        component: FriendListView,
+        path: "contacts",
+        name: "contacts",
+        component: ContactListView,
       },
       {
         path: "profile",

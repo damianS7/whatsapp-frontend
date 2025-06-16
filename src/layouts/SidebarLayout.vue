@@ -25,16 +25,16 @@ function logout() {
 <template>
   <nav class="h-full p-2 group w-14 flex flex-col space-y-2">
     <SidebarLink
-      @click="emit('toggleView', 'rooms')"
-      to="/rooms"
+      @click="emit('toggleView', 'groups')"
+      to="/groups"
       :icon="Users"
-      label="Rooms"
+      label="Groups"
     />
     <SidebarLink
-      @click="emit('toggleView', 'friends')"
-      to="/friends"
+      @click="emit('toggleView', 'contacts')"
+      to="/contacts"
       :icon="NotebookTabs"
-      label="Friends"
+      label="Contacts"
     />
     <SidebarLink
       @click="emit('toggleView', 'profile')"
