@@ -12,6 +12,10 @@ const props = defineProps<Props>();
 const chatStore = useChatStore();
 const textarea = ref("");
 function send() {
+  if (!textarea.value.length > 0) {
+    return;
+  }
+
   chatStore.sendMessage(props.chat.name, {
     senderCustomerId: props.user.id,
     senderName: props.user.profile.firstName,
@@ -21,7 +25,7 @@ function send() {
 }
 </script>
 <template>
-  <div class="overflow-auto p-2 border-t-2 border-gray-300">
+  <div class="overflow-auto h-full p-2 border-t-2 border-gray-300">
     <textarea
       class="w-full h-full p-2"
       v-model="textarea"

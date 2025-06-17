@@ -23,7 +23,7 @@ onMounted(() => {
 </script>
 <template>
   <div class="grid grid-cols-[14rem_1fr] h-full">
-    <div class="grid overflow-auto h-full">
+    <div class="overflow-hidden">
       <ChatList
         v-if="currentChat"
         :currentChat="currentChat"
@@ -31,19 +31,19 @@ onMounted(() => {
       />
     </div>
 
-    <div class="grid grid-rows-[10%_1fr_10%] overflow-auto">
-      <div class="grid border-b-2 border-gray-300">
+    <div class="grid grid-rows-[auto_1fr_auto] overflow-hidden h-full">
+      <div class="border-b-2 border-gray-300">
         <ChatHeader v-if="currentChat" :chat="currentChat" />
       </div>
 
-      <div class="grid overflow-auto">
+      <div class="overflow-hidden">
         <ChatHistory
           :user="customerStore.getLoggedCustomer"
           :messages="currentChat?.history"
         />
       </div>
 
-      <div class="grid">
+      <div>
         <ChatInputBox
           :user="customerStore.getLoggedCustomer"
           :chat="currentChat"

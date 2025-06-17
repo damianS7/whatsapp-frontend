@@ -65,28 +65,24 @@ function toggleView(view: string) {
 </script>
 <template>
   <FullScreenLoadingSpinner v-if="!initialized" />
-  <main v-else class="flex flex-col h-screen">
-    <Header />
-
-    <div class="flex flex-1 overflow-hidden p-6">
-      <div
-        class="flex flex-1 rounded shadow overflow-hidden border-2 border-gray-300"
-      >
+  <main v-else class="flex flex-col h-screen overflow-hidden">
+    <header>
+      <Header />
+    </header>
+    <div class="flex h-full p-6 overflow-hidden">
+      <div class="flex w-full rounded shadow border-2 border-gray-300 relative">
+        <!-- <div
+          class="container absolute w-full h-full -left-full min-h-full top-0 transition-all duration-500 transform"
+          :class="{
+            '-translate-x-full': !visible,
+            'translate-x-0': visible,
+          }"
+        ></div> -->
         <div>
           <Sidebar @toggleView="toggleView" />
         </div>
-        <div class="container p-0 flex-1 flex overflow-hidden h-full relative">
-          <div
-            class="container overflow-auto absolute w-full h-full left-0 min-h-full top-0 transition-all duration-500 transform"
-            :class="{
-              '-translate-x-full': !visible,
-              'translate-x-0': visible,
-            }"
-          ></div>
-
-          <div class="container p-0 w-full h-full overflow-hidden">
-            <router-view />
-          </div>
+        <div class="container p-0 h-full">
+          <router-view />
         </div>
       </div>
     </div>

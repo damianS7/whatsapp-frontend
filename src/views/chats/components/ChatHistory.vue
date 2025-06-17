@@ -22,7 +22,7 @@ onUpdated(scrollToBottom);
 <template>
   <div
     ref="chatContainer"
-    class="overflow-x-hidden overflow-y-auto p-4 space-y-2 h-full"
+    class="flex-col overflow-x-hidden overflow-y-auto p-4 space-y-2 h-full"
   >
     <div
       v-for="(message, index) in messages"

@@ -26,12 +26,10 @@ const menuY = ref(0);
 
 function openContextMenu(event: MouseEvent) {
   event.preventDefault();
-  console.log(event.clientX);
   menuX.value = event.clientX;
   menuY.value = event.clientY;
   menuVisible.value = true;
 
-  // Cerrar si haces clic fuera
   document.addEventListener("click", closeMenu);
 }
 
@@ -53,7 +51,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="border-r-2 border-gray-300">
+  <div class="flex flex-col border-r-2 border-gray-300 h-full">
     <div class="bg-gray-200 border-b-2 border-gray-300 p-2">
       <input
         class="rounded-md w-full px-3 py-1 text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm transition duration-200"
@@ -62,7 +60,7 @@ onMounted(() => {
         placeholder="Search ..."
       />
     </div>
-    <div class="overflow-y-auto relative p-2 space-y-1">
+    <div class="flex-1 overflow-y-auto relative p-2 space-y-1 h-full">
       <div
         v-for="(chat, index) in chats"
         :key="index"
@@ -110,7 +108,13 @@ onMounted(() => {
             class="hover:bg-red-100 text-sm text-red-600 rounded px-2 py-1 cursor-pointer"
             @click.stop="deleteTab(chat.name)"
           >
-            Eliminar chat ✖
+            Clear chat
+          </li>
+          <li
+            class="hover:bg-red-100 text-sm text-red-600 rounded px-2 py-1 cursor-pointer"
+            @click.stop="deleteTab(chat.name)"
+          >
+            Delete chat
           </li>
         </ul>
       </div>
