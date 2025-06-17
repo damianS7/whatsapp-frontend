@@ -4,42 +4,50 @@ import ChatHistory from "@/views/chats/components/ChatHistory.vue";
 import ChatList from "@/views/chats/components/ChatList.vue";
 import ChatHeader from "@/views/chats/components/ChatHeader.vue";
 import RoomUserList from "@/views/chats/components/ChatRoomUserList.vue";
+import { useCustomerStore } from "@/stores/customer";
 import { ref, watch, onMounted } from "vue";
 import { useChatStore } from "@/stores/chat";
 import { Chat } from "@/types/Chat";
 const chatStore = useChatStore();
+const customerStore = useCustomerStore();
 const currentChat = ref<Chat | null>(null);
 
 function selectChat(chatName: string) {
-  // selectedChat.value = chatName;
-  const chat = chatStore.getChat(chatName) as Chat;
-  if (!chat) {
-    return;
-  }
-  currentChat.value = chat;
+  chatStore.selectChat(chatName);
+  currentChat.value = chatStore.getSelectedChat;
 }
 
 onMounted(() => {
-  const chats = chatStore.getChats;
-  currentChat.value = chats[0];
+  currentChat.value = chatStore.getSelectedChat;
 });
 </script>
 <template>
-  <div class="grid grid-cols-[20%_80%] h-full">
+  <div class="grid grid-cols-[14rem_1fr] h-full">
     <div class="grid overflow-auto h-full">
-      <ChatList @selectChat="selectChat" />
+      <ChatList
+        v-if="currentChat"
+        :currentChat="currentChat"
+        @selectChat="selectChat"
+      />
     </div>
-    <div class="grid grid-rows-[10%_80%_10%] overflow-auto">
-      <div class="grid p-4 border-b-2 border-gray-300">
+
+    <div class="grid grid-rows-[10%_1fr_10%] overflow-auto">
+      <div class="grid border-b-2 border-gray-300">
         <ChatHeader v-if="currentChat" :chat="currentChat" />
       </div>
 
-      <div class="grid overflow-auto p-4">
-        <ChatHistory :messages="currentChat?.history" />
+      <div class="grid overflow-auto">
+        <ChatHistory
+          :user="customerStore.getLoggedCustomer"
+          :messages="currentChat?.history"
+        />
       </div>
 
       <div class="grid">
-        <ChatInputBox :chat="currentChat" />
+        <ChatInputBox
+          :user="customerStore.getLoggedCustomer"
+          :chat="currentChat"
+        />
       </div>
     </div>
   </div>

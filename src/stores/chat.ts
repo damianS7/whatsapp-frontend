@@ -7,13 +7,19 @@ import { ChatMessage } from "@/types/ChatMessage";
 export const useChatStore = defineStore("chat", {
   state: () => ({
     chats: [] as Chat[],
-    selectedChat: 0,
+    selectedChatName: "",
     socket: null as WebSocket | null,
     stompClient: null as Client | null,
     initialized: false,
   }),
 
   getters: {
+    getSelectedChat(): Chat | undefined {
+      return this.getChat(this.selectedChatName);
+    },
+    getSelectedChatName: (state) => {
+      return state.selectedChatName;
+    },
     getChats: (state) => {
       return state.chats;
     },
@@ -25,21 +31,29 @@ export const useChatStore = defineStore("chat", {
   },
 
   actions: {
+    saveChatState() {
+      localStorage.setItem("chats", JSON.stringify(this.chats));
+      localStorage.setItem("selectedChatName", this.selectedChatName);
+    },
+    selectChat(name: string) {
+      this.selectedChatName = name;
+      this.saveChatState();
+    },
     async sendMessage(chatName: string, message: ChatMessage) {
       this.getChat(chatName)?.history.push(message);
-      localStorage.setItem("chats", JSON.stringify(this.chats));
+      this.saveChatState();
     },
     async addChat(newChat: Chat) {
       const chatExists = this.chats.find((chat) => chat.name === newChat.name);
       if (!chatExists) {
         this.chats.push(newChat);
       }
-      localStorage.setItem("chats", JSON.stringify(this.chats));
+      this.saveChatState();
     },
     async deleteChat(chatName: string) {
       const index = this.chats.findIndex((chat) => chat.name === chatName);
       this.chats.splice(index, 1);
-      localStorage.setItem("chats", JSON.stringify(this.chats));
+      this.saveChatState();
     },
     async subscribeToRoom(room: string) {
       const token = localStorage.getItem("token");
@@ -75,14 +89,18 @@ export const useChatStore = defineStore("chat", {
       }
     },
     async initialize() {
-      // const token = localStorage.getItem("token");
-      // if (!token) {
-      //   return;
-      // }
       const storedChats = localStorage.getItem("chats");
+      const storedSelectedChatName = localStorage.getItem("selectedChatName");
       if (storedChats) {
         this.chats = JSON.parse(storedChats);
       }
+
+      if (storedSelectedChatName) {
+        this.selectedChatName = storedSelectedChatName;
+      }
+
+      // TODO: connect to websocket
+      // TODO: subscribe to /customers/{id}
 
       this.initialized = true;
     },
