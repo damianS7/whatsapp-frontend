@@ -32,14 +32,17 @@ onUpdated(scrollToBottom);
         'flex justify-start': message.senderName !== customerName(),
       }"
     >
-      <div class="max-w-xs sm:max-w-md bg-white rounded-lg p-2 shadow-md">
-        <p class="text-sm font-semibold mb-1 text-gray-700">
-          {{ message.senderName }}
-        </p>
+      <div
+        class="rounded-tl-xl rounded-bl-xl rounded-tr-xl px-6 py-4 min-w-[16rem]"
+        :class="{
+          'bg-lime-200': message.senderName === customerName(),
+          'bg-stone-100': message.senderName !== customerName(),
+        }"
+      >
         <p class="text-base break-words mb-1">
           {{ message.message }}
         </p>
-        <p class="text-xs italic text-gray-300 text-right">10-10-2025</p>
+        <p class="text-xs italic text-gray-400 text-right">8:35</p>
       </div>
     </div>
   </div>
