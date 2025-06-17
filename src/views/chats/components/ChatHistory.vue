@@ -33,10 +33,12 @@ onUpdated(scrollToBottom);
       }"
     >
       <div
-        class="rounded-tl-xl rounded-bl-xl rounded-tr-xl px-6 py-4 min-w-[16rem]"
+        class="px-6 py-4 min-w-[16rem] shadow"
         :class="{
-          'bg-lime-200': message.senderName === customerName(),
-          'bg-stone-100': message.senderName !== customerName(),
+          'bg-lime-200 rounded-tl-xl rounded-bl-xl rounded-tr-xl':
+            message.senderName === customerName(),
+          'bg-stone-100 rounded-bl-xl rounded-tr-xl rounded-br-xl':
+            message.senderName !== customerName(),
         }"
       >
         <p class="text-base break-words mb-1">
