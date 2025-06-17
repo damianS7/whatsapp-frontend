@@ -26,14 +26,16 @@ function joinGroup(id: number) {
 }
 </script>
 <template>
-  <div class="main-container shadow-none rounded-none">
+  <div
+    class="main-container grid shadow-none rounded-none overflow-hidden h-full"
+  >
     <section
-      class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
+      class="sm:flex items-center text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
       <h1>Groups</h1>
     </section>
 
-    <section class="container grid grid-cols-1 gap-2">
+    <section class="flex flex-col container gap-2 overflow-auto h-full">
       <div
         v-for="(group, index) in groups"
         :key="index"
