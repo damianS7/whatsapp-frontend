@@ -5,7 +5,6 @@ import type Chat from "@/types/Chat";
 import type Customer from "@/types/Customer";
 const chatStore = useChatStore();
 interface Props {
-  user: Customer;
   chat: Chat;
 }
 const props = defineProps<Props>();

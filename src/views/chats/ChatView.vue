@@ -31,15 +31,18 @@ onMounted(() => {
       />
     </div>
 
-    <div class="grid grid-rows-[auto_1fr_auto] overflow-hidden h-full">
+    <div
+      v-if="currentChat"
+      class="grid grid-rows-[auto_1fr_auto] overflow-hidden h-full"
+    >
       <div class="border-b-2 border-gray-300">
-        <ChatHeader v-if="currentChat" :chat="currentChat" />
+        <ChatHeader :chat="currentChat" />
       </div>
 
       <div class="overflow-hidden">
         <ChatHistory
           :user="customerStore.getLoggedCustomer"
-          :messages="currentChat?.history"
+          :messages="currentChat.history"
         />
       </div>
 
