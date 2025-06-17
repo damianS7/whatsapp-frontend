@@ -24,8 +24,10 @@ const menuVisible = ref(false);
 const menuX = ref(0);
 const menuY = ref(0);
 
-function openContextMenu(event: MouseEvent) {
+function openContextMenu(event: MouseEvent, chatName: string) {
   event.preventDefault();
+  console.log(chatName);
+  console.log("press on x:" + event.clientX + " y:" + event.clientY);
   menuX.value = event.clientX;
   menuY.value = event.clientY;
   menuVisible.value = true;
@@ -60,11 +62,11 @@ onMounted(() => {
         placeholder="Search ..."
       />
     </div>
-    <div class="flex-1 overflow-y-auto relative p-2 space-y-1 h-full">
+    <div class="flex-1 overflow-y-auto p-2 space-y-1 h-full">
       <div
         v-for="(chat, index) in chats"
         :key="index"
-        class="flex gap-2 p-2 items-center cursor-pointer hover:bg-gray-100 hover:rounded-md relative"
+        class="relative flex gap-2 p-2 items-center cursor-pointer hover:bg-gray-100 hover:rounded-md"
         :class="{
           'bg-gray-100 rounded-md': chat.name === chatStore.getSelectedChatName,
         }"
@@ -96,32 +98,27 @@ onMounted(() => {
           </span>
         </div>
       </div>
-
-      <!-- right click menu -->
-      <div
-        v-if="menuVisible"
-        class="absolute bg-white border border-gray-300 rounded shadow p-2 z-50"
-        :style="{ top: `${menuY}px`, left: `${menuX}px` }"
-      >
-        <ul>
-          <li
-            class="hover:bg-red-100 text-sm text-red-600 rounded px-2 py-1 cursor-pointer"
-            @click.stop="deleteTab(chat.name)"
-          >
-            Clear chat
-          </li>
-          <li
-            class="hover:bg-red-100 text-sm text-red-600 rounded px-2 py-1 cursor-pointer"
-            @click.stop="deleteTab(chat.name)"
-          >
-            Delete chat
-          </li>
-        </ul>
-      </div>
+    </div>
+    <!-- right click menu -->
+    <div
+      v-if="menuVisible"
+      class="chatItemMenu"
+      :style="{ top: `${menuY}px`, left: `${menuX}px` }"
+    >
+      <ul>
+        <li>Clear chat</li>
+        <li>Delete chat</li>
+      </ul>
     </div>
   </div>
 </template>
 <style>
+.chatItemMenu {
+  @apply absolute bg-gray-300 border border-gray-300 rounded p-1 shadow z-50;
+}
+.chatItemMenu li {
+  @apply hover:bg-blue-400 hover:text-white text-black text-xs rounded p-1 cursor-pointer;
+}
 .tab {
   @apply flex items-center;
   @apply bg-gray-100;

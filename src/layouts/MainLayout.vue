@@ -70,7 +70,7 @@ function toggleView(view: string) {
       <Header />
     </header>
     <div class="flex h-full p-6 overflow-hidden">
-      <div class="flex w-full rounded shadow border-2 border-gray-300 relative">
+      <div class="flex w-full rounded shadow border-2 border-gray-300">
         <!-- <div
           class="container absolute w-full h-full -left-full min-h-full top-0 transition-all duration-500 transform"
           :class="{
