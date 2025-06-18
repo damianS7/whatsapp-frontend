@@ -14,6 +14,11 @@ const groups = computed(() => groupStore.getGroups as Group[]);
 
 function joinGroup(id: number) {
   const group = groupStore.getGroup(id);
+  if (group) {
+    chatStore.selectChat(group.name);
+    router.push("/chats");
+    return;
+  }
   const chat = {
     name: group?.name,
     type: "GROUP",
@@ -30,28 +35,38 @@ function joinGroup(id: number) {
     class="main-container grid shadow-none rounded-none overflow-hidden h-full"
   >
     <section
-      class="sm:flex items-center text-2xl font-bold border-b border-gray-300 p-1 px-2"
+      class="sm:flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
       <h1>Groups</h1>
+      <button class="btn btn-sm btn-blue">CREATE GROUP</button>
     </section>
 
     <section class="flex flex-col container gap-2 overflow-auto h-full">
       <div
         v-for="(group, index) in groups"
         :key="index"
-        class="rounded bg-gray-300 p-4 flex justify-between items-start"
+        class="rounded bg-gray-300 p-4 flex justify-between items-center"
       >
         <div class="flex flex-col flex-1">
           <span class="font-semibold">{{ group.name }}</span>
           <span class="text-xs text-gray-700">{{ group.description }}</span>
         </div>
 
-        <button
-          @click="joinGroup(group.id)"
-          class="btn btn-sm btn-blue ml-4 self-center"
-        >
-          JOIN
-        </button>
+        <!-- TODO: Only show if admin -->
+        <div class="flex gap-1">
+          <button
+            @click="joinGroup(group.id)"
+            class="btn btn-sm btn-red self-center"
+          >
+            DELETE
+          </button>
+          <button
+            @click="joinGroup(group.id)"
+            class="btn btn-sm btn-blue self-center"
+          >
+            JOIN
+          </button>
+        </div>
       </div>
     </section>
   </div>
