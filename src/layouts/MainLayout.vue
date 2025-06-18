@@ -9,7 +9,6 @@ import { useCustomerStore } from "@/stores/customer";
 import { useContactStore } from "@/stores/contact";
 import { useChatStore } from "@/stores/chat";
 import { useRoute, useRouter } from "vue-router";
-const visible = ref(false);
 const customerStore = useCustomerStore();
 const authStore = useAuthStore();
 const groupStore = useGroupStore();
@@ -54,14 +53,6 @@ onMounted(async () => {
 onUnmounted(() => {
   clearInterval(interval);
 });
-
-function toggleView(view: string) {
-  const currentView = route.name;
-  if (visible.value && currentView !== view) {
-    return;
-  }
-  // visible.value = !visible.value;
-}
 </script>
 <template>
   <FullScreenLoadingSpinner v-if="!initialized" />
@@ -70,16 +61,11 @@ function toggleView(view: string) {
       <Header />
     </header>
     <div class="flex h-full p-6 overflow-hidden">
-      <div class="flex w-full rounded shadow border-2 border-gray-300">
-        <!-- <div
-          class="container absolute w-full h-full -left-full min-h-full top-0 transition-all duration-500 transform"
-          :class="{
-            '-translate-x-full': !visible,
-            'translate-x-0': visible,
-          }"
-        ></div> -->
+      <div
+        class="flex w-full rounded shadow border-2 border-gray-300 overflow-hidden"
+      >
         <div>
-          <Sidebar @toggleView="toggleView" />
+          <Sidebar />
         </div>
         <div class="container p-0 h-full">
           <router-view />

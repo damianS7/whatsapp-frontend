@@ -29,16 +29,31 @@ function joinGroup(id: number) {
   // TODO setselectedchat
   router.push("/chats");
 }
+
+const visible = ref(false);
+function toggleView(view: string) {
+  // const currentView = route.name;
+  // if (visible.value && currentView !== view) {
+  //   return;
+  // }
+  visible.value = !visible.value;
+}
 </script>
 <template>
   <div
     class="main-container grid shadow-none rounded-none overflow-hidden h-full"
   >
+    <div
+      class="bg-gray-200 absolute w-full h-full -left-0 min-h-full top-0 transition-all duration-500 transform z-10"
+      :class="visible ? 'translate-x-0' : '-translate-x-full'"
+    ></div>
     <section
       class="sm:flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
       <h1>Groups</h1>
-      <button class="btn btn-sm btn-blue">CREATE GROUP</button>
+      <button @click="toggleView" class="btn btn-sm btn-blue">
+        CREATE GROUP
+      </button>
     </section>
 
     <section class="flex flex-col container gap-2 overflow-auto h-full">
