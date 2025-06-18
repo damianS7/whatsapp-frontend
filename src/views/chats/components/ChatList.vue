@@ -62,6 +62,7 @@ onMounted(() => {
         placeholder="Search ..."
       />
     </div>
+
     <div class="flex-1 overflow-y-auto p-2 space-y-1 h-full">
       <div
         v-for="(chat, index) in chats"
@@ -99,6 +100,7 @@ onMounted(() => {
         </div>
       </div>
     </div>
+
     <!-- right click menu -->
     <div
       v-if="menuVisible"
