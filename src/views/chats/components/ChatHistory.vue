@@ -33,7 +33,7 @@ onUpdated(scrollToBottom);
       }"
     >
       <div
-        class="px-6 py-4 min-w-[16rem] shadow"
+        class="px-4 py-2 min-w-[16rem] shadow"
         :class="{
           'bg-lime-200 rounded-tl-xl rounded-bl-xl rounded-tr-xl':
             message.senderName === customerName(),

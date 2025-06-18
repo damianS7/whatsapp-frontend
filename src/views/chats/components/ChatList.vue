@@ -56,7 +56,7 @@ onMounted(() => {
   <div class="flex flex-col border-r-2 border-gray-300 h-full">
     <div class="bg-gray-200 border-b-2 border-gray-300 p-2">
       <input
-        class="rounded-md w-full px-3 py-1 text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm transition duration-200"
+        class="rounded-md w-full bg-gray-50 px-3 py-1 text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm transition duration-200"
         v-model="searchFilter"
         type="text"
         placeholder="Search ..."

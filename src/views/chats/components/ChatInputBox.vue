@@ -27,7 +27,7 @@ function send() {
 <template>
   <div class="overflow-auto h-full p-2 border-t-2 border-gray-300">
     <textarea
-      class="w-full h-full p-2"
+      class="w-full h-full bg-gray-50 rounded-md px-3 py-1 text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm transition duration-200"
       v-model="textarea"
       @keypress.enter.prevent
       @keypress.enter="send"
