@@ -91,42 +91,6 @@ const formFields = ref([
     edited: false,
   },
   {
-    name: "country",
-    type: "text",
-    placeholder: "Country",
-    value: customer.profile?.country,
-    error: "",
-    isEditing: false,
-    edited: false,
-  },
-  {
-    name: "address",
-    type: "text",
-    placeholder: "Address",
-    value: customer.profile?.address,
-    error: "",
-    isEditing: false,
-    edited: false,
-  },
-  {
-    name: "postalCode",
-    type: "text",
-    placeholder: "Postal Code",
-    value: customer.profile?.postalCode,
-    error: "",
-    isEditing: false,
-    edited: false,
-  },
-  {
-    name: "nationalId",
-    type: "text",
-    placeholder: "National ID",
-    value: customer.profile?.nationalId,
-    error: "",
-    isEditing: false,
-    edited: false,
-  },
-  {
     name: "password",
     type: "password",
     placeholder: "New password",
@@ -266,7 +230,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div>
+  <div class="main-container grid overflow-hidden h-full">
     <ConfirmPasswordModal :ref="modals.confirmPassword" />
     <ConfirmMessageModal :ref="modals.confirmMessage" />
     <MessageAlert
@@ -277,30 +241,27 @@ onMounted(() => {
       :type="messageAlert.type"
       @close="messageAlert.visible = false"
     />
+    <section
+      class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
+    >
+      <h1>Profile</h1>
+      <div class="flex flex-wrap gap-1 text-sm"></div>
+    </section>
 
-    <div class="main-container">
-      <section
-        class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
+    <section class="container overflow-scroll h-full">
+      <ProfilePhoto @update="updatePhoto" />
+      <div
+        v-if="customerStore.customer.profile"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4"
       >
-        <h1>Profile</h1>
-        <div class="flex flex-wrap gap-1 text-sm"></div>
-      </section>
-
-      <section class="container">
-        <ProfilePhoto @update="updatePhoto" />
-        <div
-          v-if="customerStore.customer.profile"
-          class="grid grid-cols-1 md:grid-cols-2 gap-4"
-        >
-          <ProfileEditableField
-            v-for="(field, index) in formFields"
-            :key="index"
-            :index="index"
-            :field="field"
-            @update="updateField"
-          />
-        </div>
-      </section>
-    </div>
+        <ProfileEditableField
+          v-for="(field, index) in formFields"
+          :key="index"
+          :index="index"
+          :field="field"
+          @update="updateField"
+        />
+      </div>
+    </section>
   </div>
 </template>
