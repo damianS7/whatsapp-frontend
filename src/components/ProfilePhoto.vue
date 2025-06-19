@@ -5,13 +5,13 @@ const customerStore = useCustomerStore();
 const profileImgURL = ref("");
 
 onMounted(() => {
-  if (customerStore.customer.profile?.photoPath) {
+  if (customerStore.customer.profile?.avatarFilename) {
     reloadProfileImg();
   }
 });
 
 watch(
-  () => customerStore.customer.profile?.photoPath,
+  () => customerStore.customer.profile?.avatarFilename,
   () => {
     reloadProfileImg();
   },

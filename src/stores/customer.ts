@@ -209,7 +209,7 @@ export const useCustomerStore = defineStore("customer", {
       this.customer.profile = profile;
     },
     async setPhoto(image: any) {
-      this.customer.profile.photoPath = ".";
+      this.customer.profile.avatarFilename = ".";
     },
     async initialize() {
       const token = localStorage.getItem("token");
@@ -225,11 +225,11 @@ export const useCustomerStore = defineStore("customer", {
           console.log(error);
         });
 
-      if (!this.customer?.profile?.photoPath) {
+      if (!this.customer?.profile?.avatarFilename) {
         return;
       }
 
-      await this.getPhoto(this.customer.profile.photoPath)
+      await this.getPhoto(this.customer.profile.avatarFilename)
         .then((filename) => {
           localStorage.setItem(
             "profilePhotoURL",

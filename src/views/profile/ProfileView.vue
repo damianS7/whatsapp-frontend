@@ -245,7 +245,6 @@ onMounted(() => {
       class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
     >
       <h1>Profile</h1>
-      <div class="flex flex-wrap gap-1 text-sm"></div>
     </section>
 
     <section class="container overflow-scroll h-full">

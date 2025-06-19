@@ -7,10 +7,5 @@ export interface Profile {
   phone: string;
   birthdate: string;
   gender: GenderType;
-  photoPath?: string;
-  address: string;
-  postalCode: string;
-  country: string;
-  nationalId: string;
-  updatedAt?: string;
+  avatarFilename?: string;
 }
