@@ -3,9 +3,8 @@ import ChatInputBox from "@/views/chats/components/ChatInputBox.vue";
 import ChatHistory from "@/views/chats/components/ChatHistory.vue";
 import ChatList from "@/views/chats/components/ChatList.vue";
 import ChatHeader from "@/views/chats/components/ChatHeader.vue";
-import RoomUserList from "@/views/chats/components/ChatRoomUserList.vue";
 import { useCustomerStore } from "@/stores/customer";
-import { ref, watch, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useChatStore } from "@/stores/chat";
 import { Chat } from "@/types/Chat";
 const chatStore = useChatStore();
@@ -14,21 +13,24 @@ const currentChat = ref<Chat | null>(null);
 
 function selectChat(chatName: string) {
   chatStore.selectChat(chatName);
-  currentChat.value = chatStore.getSelectedChat;
+  const selectedChat = chatStore.getSelectedChat;
+  if (!selectedChat) {
+    return;
+  }
+  currentChat.value = selectedChat;
 }
 
 onMounted(() => {
-  currentChat.value = chatStore.getSelectedChat;
+  const selectedChat = chatStore.getSelectedChat;
+  if (selectedChat) {
+    currentChat.value = selectedChat;
+  }
 });
 </script>
 <template>
   <div class="grid grid-cols-[14rem_1fr] h-full">
     <div class="overflow-hidden">
-      <ChatList
-        v-if="currentChat"
-        :currentChat="currentChat"
-        @selectChat="selectChat"
-      />
+      <ChatList @selectChat="selectChat" />
     </div>
 
     <div
