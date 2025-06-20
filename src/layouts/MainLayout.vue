@@ -60,7 +60,7 @@ onUnmounted(() => {
     <header>
       <Header />
     </header>
-    <div class="flex h-full p-6 overflow-hidden">
+    <div class="flex h-full p-6 overflow-hidden w-full sm:max-w-4xl mx-auto">
       <div
         class="flex w-full rounded shadow border-2 border-gray-300 overflow-hidden"
       >
