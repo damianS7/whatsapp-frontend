@@ -1,68 +1,101 @@
 <script setup lang="ts">
 import { Contact } from "@/types/Contact";
 import { useContactStore } from "@/stores/contact";
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { useChatStore } from "@/stores/chat";
 import { Chat } from "@/types/Chat";
 import { MessageCircle } from "lucide-vue-next";
+import { useRoute, useRouter } from "vue-router";
+import MessageAlert from "@/components/MessageAlert.vue";
+import { MessageType } from "@/types/Message";
+
+const router = useRouter();
 const chatStore = useChatStore();
 const contactStore = useContactStore();
 const contacts = computed(() => contactStore.getContacts as Contact[]);
-
-function openConversation(name: string) {
-  const existingChat = chatStore.getChat(name);
-  if (existingChat) {
-    // set as defaulttab
-    return;
+// message to show
+const alert = ref();
+function openConversation(chatName: string) {
+  const existingChat = chatStore.getChat(chatName);
+  if (!existingChat) {
+    chatStore.addChat({
+      name: chatName,
+      type: "CONVERSATION",
+      history: [],
+      participants: [{ name: chatName }],
+    } as Chat);
   }
 
-  const chat = {
-    name: name,
-    type: "CONVERSATION",
-    history: [
-      {
-        sender: "DAMIAN",
-        message: "Hey!",
-      },
-      {
-        sender: "RONALD",
-        message: "Hello brother!",
-      },
-    ],
-    participants: [{ name: "RONALD" }],
-  } as Chat;
-  chatStore.addChat(chat);
+  chatStore.selectChat(chatName);
+  router.push("/chats");
 }
 
 function deleteContact(id: number) {
-  console.log(id);
+  contactStore
+    .deleteContact(id)
+    .then(() => {
+      alert.value.showMessage("Deleted contact.", MessageType.SUCCESS);
+    })
+    .catch((error) => {
+      alert.value.showMessage(error.message, MessageType.ERROR);
+    });
 }
 </script>
 <template>
-  <div class="main-container shadow-none rounded-none">
+  <div
+    class="main-container grid grid-rows-[auto_1fr] shadow-none rounded-none overflow-hidden h-full"
+  >
     <section
-      class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
+      class="sm:flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
       <h1>Contacts</h1>
     </section>
 
-    <section class="container grid grid-cols-1 md:grid-cols-3 gap-4">
+    <section class="flex flex-col container gap-2 overflow-auto h-full">
+      <MessageAlert class="mb-2" ref="alert" />
       <div
         v-for="(contact, index) in contacts"
         :key="index"
-        class="rounded bg-gray-300 p-4 flex items-center justify-between"
+        class="p-4 w-full bg-gray-300 rounded"
       >
-        <img src="" alt="" class="w-8 h-8 rounded-full bg-white" />
-        <span class="ml-2 flex-1">{{ contact.name }}</span>
-        <button
-          @click="openConversation(contact.name)"
-          class="btn btn-sm btn-success"
-        >
-          <MessageCircle :size="20" />
-        </button>
-        <button @click="deleteContacts(contact.id)" class="btn btn-sm btn-red">
-          -
-        </button>
+        <div class="flex items-center gap-2">
+          <!-- Avatar -->
+          <img
+            v-if="contact.avatarFilename"
+            :src="contact.avatarFilename"
+            alt="avatar"
+            class="w-10 h-10 rounded-full object-cover border"
+          />
+          <div
+            v-else
+            class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
+          >
+            {{ contact.name.charAt(0) }}
+          </div>
+
+          <!-- Nombre y botones -->
+          <div class="flex-1 flex flex-col gap-2">
+            <p class="text-sm font-medium text-gray-800 truncate">
+              {{ contact.name }}
+            </p>
+            <div class="flex gap-2">
+              <button
+                @click="deleteContact(contact.id)"
+                class="btn btn-red btn-xs p-2 flex gap-2 items-center"
+                title="Delete contact"
+              >
+                REMOVE CONTACT
+              </button>
+              <button
+                @click="openConversation(contact.name)"
+                class="btn btn-success btn-xs p-2 flex gap-2 items-center"
+                title="Open chat"
+              >
+                OPEN CHAT<MessageCircle :size="20" />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </div>

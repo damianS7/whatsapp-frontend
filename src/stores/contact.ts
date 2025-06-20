@@ -42,6 +42,34 @@ export const useContactStore = defineStore("contact", {
         throw new Error("Failed to fetch contacts.");
       }
     },
+    async deleteContact(id: number) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${process.env.VUE_APP_API_URL}/contacts/${id}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // if response is not 204, throw an error
+        if (response.status !== 204) {
+          throw new Error("Failed to delete contact.");
+        }
+
+        // remove contact from state
+        this.contacts = this.contacts.filter((contact) => contact.id !== id);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw error;
+        }
+        throw new Error("Failed to delete contact.");
+      }
+    },
     async getPhoto(filename: string): Promise<Blob> {
       try {
         const token = localStorage.getItem("token");
