@@ -44,6 +44,104 @@ export const useGroupStore = defineStore("group", {
         throw new Error("Failed to fetch groups.");
       }
     },
+    async createGroup(group: {
+      name: string;
+      description: string;
+      membersId?: number[];
+    }): Promise<Group> {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/groups`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: group.name,
+            description: group.description,
+            membersId: group.membersId,
+          }),
+        });
+
+        // if response is not 201, throw an error
+        if (response.status !== 201) {
+          throw new Error("Failed to create group.");
+        }
+
+        const createdGroup = (await response.json()) as Group;
+        this.groups.push(createdGroup);
+        return createdGroup;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw error;
+        }
+        throw new Error("Failed to create group.");
+      }
+    },
+    async updateGroup(group: {
+      name: string;
+      description: string;
+      membersId?: number[];
+    }): Promise<Group> {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/groups`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: group.name,
+            description: group.description,
+            membersId: group.membersId,
+          }),
+        });
+
+        // if response is not 201, throw an error
+        if (response.status !== 200) {
+          throw new Error("Failed to update group.");
+        }
+
+        const createdGroup = (await response.json()) as Group;
+        this.groups.push(createdGroup);
+        return createdGroup;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw error;
+        }
+        throw new Error("Failed to update group.");
+      }
+    },
+    async deleteGroup(id: number) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${process.env.VUE_APP_API_URL}/groups/${id}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(id),
+          }
+        );
+
+        // if response is not 204, throw an error
+        if (response.status !== 204) {
+          throw new Error("Failed to delete group.");
+        }
+
+        this.groups = this.groups.filter((group) => group.id !== id);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw error;
+        }
+        throw new Error("Failed to delete group.");
+      }
+    },
     async setGroups(groups: Group[]) {
       this.groups = groups;
     },
