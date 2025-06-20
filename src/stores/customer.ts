@@ -68,8 +68,7 @@ export const useCustomerStore = defineStore("customer", {
 
         // if response is not 200, throw an error
         if (response.status !== 200) {
-          const jsonResponse = await response.json();
-          throw new Error("Failed to updated profile. " + jsonResponse.message);
+          throw new Error("Failed to updated profile.");
         }
 
         return (await response.json()) as Profile;
@@ -100,8 +99,7 @@ export const useCustomerStore = defineStore("customer", {
 
         // if response is not 200, throw an error
         if (response.status !== 200) {
-          const jsonResponse = await response.json();
-          throw new Error("Failed to update email. " + jsonResponse.message);
+          throw new Error("Failed to update email.");
         }
 
         return (await response.json()) as Customer;
@@ -129,8 +127,7 @@ export const useCustomerStore = defineStore("customer", {
 
         // if response is not 200, throw an error
         if (response.status !== 200) {
-          const jsonResponse = await response.json();
-          throw new Error("Failed to change password. " + jsonResponse.message);
+          throw new Error("Failed to change password.");
         }
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -155,8 +152,7 @@ export const useCustomerStore = defineStore("customer", {
 
         // if response is not 200, throw an error
         if (response.status !== 200) {
-          const json = await response.json();
-          throw new Error(json?.message || "Failed to get photo.");
+          throw new Error("Failed to get photo.");
         }
 
         return (await response.blob()) as Blob;
@@ -164,7 +160,7 @@ export const useCustomerStore = defineStore("customer", {
         if (error instanceof Error) {
           throw error;
         }
-        throw new Error("Failed to get photo. Unknown error.");
+        throw new Error("Failed to get photo.");
       }
     },
     async uploadPhoto(currentPassword: string, file: any): Promise<Blob> {
@@ -187,8 +183,7 @@ export const useCustomerStore = defineStore("customer", {
 
         // if response is not 201, throw an error
         if (response.status !== 201) {
-          const jsonResponse = await response.json();
-          throw new Error("Failed to upload photo. " + jsonResponse.message);
+          throw new Error("Failed to upload photo.");
         }
 
         return (await response.blob()) as Blob;

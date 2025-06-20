@@ -8,6 +8,7 @@ import ConfirmPasswordModal from "@/components/modal/ConfirmPasswordModal.vue";
 import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
 import { GenderType } from "@/types/Profile";
 import { MessageType } from "@/types/Message";
+
 const customerStore = useCustomerStore();
 const customer = customerStore.getLoggedCustomer;
 const genderTypes: GenderType[] = ["MALE", "FEMALE"];
@@ -17,12 +18,7 @@ const genderOptions = genderTypes.map((value) => ({
 }));
 // TODO add zod validation
 // message to show
-const messageAlert = ref({
-  message: "",
-  type: MessageType.ERROR,
-  timeout: 12,
-  visible: false,
-});
+const alert = ref();
 
 // modals to show
 const modals = {
@@ -134,12 +130,13 @@ async function updateField(
     .then((profile) => {
       customerStore.setProfile(profile);
       formFields.value[index].value = field.value;
-      showMessage("Field successfully updated.", MessageType.SUCCESS);
+      alert.value.showMessage(
+        "Field successfully updated.",
+        MessageType.SUCCESS
+      );
     })
     .catch((error) => {
-      messageAlert.value.message = error.message || "Error updating field.";
-      messageAlert.value.type = MessageType.ERROR;
-      showMessage(error.data.message, MessageType.ERROR);
+      alert.value.showMessage(error.message, MessageType.ERROR);
     });
 }
 
@@ -157,12 +154,13 @@ async function updatePassword(index: number, newPassword: string) {
   await customerStore
     .changePassword(currentPassword, newPassword)
     .then(() => {
-      showMessage("Password successfully updated.", MessageType.SUCCESS);
+      alert.value.showMessage(
+        "Password successfully updated.",
+        MessageType.SUCCESS
+      );
     })
     .catch((error) => {
-      messageAlert.value.message = error.message || "Error updating password.";
-      messageAlert.value.type = MessageType.ERROR;
-      showMessage(error.data.message, MessageType.ERROR);
+      alert.value.showMessage(error.message, MessageType.ERROR);
     });
 }
 
@@ -181,11 +179,13 @@ async function updatePhoto(photo: any) {
     .then((blob) => {
       localStorage.setItem("profilePhotoURL", URL.createObjectURL(blob));
       customerStore.setPhoto(blob);
-      showMessage("Photo successfully updated.", MessageType.SUCCESS);
+      alert.value.showMessage(
+        "Photo successfully updated.",
+        MessageType.SUCCESS
+      );
     })
     .catch((error) => {
-      messageAlert.value.message = error.message || "Error uplading image.";
-      messageAlert.value.type = MessageType.ERROR;
+      alert.value.showMessage(error.message, MessageType.ERROR);
     });
 }
 
@@ -209,22 +209,16 @@ async function updateEmail(index: number, newEmail: string) {
     .then((customer) => {
       customerStore.setEmail(customer.email);
       formFields.value[index].value = newEmail;
-      showMessage("Field successfully updated.", MessageType.SUCCESS);
+      alert.value.showMessage(
+        "Field successfully updated.",
+        MessageType.SUCCESS
+      );
     })
     .catch((error) => {
-      messageAlert.value.message = error.message || "Error updating email.";
-      messageAlert.value.type = MessageType.ERROR;
-      showMessage(error.data.message, MessageType.ERROR);
+      alert.value.showMessage(error.message, MessageType.ERROR);
     });
 }
 
-// it shows a message
-function showMessage(message: string, type: MessageType, timeout?: number) {
-  messageAlert.value.message = message;
-  messageAlert.value.type = type;
-  messageAlert.value.timeout = timeout ?? messageAlert.value.timeout;
-  messageAlert.value.visible = true;
-}
 onMounted(() => {
   //
 });
@@ -233,14 +227,7 @@ onMounted(() => {
   <div class="main-container grid overflow-hidden h-full">
     <ConfirmPasswordModal :ref="modals.confirmPassword" />
     <ConfirmMessageModal :ref="modals.confirmMessage" />
-    <MessageAlert
-      v-if="messageAlert.visible"
-      class="mb-4"
-      :message="messageAlert.message"
-      :timeout="messageAlert.timeout"
-      :type="messageAlert.type"
-      @close="messageAlert.visible = false"
-    />
+    <MessageAlert class="mb-4" ref="alert" />
     <section
       class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
     >
