@@ -10,6 +10,7 @@ import GroupListView from "@/views/groups/GroupListView.vue";
 import ChatView from "@/views/chats/ChatView.vue";
 import ContactListView from "@/views/contacts/ContactListView.vue";
 import { useAuthStore } from "@/stores/auth";
+import GroupEditView from "@/views/groups/GroupEditView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -22,6 +23,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "groups",
         name: "groups",
         component: GroupListView,
+      },
+      {
+        path: "groups/:id",
+        name: "group",
+        component: GroupEditView,
       },
       {
         path: "chats",
