@@ -8,6 +8,8 @@ import { useChatStore } from "@/stores/chat";
 import { useRouter } from "vue-router";
 import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
+import CreateGroupPanel from "./components/CreateGroupPanel.vue";
+import EditGroupPanel from "./components/EditGroupPanel.vue";
 // message to show
 const alert = ref();
 const router = useRouter();
@@ -35,38 +37,33 @@ function openChat(groupId: number) {
   router.push("/chats");
 }
 
-const createGroupVisible = ref(false);
-function showCreateGroup() {
-  createGroupVisible.value = !createGroupVisible.value;
+const createGroupPanelVisible = ref(false);
+function toggleCreateGroupPanel() {
+  createGroupPanelVisible.value = !createGroupPanelVisible.value;
+}
+
+const editGroupPanelVisible = ref(false);
+function toggleEditGroupPanel() {
+  editGroupPanelVisible.value = !editGroupPanelVisible.value;
 }
 </script>
 <template>
   <div
     class="main-container grid shadow-none rounded-none overflow-hidden h-full relative"
   >
-    <div
-      class="bg-gray-200 absolute w-full h-full -left-0 min-h-full top-0 transition-all duration-500 transform z-10"
-      :class="createGroupVisible ? 'translate-x-0' : '-translate-x-full'"
-    >
-      <section
-        class="sm:flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
-      >
-        <h1>Create Group</h1>
-        <button @click="showCreateGroup" class="btn btn-sm btn-blue">
-          <ArrowLeft />
-        </button>
-      </section>
-      <section class="flex flex-col container gap-2 overflow-auto h-full">
-        <div>Group name</div>
-        <div>Group members</div>
-        <div>Group description</div>
-      </section>
-    </div>
+    <CreateGroupPanel
+      :class="createGroupPanelVisible ? 'translate-x-0' : '-translate-x-full'"
+      @hidePanel="toggleCreateGroupPanel"
+    />
+    <EditGroupPanel
+      :class="editGroupPanelVisible ? 'translate-x-0' : '-translate-x-full'"
+      @hidePanel="toggleEditGroupPanel"
+    />
     <section
       class="sm:flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
       <h1>Groups</h1>
-      <button @click="showCreateGroup" class="btn btn-sm btn-blue">
+      <button @click="toggleCreateGroupPanel" class="btn btn-sm btn-blue">
         CREATE GROUP
       </button>
     </section>
@@ -86,11 +83,12 @@ function showCreateGroup() {
         <!-- TODO: Only show if admin -->
         <div class="flex gap-1">
           <button
-            @click="openChat(group.id)"
-            class="btn btn-sm btn-red self-center"
+            @click="toggleEditGroupPanel"
+            class="btn btn-sm btn-blue self-center"
           >
-            DELETE
+            EDIT
           </button>
+
           <button
             @click="openChat(group.id)"
             class="btn btn-sm btn-blue self-center"
