@@ -58,7 +58,8 @@ nav a.router-link-exact-active {
   @apply font-bold text-xs px-1 py-0 rounded;
 }
 
-.btn-blue {
+.btn-blue,
+.btn-info {
   @apply bg-blue-600 text-white;
 }
 
@@ -66,16 +67,20 @@ nav a.router-link-exact-active {
   @apply bg-green-600 text-white;
 }
 
+.btn-success:hover {
+  @apply bg-green-700 text-white;
+}
+
 .btn-blue:hover {
   @apply bg-blue-700;
 }
 
 .btn-red {
-  @apply bg-red-600 text-white;
+  @apply bg-red-500 text-white;
 }
 
 .btn-red:hover {
-  @apply bg-red-700;
+  @apply bg-red-600;
 }
 
 .pill {
