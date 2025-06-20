@@ -4,8 +4,8 @@ import { useContactStore } from "@/stores/contact";
 import { ref, computed } from "vue";
 import { useChatStore } from "@/stores/chat";
 import { Chat } from "@/types/Chat";
-import { MessageCircle } from "lucide-vue-next";
-import { useRoute, useRouter } from "vue-router";
+import { MessageCircle, UserRoundMinus } from "lucide-vue-next";
+import { useRouter } from "vue-router";
 import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
 
@@ -15,7 +15,7 @@ const contactStore = useContactStore();
 const contacts = computed(() => contactStore.getContacts as Contact[]);
 // message to show
 const alert = ref();
-function openConversation(chatName: string) {
+function openChat(chatName: string) {
   const existingChat = chatStore.getChat(chatName);
   if (!existingChat) {
     chatStore.addChat({
@@ -84,10 +84,10 @@ function deleteContact(id: number) {
                 class="btn btn-red btn-xs p-2 flex gap-2 items-center"
                 title="Delete contact"
               >
-                REMOVE CONTACT
+                REMOVE CONTACT<UserRoundMinus :size="20" />
               </button>
               <button
-                @click="openConversation(contact.name)"
+                @click="openChat(contact.name)"
                 class="btn btn-success btn-xs p-2 flex gap-2 items-center"
                 title="Open chat"
               >
