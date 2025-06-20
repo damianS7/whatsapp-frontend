@@ -45,7 +45,7 @@ defineExpose({ showMessage, showException });
 <template>
   <div
     v-if="alert.message"
-    class="mb-6 flex items-center border px-4 py-3 rounded relative transition-opacity duration-500"
+    class="flex items-center border px-4 py-3 rounded relative transition-opacity duration-500"
     :class="[
       alert.type === MessageType.INFO &&
         'bg-blue-100 border-blue-400 text-blue-700',
