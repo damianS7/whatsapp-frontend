@@ -59,14 +59,21 @@ async function createGroup() {
       class="flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
       <h1>Create Group</h1>
-      <button @click="emit('hidePanel')" class="btn btn-sm btn-blue">
-        <ArrowLeft />
-      </button>
+      <div class="flex gap-2 items-center">
+        <button @click="createGroup" class="btn btn-primary btn-sm">
+          CREATE
+        </button>
+        <button @click="emit('hidePanel')" class="btn btn-sm btn-blue">
+          <ArrowLeft :size="20" />
+        </button>
+      </div>
     </section>
     <section class="flex flex-col container gap-4 overflow-auto h-full">
       <MessageAlert ref="alert" />
       <div class="bg-gray-300 rounded p-4">
-        <label for="groupName" class="font-semibold block text-sm text-gray-600"
+        <label
+          for="groupName"
+          class="mb-2 font-semibold block text-sm text-gray-600"
           >Group name</label
         >
         <input
@@ -80,7 +87,7 @@ async function createGroup() {
       <div class="bg-gray-300 border border-gray-200 rounded-xl shadow-sm p-4">
         <label
           for="groupDescription"
-          class="block text-sm text-gray-600 font-semibold mb-1"
+          class="mb-2 block text-sm text-gray-600 font-semibold"
           >Group description</label
         >
         <textarea
@@ -92,10 +99,6 @@ async function createGroup() {
       </div>
 
       <GroupMemberForm @setMembers="setMembers" />
-
-      <div class="text-right">
-        <button @click="createGroup" class="btn btn-primary">CREATE</button>
-      </div>
     </section>
   </div>
 </template>
