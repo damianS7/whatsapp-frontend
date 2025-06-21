@@ -8,6 +8,8 @@ export interface Chat {
   type: ChatType;
   history: Array<ChatMessage>;
   participants: Array<{
-    name: string;
+    customerId: number;
+    customerName: string;
+    customerAvatar: string;
   }>;
 }

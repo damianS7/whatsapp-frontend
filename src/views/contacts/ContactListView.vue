@@ -10,43 +10,70 @@ import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
 import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
 
+// router
+const router = useRouter();
+
+// message to show
+const alert = ref();
+
 // modals to show
 const modals = {
   confirmMessage: ref(),
 };
 
-const router = useRouter();
+// store
 const chatStore = useChatStore();
 const contactStore = useContactStore();
+
+// data
 const contacts = computed(() => contactStore.getContacts as Contact[]);
-// message to show
-const alert = ref();
-function openChat(chatName: string) {
-  const existingChat = chatStore.getChat(chatName);
+
+// functions
+// Open chat with the contact
+function openChat(contact: Contact) {
+  const existingChat = chatStore.getChat(contact.name);
+
+  // if the chat not exists, create a new one
   if (!existingChat) {
     chatStore.addChat({
-      name: chatName,
+      name: contact.name,
       type: "CONVERSATION",
       history: [],
-      participants: [{ name: chatName }],
+      participants: [
+        {
+          customerId: contact.id,
+          customerName: contact.name,
+          customerAvatar: contact.avatarFilename || "",
+        },
+      ],
     } as Chat);
   }
 
-  chatStore.selectChat(chatName);
+  // select the chat created or existing
+  chatStore.selectChat(contact.name);
+
+  // redirect to the chat view
   router.push("/chats");
 }
 
-async function deleteContact(id: number) {
+// Delete a contact
+async function deleteContact(contact: Contact) {
   const confirm = await modals.confirmMessage.value.open(
     "Are you sure you want to delete this contact?"
   );
+
+  // if the user cancels the confirmation, do nothing
   if (!confirm) {
     return;
   }
-  contactStore
-    .deleteContact(id)
+  // if the user confirms, delete the contact
+  await contactStore
+    .deleteContact(contact.id)
     .then(() => {
-      alert.value.showMessage("Deleted contact.", MessageType.SUCCESS);
+      alert.value.showMessage(
+        "Deleted " + contact.name + " from contacts.",
+        MessageType.SUCCESS
+      );
     })
     .catch((error) => {
       alert.value.showMessage(error.message, MessageType.ERROR);
@@ -98,14 +125,14 @@ async function deleteContact(id: number) {
           </div>
           <div class="flex flex-col flex-1 gap-2 w-full">
             <button
-              @click="deleteContact(contact.id)"
+              @click="deleteContact(contact)"
               class="flex justify-between btn btn-red btn-xs p-2 gap-2 items-center"
               title="Delete contact"
             >
               REMOVE CONTACT<UserRoundMinus :size="20" />
             </button>
             <button
-              @click="openChat(contact.name)"
+              @click="openChat(contact)"
               class="btn btn-success btn-xs p-2 flex gap-2 items-center justify-between"
               title="Open chat"
             >
