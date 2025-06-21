@@ -95,7 +95,8 @@ nav a.router-link-exact-active {
   @apply font-bold text-xs px-1.5 py-0.5 rounded-full;
 }
 
+.pill-primary,
 .pill-blue {
-  @apply bg-blue-200 text-blue-800;
+  @apply bg-blue-200 text-blue-500;
 }
 </style>
