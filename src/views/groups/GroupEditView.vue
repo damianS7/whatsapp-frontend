@@ -25,6 +25,7 @@ const group = computed(() =>
 );
 const contacts = computed(() => {
   return contactStore.getContacts.filter((contact) => {
+    // check if the contact is already a member of the group
     return contact.name
       .toLowerCase()
       .includes(memberNameFilter.value.toLowerCase());
@@ -48,14 +49,21 @@ const formGroup: Ref<FormGroup> = ref({
 });
 
 function addMember(contact: Contact) {
-  membersToAdd.value.push({
-    id: 0,
-    customerName: contact.name,
-    customerId: contact.contactCustomerId,
-    avatarFilename: contact.avatarFilename,
-    groupId: group.value?.id || 0,
-  });
-  formGroup.value.membersId.push(contact.contactCustomerId);
+  const memberExist = membersToAdd.value.find(
+    (member) => member.customerId === contact.contactCustomerId
+  );
+
+  if (!memberExist) {
+    membersToAdd.value.push({
+      id: 0,
+      customerName: contact.name,
+      customerId: contact.contactCustomerId,
+      avatarFilename: contact.avatarFilename,
+      groupId: group.value?.id || 0,
+    });
+    formGroup.value.membersId.push(contact.contactCustomerId);
+  }
+
   memberNameFilter.value = "";
 }
 
@@ -111,6 +119,12 @@ async function deleteGroup() {
       class="flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
       <h1>Edit Group</h1>
+      <div class="flex items-center gap-1">
+        <button @click="deleteGroup" class="btn btn-danger btn-sm">
+          DELETE
+        </button>
+        <button @click="saveGroup" class="btn btn-primary btn-sm">SAVE</button>
+      </div>
     </section>
     <section class="flex flex-col container gap-4 overflow-auto h-full">
       <MessageAlert ref="alert" />
@@ -184,15 +198,6 @@ async function deleteGroup() {
           placeholder="Short description for the group ..."
           class="bg-gray-200 w-full rounded-md border border-gray-300 px-3 py-2 text-sm resize-none h-24 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         ></textarea>
-      </div>
-
-      <div class="text-right">
-        <button
-          @click="saveGroup"
-          class="w-full sm:w-auto px-6 py-2 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition"
-        >
-          SUBMIT
-        </button>
       </div>
     </section>
   </div>
