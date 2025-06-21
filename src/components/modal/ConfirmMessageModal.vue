@@ -30,7 +30,7 @@ defineExpose({ open });
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
   >
     <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-      <h2 class="text-xl font-semibold mb-4">Info</h2>
+      <h2 class="text-xl font-semibold mb-4">Confirm</h2>
       <div class="mb-4">
         <p>{{ message }}</p>
       </div>
@@ -40,7 +40,7 @@ defineExpose({ open });
           CANCEL
         </button>
         <button type="button" @click="submit" class="btn btn-primary">
-          OK
+          CONFIRM
         </button>
       </div>
     </div>

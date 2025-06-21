@@ -96,10 +96,10 @@ async function deleteContact(id: number) {
               </p>
             </div>
           </div>
-          <div class="flex flex-col flex-1 gap-2 w-full sm:w-fit">
+          <div class="flex flex-col flex-1 gap-2 w-full">
             <button
               @click="deleteContact(contact.id)"
-              class="flex justify-betweenbtn btn-red btn-xs p-2 gap-2 items-center"
+              class="flex justify-between btn btn-red btn-xs p-2 gap-2 items-center"
               title="Delete contact"
             >
               REMOVE CONTACT<UserRoundMinus :size="20" />
