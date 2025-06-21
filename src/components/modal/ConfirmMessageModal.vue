@@ -2,10 +2,10 @@
 import { ref, defineExpose } from "vue";
 let message = "";
 const visible = ref(false);
-let _resolve: (value: string) => void;
+let _resolve: (value: boolean) => void;
 
 // open modal
-function open(msg: string): Promise<string> {
+function open(msg: string): Promise<boolean> {
   message = msg;
   visible.value = true;
 
@@ -16,11 +16,11 @@ function open(msg: string): Promise<string> {
 
 function submit() {
   visible.value = false;
-  _resolve("");
+  _resolve(true);
 }
 function cancel() {
   visible.value = false;
-  _resolve("");
+  _resolve(false);
 }
 defineExpose({ open });
 </script>
@@ -36,11 +36,10 @@ defineExpose({ open });
       </div>
 
       <div class="flex justify-end gap-2">
-        <button
-          type="button"
-          @click="submit"
-          class="bg-gray-300 rounded px-4 py-2"
-        >
+        <button type="button" @click="cancel" class="btn btn-secondary">
+          CANCEL
+        </button>
+        <button type="button" @click="submit" class="btn btn-primary">
           OK
         </button>
       </div>

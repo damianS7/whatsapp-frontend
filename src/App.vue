@@ -49,7 +49,6 @@ nav a.router-link-exact-active {
   @apply font-bold py-2 px-4 rounded text-sm;
 }
 
-.btn-small,
 .btn-sm {
   @apply font-bold p-1 px-2 rounded text-xs;
 }
@@ -58,9 +57,14 @@ nav a.router-link-exact-active {
   @apply font-bold text-xs px-1 py-0 rounded;
 }
 
+.btn-primary,
 .btn-blue,
 .btn-info {
   @apply bg-blue-600 text-white;
+}
+
+.btn-secondary {
+  @apply bg-gray-500 text-white;
 }
 
 .btn-success {
