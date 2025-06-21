@@ -9,6 +9,12 @@ import type { Contact } from "@/types/Contact";
 import { number } from "zod";
 import { useRoute, useRouter } from "vue-router";
 import { Group } from "@/types/Group";
+import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
+
+// modals to show
+const modals = {
+  confirmMessage: ref(),
+};
 const route = useRoute();
 const router = useRouter();
 const groupStore = useGroupStore();
@@ -71,7 +77,13 @@ function saveGroup() {
       alert.value.showMessage(error.message, MessageType.ERROR);
     });
 }
-function deleteGroup() {
+async function deleteGroup() {
+  const confirm = await modals.confirmMessage.value.open(
+    "Are you sure you want to delete this group?"
+  );
+  if (!confirm) {
+    return;
+  }
   const id = parseInt(route.params.id as string, 10);
   groupStore
     .deleteGroup(id)
@@ -87,6 +99,7 @@ function deleteGroup() {
   <div
     class="main-container grid grid-rows-[auto_1fr] shadow-none rounded-none overflow-hidden h-full"
   >
+    <ConfirmMessageModal :ref="modals.confirmMessage" />
     <section
       class="flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
