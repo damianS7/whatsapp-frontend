@@ -105,14 +105,18 @@ export const useGroupStore = defineStore("group", {
           }
         );
 
-        // if response is not 201, throw an error
+        // if response is not 200, throw an error
         if (response.status !== 200) {
           throw new Error("Failed to update group.");
         }
 
-        const createdGroup = (await response.json()) as Group;
-        this.groups.push(createdGroup);
-        return createdGroup;
+        const updatedGroup = (await response.json()) as Group;
+        const index = this.groups.findIndex(
+          (group) => group.id === updatedGroup.id
+        );
+        this.groups[index] = updatedGroup;
+
+        return updatedGroup;
       } catch (error: unknown) {
         if (error instanceof Error) {
           throw error;
