@@ -79,10 +79,12 @@ nav a.router-link-exact-active {
   @apply bg-blue-700;
 }
 
+.btn-danger,
 .btn-red {
   @apply bg-red-500 text-white;
 }
 
+.btn-danger:hover,
 .btn-red:hover {
   @apply bg-red-600;
 }
