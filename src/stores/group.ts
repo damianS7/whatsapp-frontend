@@ -79,25 +79,31 @@ export const useGroupStore = defineStore("group", {
         throw new Error("Failed to create group.");
       }
     },
-    async updateGroup(group: {
-      name: string;
-      description: string;
-      membersId?: number[];
-    }): Promise<Group> {
+    async updateGroup(
+      id: number,
+      group: {
+        name: string;
+        description: string;
+        membersId?: number[];
+      }
+    ): Promise<Group> {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/groups`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            name: group.name,
-            description: group.description,
-            membersId: group.membersId,
-          }),
-        });
+        const response = await fetch(
+          `${process.env.VUE_APP_API_URL}/groups/${id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              name: group.name,
+              description: group.description,
+              membersId: group.membersId,
+            }),
+          }
+        );
 
         // if response is not 201, throw an error
         if (response.status !== 200) {
