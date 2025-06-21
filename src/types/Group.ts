@@ -4,6 +4,10 @@ export interface Group {
   id: number;
   name: string;
   description: string;
-  owner: { id: number; name: string; avatarFilename: string };
+  owner: {
+    customerId: number;
+    customerName: string;
+    avatarFilename: string;
+  };
   members: GroupMember[];
 }
