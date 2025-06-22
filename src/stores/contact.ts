@@ -70,6 +70,36 @@ export const useContactStore = defineStore("contact", {
         throw new Error("Failed to delete contact.");
       }
     },
+    async addContact(id: number) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${process.env.VUE_APP_API_URL}/contacts`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              customerId: id,
+            }),
+          }
+        );
+
+        // if response is not 201, throw an error
+        if (response.status !== 201) {
+          throw new Error("Failed to add contact.");
+        }
+        const createdContact = (await response.json()) as Contact;
+        this.contacts.push(createdContact);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw error;
+        }
+        throw new Error("Failed to add contact.");
+      }
+    },
     async getPhoto(filename: string): Promise<Blob> {
       try {
         const token = localStorage.getItem("token");

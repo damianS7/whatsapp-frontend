@@ -5,12 +5,15 @@ import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
 import { useGroupStore } from "@/stores/group";
 import { Chat } from "@/types/Chat";
+import { MessageCircle, UserRoundMinus, UserRoundPlus } from "lucide-vue-next";
+import { useContactStore } from "@/stores/contact";
 
 // emit
 const emit = defineEmits(["hidePanel"]);
 
 // store
 const groupStore = useGroupStore();
+const contactStore = useContactStore();
 
 // message to show
 const alert = ref();
@@ -21,6 +24,19 @@ interface Props {
 }
 const props = defineProps<Props>();
 // TODO: call to endpoint group.members to get the members of the group
+function addContact(customerId: number) {
+  contactStore
+    .addContact(customerId)
+    .then(() => {
+      alert.value.showMessage(
+        "Contact added successfully",
+        MessageType.SUCCESS
+      );
+    })
+    .catch((error) => {
+      alert.value.showMessage(error.message, MessageType.ERROR);
+    });
+}
 </script>
 <template>
   <div
@@ -39,7 +55,7 @@ const props = defineProps<Props>();
     <section class="container overflow-auto h-full">
       <MessageAlert class="mb-2" ref="alert" />
       <div
-        class="grid grid-cols-1 sm:grid-cols-3 grid-rows-[min-content_max-content] gap-2"
+        class="grid grid-cols-1 sm:grid-cols-2 grid-rows-[min-content_max-content] gap-2"
       >
         <div
           v-for="(member, index) in props.chat.participants"
@@ -49,8 +65,8 @@ const props = defineProps<Props>();
           <div class="flex items-center gap-2">
             <!-- Avatar -->
             <img
-              v-if="member.customerAvatar"
-              :src="member.customerAvatar"
+              v-if="member.avatarFilename"
+              :src="member.avatarFilename"
               alt="avatar"
               class="w-10 h-10 rounded-full object-cover border"
             />
@@ -66,6 +82,13 @@ const props = defineProps<Props>();
               <p class="text-sm font-medium text-gray-800 truncate">
                 {{ member.customerName }}
               </p>
+              <button
+                @click="addContact(member.customerId)"
+                class="flex justify-between btn btn-primary btn-xs p-2 gap-2 items-center"
+                title="Delete contact"
+              >
+                ADD CONTACT<UserRoundPlus :size="20" />
+              </button>
             </div>
           </div>
         </div>
