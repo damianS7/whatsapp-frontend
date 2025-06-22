@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { useChatStore } from "@/stores/chat";
-import type Chat from "@/types/Chat";
+import type { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
-import type Customer from "@/types/Customer";
+import type { Customer } from "@/types/Customer";
 import { ref, defineProps } from "vue";
+import { useChat } from "@/composables/useChat";
+import { ChatMember } from "@/types/ChatMember";
+const { generateChatId, getDestinationCustomer } = useChat();
 interface Props {
   fromCustomer: Customer;
   chat: Chat;
@@ -18,6 +21,7 @@ function send() {
   }
 
   const message = {
+    chatId: "",
     fromCustomerId: props.fromCustomer.id,
     fromCustomerName: props.fromCustomer.profile.firstName,
     chatType: props.chat.type,
@@ -25,20 +29,21 @@ function send() {
     timestamp: new Date(),
   } as ChatMessage;
 
-  const chatId =
-    props.chat.type === "PRIVATE"
-      ? props.chat.toCustomerId
-      : props.chat.groupId;
-
-  if (props.chat.type === "GROUP") {
+  if (props.chat.type === "GROUP" && props.chat.groupId) {
     message.groupId = props.chat.groupId;
+    message.chatId = generateChatId("GROUP", message.groupId);
   }
 
   if (props.chat.type === "PRIVATE") {
-    message.toCustomerId = props.chat.toCustomerId;
+    const destinationCustomer = getDestinationCustomer(props.chat);
+    if (!destinationCustomer) {
+      return;
+    }
+    message.toCustomerId = destinationCustomer.customerId;
+    message.chatId = generateChatId("PRIVATE", destinationCustomer.customerId);
   }
 
-  chatStore.sendMessage(props.chat.type, chatId, message);
+  chatStore.sendMessage(message);
   textarea.value = "";
 }
 </script>
