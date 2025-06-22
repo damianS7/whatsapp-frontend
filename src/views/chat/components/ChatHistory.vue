@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, defineProps, onUpdated } from "vue";
-import type ChatMessage from "@/types/ChatMessage";
+import { ref, defineProps, onUpdated, onMounted } from "vue";
+import type { ChatMessage } from "@/types/ChatMessage";
 import type { Customer } from "@/types/Customer";
 import type { ChatType } from "@/types/Chat";
 import { useChat } from "@/composables/useChat";
@@ -18,6 +18,9 @@ const scrollToBottom = () => {
   }
 };
 onUpdated(scrollToBottom);
+onMounted(() => {
+  scrollToBottom();
+});
 </script>
 <template>
   <div
