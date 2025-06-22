@@ -36,7 +36,7 @@ onMounted(() => {
       }"
     >
       <div
-        class="px-4 py-2 min-w-[16rem] shadow"
+        class="px-4 py-2 w-full max-w-min shadow"
         :class="{
           'bg-lime-200 rounded-tl-xl rounded-bl-xl rounded-tr-xl':
             isLoggedCustomer(message.fromCustomerId),
