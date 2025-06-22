@@ -227,7 +227,7 @@ onMounted(() => {
   <div class="main-container grid overflow-hidden h-full">
     <ConfirmPasswordModal :ref="modals.confirmPassword" />
     <ConfirmMessageModal :ref="modals.confirmMessage" />
-    <MessageAlert class="mb-4" ref="alert" />
+
     <section
       class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
     >
@@ -235,6 +235,7 @@ onMounted(() => {
     </section>
 
     <section class="container overflow-scroll h-full">
+      <MessageAlert class="mb-4" ref="alert" />
       <ProfilePhoto @update="updatePhoto" />
       <div
         v-if="customerStore.customer.profile"
