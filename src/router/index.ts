@@ -7,7 +7,7 @@ import SettingsView from "@/views/settings/SettingsView.vue";
 import ProfileView from "@/views/profile/ProfileView.vue";
 import ResetPasswordView from "@/views/auth/ResetPasswordView.vue";
 import GroupListView from "@/views/groups/GroupListView.vue";
-import ChatView from "@/views/chats/ChatView.vue";
+import ChatView from "@/views/chat/ChatView.vue";
 import ContactListView from "@/views/contacts/ContactListView.vue";
 import { useAuthStore } from "@/stores/auth";
 import GroupEditView from "@/views/groups/GroupEditView.vue";

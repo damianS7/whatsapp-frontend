@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import ChatInputBox from "@/views/chats/components/ChatInputBox.vue";
-import ChatHistory from "@/views/chats/components/ChatHistory.vue";
-import ChatList from "@/views/chats/components/ChatList.vue";
-import ChatHeader from "@/views/chats/components/ChatHeader.vue";
+import ChatInputBox from "@/views/chat/components/ChatInputBox.vue";
+import ChatHistory from "@/views/chat/components/ChatHistory.vue";
+import ChatList from "@/views/chat/components/ChatList.vue";
+import ChatHeader from "@/views/chat/components/ChatHeader.vue";
 import { useCustomerStore } from "@/stores/customer";
 import { ref, onMounted } from "vue";
 import { useChatStore } from "@/stores/chat";
