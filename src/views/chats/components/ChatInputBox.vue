@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useChatStore } from "@/stores/chat";
 import type Chat from "@/types/Chat";
+import { ChatMessage } from "@/types/ChatMessage";
 import type Customer from "@/types/Customer";
 import { ref, defineProps } from "vue";
 interface Props {
-  user: Customer;
+  fromCustomer: Customer;
   chat: Chat;
 }
 const props = defineProps<Props>();
@@ -16,11 +17,28 @@ function send() {
     return;
   }
 
-  chatStore.sendMessage(props.chat.name, {
-    senderCustomerId: props.user.id,
-    senderName: props.user.profile.firstName,
+  const message = {
+    fromCustomerId: props.fromCustomer.id,
+    fromCustomerName: props.fromCustomer.profile.firstName,
+    chatType: props.chat.type,
     message: textarea.value,
-  });
+    timestamp: new Date(),
+  } as ChatMessage;
+
+  const chatId =
+    props.chat.type === "PRIVATE"
+      ? props.chat.toCustomerId
+      : props.chat.groupId;
+
+  if (props.chat.type === "GROUP") {
+    message.groupId = props.chat.groupId;
+  }
+
+  if (props.chat.type === "PRIVATE") {
+    message.toCustomerId = props.chat.toCustomerId;
+  }
+
+  chatStore.sendMessage(props.chat.type, chatId, message);
   textarea.value = "";
 }
 </script>

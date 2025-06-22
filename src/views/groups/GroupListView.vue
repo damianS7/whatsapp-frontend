@@ -9,6 +9,8 @@ import { useRouter } from "vue-router";
 import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
 import CreateGroupPanel from "./components/CreateGroupPanel.vue";
+import { useChat } from "@/composables/useChat";
+const { isLoggedCustomer } = useChat();
 // message to show
 const alert = ref();
 const router = useRouter();
@@ -25,6 +27,7 @@ function openChat(groupId: number) {
   const chatExist = chatStore.getChat(group.name);
   if (!chatExist) {
     chatStore.addChat({
+      groupId: group.id,
       name: group?.name,
       type: "GROUP",
       history: [],
@@ -74,7 +77,7 @@ function toggleCreateGroupPanel() {
         <div class="flex gap-1">
           <!-- TODO: Only show if owner -->
           <router-link
-            v-if="group.owner?.name === 'Damian'"
+            v-if="isLoggedCustomer(group.owner.customerId)"
             class="btn btn-sm btn-blue self-center"
             :to="`/groups/${group.id}`"
           >

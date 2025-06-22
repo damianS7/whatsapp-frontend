@@ -45,12 +45,13 @@ onMounted(() => {
         <ChatHistory
           :user="customerStore.getLoggedCustomer"
           :messages="currentChat.history"
+          :chatType="currentChat.type"
         />
       </div>
 
       <div>
         <ChatInputBox
-          :user="customerStore.getLoggedCustomer"
+          :fromCustomer="customerStore.getLoggedCustomer"
           :chat="currentChat"
         />
       </div>

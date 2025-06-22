@@ -1,33 +1,45 @@
 <script setup lang="ts">
 import { Chat } from "@/types/Chat";
-import { ref, onMounted, computed, defineEmits, defineProps } from "vue";
+import { ref, computed, defineEmits } from "vue";
 import { useChatStore } from "@/stores/chat";
-interface Props {
-  currentChat: Chat;
-}
-const props = defineProps<Props>();
-const searchFilter = ref("");
-const emit = defineEmits(["selectChat"]);
+import { MessageSquarePlus } from "lucide-vue-next";
+import { ChatMessage } from "@/types/ChatMessage";
+
+// store
 const chatStore = useChatStore();
+
+// data
 const chats = computed(() => {
   return chatStore.getChats.filter((chat) => {
     return chat.name.toLowerCase().includes(searchFilter.value.toLowerCase());
   });
-}) as Chat[];
-function deleteTab(name: string) {
-  chatStore.deleteChat(name);
-  // unsuscribe
-  //emit("confirm", field.value.value);
-}
+});
 
+// other
+const searchFilter = ref("");
+const emit = defineEmits(["selectChat"]);
 const menuVisible = ref(false);
 const menuX = ref(0);
 const menuY = ref(0);
 
+let clickedChatName = "";
+
+// functions
+function deleteChat() {
+  chatStore.deleteChat(clickedChatName);
+}
+
+function clearChat() {
+  const chat = chatStore.getChat(clickedChatName);
+  if (!chat) {
+    return;
+  }
+  chat.history = [] as ChatMessage[];
+}
+
 function openContextMenu(event: MouseEvent, chatName: string) {
+  clickedChatName = chatName;
   event.preventDefault();
-  console.log(chatName);
-  console.log("press on x:" + event.clientX + " y:" + event.clientY);
   menuX.value = event.clientX;
   menuY.value = event.clientY;
   menuVisible.value = true;
@@ -46,15 +58,19 @@ function getLastMessageFromChat(chat: Chat) {
     return;
   }
   const lastMessage = chat.history[lastMessageIndex].message;
-  return lastMessage.substring(0, 5) + " ...";
+  return lastMessage.substring(0, 26) + " ...";
 }
-onMounted(() => {
-  // ...
-});
 </script>
 <template>
   <div class="flex flex-col border-r-2 border-gray-300 h-full">
-    <div class="bg-gray-200 border-b-2 border-gray-300 p-2">
+    <div class="flex p-2 justify-between items-center">
+      <span class="text-sm font-bold">Chats</span>
+      <MessageSquarePlus
+        class="hover:text-blue-600 cursor-pointer"
+        :size="20"
+      />
+    </div>
+    <div class="p-2">
       <input
         class="rounded-md w-full bg-gray-50 px-3 py-1 text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm transition duration-200"
         v-model="searchFilter"
@@ -76,12 +92,13 @@ onMounted(() => {
       >
         <!-- avatar -->
         <div class="flex-shrink-0">
-          <img
-            v-if="chat.avatarUrl"
-            :src="chat.avatarUrl || ''"
+          <!-- TODO -->
+          <!-- <img
+            v-if="chat.type === 'CONVERSATION'"
+            :src="chat.participants[0].avatar_filename || ''"
             alt="avatar"
             class="w-8 h-8 rounded-full object-cover"
-          />
+          /> -->
           <div
             class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
           >
@@ -108,8 +125,8 @@ onMounted(() => {
       :style="{ top: `${menuY}px`, left: `${menuX}px` }"
     >
       <ul>
-        <li>Clear chat</li>
-        <li>Delete chat</li>
+        <li @click="clearChat()">Clear chat</li>
+        <li @click="deleteChat()">Delete chat</li>
       </ul>
     </div>
   </div>

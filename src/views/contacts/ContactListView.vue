@@ -9,6 +9,7 @@ import { useRouter } from "vue-router";
 import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
 import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
+import { useCustomerStore } from "@/stores/customer";
 
 // router
 const router = useRouter();
@@ -24,6 +25,7 @@ const modals = {
 // store
 const chatStore = useChatStore();
 const contactStore = useContactStore();
+const customerStore = useCustomerStore();
 
 // data
 const contacts = computed(() => contactStore.getContacts as Contact[]);
@@ -36,12 +38,19 @@ function openChat(contact: Contact) {
   // if the chat not exists, create a new one
   if (!existingChat) {
     chatStore.addChat({
+      fromCustomerId: customerStore.getLoggedCustomer.id,
+      toCustomerId: contact.contactCustomerId,
       name: contact.name,
-      type: "CONVERSATION",
+      type: "PRIVATE",
       history: [],
       participants: [
         {
           customerId: contact.id,
+          customerName: contact.name,
+          customerAvatar: contact.avatarFilename || "",
+        },
+        {
+          customerId: customerStore.getLoggedCustomer.id,
           customerName: contact.name,
           customerAvatar: contact.avatarFilename || "",
         },
