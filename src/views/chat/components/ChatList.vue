@@ -22,23 +22,23 @@ const menuVisible = ref(false);
 const menuX = ref(0);
 const menuY = ref(0);
 
-let clickedChatName = "";
+let clickedChatId = "";
 
 // functions
 function deleteChat() {
-  chatStore.deleteChat(clickedChatName);
+  chatStore.deleteChat(clickedChatId);
 }
 
 function clearChat() {
-  const chat = chatStore.getChat(clickedChatName);
+  const chat = chatStore.getChat(clickedChatId);
   if (!chat) {
     return;
   }
   chat.history = [] as ChatMessage[];
 }
 
-function openContextMenu(event: MouseEvent, chatName: string) {
-  clickedChatName = chatName;
+function openContextMenu(event: MouseEvent, chatId: string) {
+  clickedChatId = chatId;
   event.preventDefault();
   menuX.value = event.clientX;
   menuY.value = event.clientY;
@@ -85,10 +85,10 @@ function getLastMessageFromChat(chat: Chat) {
         :key="index"
         class="relative flex gap-2 p-2 items-center cursor-pointer hover:bg-gray-100 hover:rounded-md"
         :class="{
-          'bg-gray-100 rounded-md': chat.name === chatStore.getSelectedChatName,
+          'bg-gray-100 rounded-md': chat.id === chatStore.getSelectedChat?.id,
         }"
-        @click="emit('selectChat', chat.name)"
-        @contextmenu.prevent="openContextMenu($event, chat.name)"
+        @click="emit('selectChat', chat.id)"
+        @contextmenu.prevent="openContextMenu($event, chat.id)"
       >
         <!-- avatar -->
         <div class="flex-shrink-0">

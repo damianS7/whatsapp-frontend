@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import SockJS from "sockjs-client";
-import { Client, CompatClient, Stomp } from "@stomp/stompjs";
+import { CompatClient, Stomp } from "@stomp/stompjs";
 import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
 import { useCustomerStore } from "@/stores/customer";
@@ -10,7 +10,7 @@ const { generateChatId } = useChat();
 export const useChatStore = defineStore("chat", {
   state: () => ({
     chats: [] as Chat[],
-    selectedChatName: "",
+    selectedChatId: "" as string,
     socket: null as WebSocket | null,
     stompClient: null as CompatClient | null,
     initialized: false,
@@ -18,35 +18,34 @@ export const useChatStore = defineStore("chat", {
 
   getters: {
     getSelectedChat(): Chat | undefined {
-      return this.getChat(this.selectedChatName);
+      return this.getChat(this.selectedChatId);
     },
-    getSelectedChatName: (state) => {
-      return state.selectedChatName;
+    getSelectedChatName(): string | undefined {
+      return this.getChat(this.selectedChatId)?.name;
     },
     getChats: (state): Chat[] => {
       return state.chats;
     },
     getChat: (state) => {
-      return (name: string) => {
-        return state.chats.find((chat) => chat.name === name);
-      };
-    },
-    getChatById: (state) => {
       return (id: string) => {
         return state.chats.find((chat) => {
           return chat.id === id;
         });
       };
     },
+    getChatByName: (state) => {
+      return (name: string) => {
+        return state.chats.find((chat) => chat.name === name);
+      };
+    },
   },
-
   actions: {
     saveChatState() {
       localStorage.setItem("chats", JSON.stringify(this.chats));
-      localStorage.setItem("selectedChatName", this.selectedChatName);
+      localStorage.setItem("selectedChatId", this.selectedChatId);
     },
-    selectChat(name: string) {
-      this.selectedChatName = name;
+    selectChat(chatId: string) {
+      this.selectedChatId = chatId;
       this.saveChatState();
     },
     async addChat(newChat: Chat) {
@@ -64,7 +63,6 @@ export const useChatStore = defineStore("chat", {
       const index = this.chats.findIndex((chat) => chat.name === chatName);
       this.chats.splice(index, 1);
       this.saveChatState();
-      // this.unSuscribeFromChat(chatName);
     },
     async sendMessage(message: ChatMessage) {
       if (!this.stompClient) {
@@ -99,7 +97,7 @@ export const useChatStore = defineStore("chat", {
         }
 
         // Create a new chat if it doesn't exist
-        if (!this.getChatById(chatMessage.chatId)) {
+        if (!this.getChat(chatMessage.chatId)) {
           const newChat: Chat = {
             id: chatMessage.chatId,
             name: chatMessage.fromCustomerName,
@@ -119,12 +117,11 @@ export const useChatStore = defineStore("chat", {
               },
             ],
           };
-          this.chats.push(newChat);
-          this.subscribeToChat(newChat.id);
+          this.addChat(newChat);
         }
       }
 
-      this.getChatById(chatMessage.chatId)?.history.push(chatMessage);
+      this.getChat(chatMessage.chatId)?.history.push(chatMessage);
       this.saveChatState();
     },
     async subscribeToChat(chatId: string) {
@@ -140,24 +137,23 @@ export const useChatStore = defineStore("chat", {
         this.handleMessage(chatMessage);
       });
     },
-    async unSuscribeFromChat(chatName: string) {
+    async unSuscribeFromChat(chatId: string) {
       if (!this.stompClient) {
         return;
       }
-      this.stompClient.unsubscribe(`/topic/chat/${chatName}`);
+      this.stompClient.unsubscribe(`/topic/chat/${chatId}`);
     },
     async initialize() {
       const storedChats = localStorage.getItem("chats");
-      const storedSelectedChatName = localStorage.getItem("selectedChatName");
+      const storedSelectedChatId = localStorage.getItem("selectedChatId");
       if (storedChats) {
         this.chats = JSON.parse(storedChats);
       }
 
-      if (storedSelectedChatName) {
-        this.selectedChatName = storedSelectedChatName;
+      if (storedSelectedChatId) {
+        this.selectedChatId = storedSelectedChatId;
       }
 
-      // set up WebSocket connection
       const token = localStorage.getItem("token");
       if (!token) {
         return;
@@ -165,6 +161,7 @@ export const useChatStore = defineStore("chat", {
 
       const customerStore = useCustomerStore();
 
+      // set up WebSocket connection
       this.socket = new SockJS(`${process.env.VUE_APP_WS_URL}`);
       this.stompClient = Stomp.over(this.socket);
 
