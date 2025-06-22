@@ -35,12 +35,13 @@ const contacts = computed(() => contactStore.getContacts as Contact[]);
 // functions
 // Open chat with the contact
 function openChat(contact: Contact) {
-  const existingChat = chatStore.getChat(contact.name);
+  const chatId = generateChatId("PRIVATE", contact.contactCustomerId);
+  const existingChat = chatStore.getChat(chatId);
 
   // if the chat not exists, create a new one
   if (!existingChat) {
     chatStore.addChat({
-      id: generateChatId("PRIVATE", contact.contactCustomerId),
+      id: chatId,
       name: contact.name,
       type: "PRIVATE",
       history: [],
@@ -61,7 +62,7 @@ function openChat(contact: Contact) {
   }
 
   // select the chat created or existing
-  chatStore.selectChat(contact.name);
+  chatStore.selectChat(chatId);
 
   // redirect to the chat view
   router.push("/chats");

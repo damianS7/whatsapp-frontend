@@ -17,14 +17,16 @@ const groups = computed(() => groupStore.getGroups as Group[]);
 
 // open an existing chat or create a new one if not exists
 function openChat(groupId: number) {
-  const group = groupStore.getGroup(groupId);
-  if (!group) {
-    return;
-  }
-  const chatExist = chatStore.getChat(group.name);
+  const chatId = generateChatId("GROUP", groupId);
+  const chatExist = chatStore.getChat(chatId);
+
   if (!chatExist) {
+    const group = groupStore.getGroup(groupId);
+    if (!group) {
+      return;
+    }
     chatStore.addChat({
-      id: generateChatId("GROUP", group.id),
+      id: chatId,
       groupId: group.id,
       name: group?.name,
       type: "GROUP",
@@ -33,7 +35,7 @@ function openChat(groupId: number) {
     });
   }
 
-  chatStore.selectChat(group.name);
+  chatStore.selectChat(chatId);
   router.push("/chats");
 }
 
