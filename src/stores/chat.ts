@@ -107,12 +107,12 @@ export const useChatStore = defineStore("chat", {
               {
                 customerId: chatMessage.fromCustomerId,
                 customerName: chatMessage.fromCustomerName,
-                customerAvatar: "",
+                avatarFilename: "",
               },
               {
                 customerId: customerStore.getLoggedCustomer.id,
                 customerName: customerStore.getLoggedCustomer.profile.firstName,
-                customerAvatar:
+                avatarFilename:
                   customerStore.getLoggedCustomer.profile.avatarFilename || "",
               },
             ],

@@ -7,6 +7,7 @@ import { useRouter } from "vue-router";
 import MessageAlert from "@/components/MessageAlert.vue";
 import CreateGroupPanel from "./components/CreateGroupPanel.vue";
 import { useChat } from "@/composables/useChat";
+import { ChatMember } from "@/types/ChatMember";
 const { isLoggedCustomer, generateChatId } = useChat();
 // message to show
 const alert = ref();
@@ -25,13 +26,20 @@ function openChat(groupId: number) {
     if (!group) {
       return;
     }
+
+    const groupParticipants = group.members.map((member) => ({
+      customerId: member.customerId,
+      customerName: member.customerName,
+      avatarFilename: member.avatarFilename,
+    })) as ChatMember[];
+
     chatStore.addChat({
       id: chatId,
       groupId: group.id,
       name: group?.name,
       type: "GROUP",
       history: [],
-      participants: [],
+      participants: groupParticipants,
     });
   }
 
