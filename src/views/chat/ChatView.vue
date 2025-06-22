@@ -11,8 +11,8 @@ const chatStore = useChatStore();
 const customerStore = useCustomerStore();
 const currentChat = ref<Chat | null>(null);
 
-function selectChat(chatName: string) {
-  chatStore.selectChat(chatName);
+function selectChat(chatId: string) {
+  chatStore.selectChat(chatId);
   const selectedChat = chatStore.getSelectedChat;
   if (!selectedChat) {
     return;
