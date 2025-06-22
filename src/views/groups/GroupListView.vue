@@ -1,16 +1,13 @@
 <script setup lang="ts">
-import { ArrowLeft } from "lucide-vue-next";
 import { ref, computed } from "vue";
 import type { Group } from "@/types/Group";
-import type { Chat, ChatType } from "@/types/Chat";
 import { useGroupStore } from "@/stores/group";
 import { useChatStore } from "@/stores/chat";
 import { useRouter } from "vue-router";
 import MessageAlert from "@/components/MessageAlert.vue";
-import { MessageType } from "@/types/Message";
 import CreateGroupPanel from "./components/CreateGroupPanel.vue";
 import { useChat } from "@/composables/useChat";
-const { isLoggedCustomer } = useChat();
+const { isLoggedCustomer, generateChatId } = useChat();
 // message to show
 const alert = ref();
 const router = useRouter();
@@ -27,6 +24,7 @@ function openChat(groupId: number) {
   const chatExist = chatStore.getChat(group.name);
   if (!chatExist) {
     chatStore.addChat({
+      id: generateChatId("GROUP", group.id),
       groupId: group.id,
       name: group?.name,
       type: "GROUP",
