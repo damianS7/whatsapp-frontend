@@ -10,6 +10,8 @@ import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
 import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
 import { useCustomerStore } from "@/stores/customer";
+import { useChat } from "@/composables/useChat";
+const { generateChatId } = useChat();
 
 // router
 const router = useRouter();
@@ -38,21 +40,21 @@ function openChat(contact: Contact) {
   // if the chat not exists, create a new one
   if (!existingChat) {
     chatStore.addChat({
-      fromCustomerId: customerStore.getLoggedCustomer.id,
-      toCustomerId: contact.contactCustomerId,
+      id: generateChatId("PRIVATE", contact.contactCustomerId),
       name: contact.name,
       type: "PRIVATE",
       history: [],
       participants: [
         {
-          customerId: contact.id,
+          customerId: contact.contactCustomerId,
           customerName: contact.name,
           customerAvatar: contact.avatarFilename || "",
         },
         {
           customerId: customerStore.getLoggedCustomer.id,
-          customerName: contact.name,
-          customerAvatar: contact.avatarFilename || "",
+          customerName: customerStore.getLoggedCustomer.profile.firstName,
+          customerAvatar:
+            customerStore.getLoggedCustomer.profile.avatarFilename || "",
         },
       ],
     } as Chat);
