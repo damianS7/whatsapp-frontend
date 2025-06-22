@@ -7,6 +7,7 @@ import { useCustomerStore } from "@/stores/customer";
 import { ref, onMounted } from "vue";
 import { useChatStore } from "@/stores/chat";
 import { Chat } from "@/types/Chat";
+import ChatGroupMembersPanel from "./components/ChatGroupMembersPanel.vue";
 const chatStore = useChatStore();
 const customerStore = useCustomerStore();
 const currentChat = ref<Chat | null>(null);
@@ -26,18 +27,37 @@ onMounted(() => {
     currentChat.value = selectedChat;
   }
 });
+const groupMemberPanelVisible = ref(false);
+function toggleGroupMemberPanel() {
+  groupMemberPanelVisible.value = !groupMemberPanelVisible.value;
+}
 </script>
 <template>
   <div class="grid grid-cols-[14rem_1fr] h-full">
-    <div class="overflow-hidden">
+    <div
+      class="overflow-hidden absolute sm:static -z-10 sm:z-0"
+      :class="
+        groupMemberPanelVisible
+          ? 'translate-x-0 sm:translate-x-full'
+          : '-translate-x-full sm:-translate-x-0'
+      "
+    >
       <ChatList @selectChat="selectChat" />
     </div>
 
     <div
       v-if="currentChat"
-      class="grid grid-rows-[auto_1fr_auto] overflow-hidden h-full"
+      class="grid grid-rows-[auto_1fr_auto] overflow-hidden h-full relative"
     >
-      <div class="border-b-2 border-gray-300">
+      <ChatGroupMembersPanel
+        :class="groupMemberPanelVisible ? 'translate-x-0' : '-translate-x-full'"
+        @hidePanel="toggleGroupMemberPanel"
+        :chat="currentChat"
+      />
+      <div
+        @click="toggleGroupMemberPanel"
+        class="border-b-2 border-gray-300 cursor-pointer"
+      >
         <ChatHeader :chat="currentChat" />
       </div>
 
