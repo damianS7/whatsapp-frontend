@@ -57,8 +57,7 @@ function getLastMessageFromChat(chat: Chat) {
   if (lastMessageIndex < 0) {
     return;
   }
-  const lastMessage = chat.history[lastMessageIndex].message;
-  return lastMessage.substring(0, 26) + " ...";
+  return chat.history[lastMessageIndex].message;
 }
 </script>
 <template>
@@ -112,7 +111,7 @@ function getLastMessageFromChat(chat: Chat) {
             chat.name
           }}</span>
           <span class="text-gray-500 text-xs truncate max-w-[160px]">
-            {{ getLastMessageFromChat(chat) || "..." }}
+            {{ getLastMessageFromChat(chat) || "&nbsp;" }}
           </span>
         </div>
       </div>

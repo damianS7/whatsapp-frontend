@@ -62,6 +62,11 @@ nav a.router-link-exact-active {
 .btn-info {
   @apply bg-blue-600 text-white;
 }
+.btn-primary:hover,
+.btn-blue:hover,
+.btn-info:hover {
+  @apply bg-blue-700;
+}
 
 .btn-secondary {
   @apply bg-gray-500 text-white;

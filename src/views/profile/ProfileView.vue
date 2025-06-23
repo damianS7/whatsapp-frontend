@@ -236,7 +236,9 @@ onMounted(() => {
 
     <section class="container overflow-scroll h-full">
       <MessageAlert class="mb-4" ref="alert" />
-      <ProfilePhoto @update="updatePhoto" />
+      <div class="flex justify-center">
+        <ProfilePhoto @update="updatePhoto" />
+      </div>
       <div
         v-if="customerStore.customer.profile"
         class="grid grid-cols-1 md:grid-cols-2 gap-4"

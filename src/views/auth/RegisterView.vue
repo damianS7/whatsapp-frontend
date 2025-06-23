@@ -78,34 +78,6 @@ const formFields = ref([
     value: "",
     error: "",
   },
-  {
-    name: "country",
-    type: "text",
-    placeholder: "Country",
-    value: "",
-    error: "",
-  },
-  {
-    name: "address",
-    type: "text",
-    placeholder: "Address",
-    value: "",
-    error: "",
-  },
-  {
-    name: "postalCode",
-    type: "text",
-    placeholder: "Postal Code",
-    value: "",
-    error: "",
-  },
-  {
-    name: "nationalId",
-    type: "text",
-    placeholder: "National ID",
-    value: "",
-    error: "",
-  },
 ]);
 
 const resolver = z.object({
@@ -117,10 +89,6 @@ const resolver = z.object({
   gender: z.enum(["MALE", "FEMALE"], {
     errorMap: () => ({ message: "Invalid gender" }),
   }),
-  country: z.string().min(1, "Country is required"),
-  address: z.string().min(1, "Address is required"),
-  postalCode: z.string().min(1, "Postal code is required"),
-  nationalId: z.string().min(1, "National ID is required"),
 });
 
 const onFormSubmit = async () => {
@@ -148,10 +116,6 @@ const onFormSubmit = async () => {
       phone: formData.phone,
       birthdate: formData.birthdate,
       gender: formData.gender as GenderType,
-      address: formData.address,
-      postalCode: formData.postalCode,
-      country: formData.country,
-      nationalId: formData.nationalId,
     },
   };
 
