@@ -4,29 +4,18 @@ import ChatHistory from "@/views/chat/components/ChatHistory.vue";
 import ChatList from "@/views/chat/components/ChatList.vue";
 import ChatHeader from "@/views/chat/components/ChatHeader.vue";
 import { useCustomerStore } from "@/stores/customer";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useChatStore } from "@/stores/chat";
-import { Chat } from "@/types/Chat";
 import ChatGroupMembersPanel from "./components/ChatGroupMembersPanel.vue";
 const chatStore = useChatStore();
 const customerStore = useCustomerStore();
-const currentChat = ref<Chat | null>(null);
+const currentChat = computed(() => {
+  return chatStore.getSelectedChat;
+});
 
 function selectChat(chatId: string) {
   chatStore.selectChat(chatId);
-  const selectedChat = chatStore.getSelectedChat;
-  if (!selectedChat) {
-    return;
-  }
-  currentChat.value = selectedChat;
 }
-
-onMounted(() => {
-  const selectedChat = chatStore.getSelectedChat;
-  if (selectedChat) {
-    currentChat.value = selectedChat;
-  }
-});
 const groupMemberPanelVisible = ref(false);
 function toggleGroupMemberPanel() {
   groupMemberPanelVisible.value = !groupMemberPanelVisible.value;
@@ -34,14 +23,7 @@ function toggleGroupMemberPanel() {
 </script>
 <template>
   <div class="grid grid-cols-[14rem_1fr] h-full">
-    <div
-      class="overflow-hidden absolute sm:static -z-10 sm:z-0"
-      :class="
-        groupMemberPanelVisible
-          ? 'translate-x-0 sm:translate-x-full'
-          : '-translate-x-full sm:-translate-x-0'
-      "
-    >
+    <div class="hidden md:block overflow-hidden">
       <ChatList @selectChat="selectChat" />
     </div>
 
@@ -50,6 +32,7 @@ function toggleGroupMemberPanel() {
       class="grid grid-rows-[auto_1fr_auto] overflow-hidden h-full relative"
     >
       <ChatGroupMembersPanel
+        v-if="currentChat.type === 'GROUP'"
         :class="groupMemberPanelVisible ? 'translate-x-0' : '-translate-x-full'"
         @hidePanel="toggleGroupMemberPanel"
         :chat="currentChat"

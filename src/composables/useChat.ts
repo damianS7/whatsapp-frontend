@@ -34,6 +34,17 @@ export function useChat() {
     return null;
   };
 
+  const getAvatarFilenameFromChat = (chat: Chat): string => {
+    if (chat.type === "GROUP") {
+      return "";
+    }
+    const destinationCustomer = getDestinationCustomer(chat) as ChatMember;
+    if (destinationCustomer) {
+      return destinationCustomer.customerAvatarFilename;
+    }
+    return "";
+  };
+
   const generateChatId = (chatType: ChatType, id: number) => {
     return chatType === "PRIVATE" ? `PRIVATE${id}` : `GROUP${id}`;
   };
@@ -44,5 +55,6 @@ export function useChat() {
     formatMessageDate,
     isLoggedCustomer,
     generateChatId,
+    getAvatarFilenameFromChat,
   };
 }
