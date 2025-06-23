@@ -11,7 +11,8 @@ import { MessageType } from "@/types/Message";
 import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
 import { useCustomerStore } from "@/stores/customer";
 import { useChat } from "@/composables/useChat";
-const { generateChatId } = useChat();
+import CustomerAvatar from "@/components/CustomerAvatar.vue";
+const { generateChatId, getAvatarFilenameFromChat } = useChat();
 
 // router
 const router = useRouter();
@@ -49,12 +50,12 @@ function openChat(contact: Contact) {
         {
           customerId: contact.contactCustomerId,
           customerName: contact.name,
-          customerAvatar: contact.avatarFilename || "",
+          customerAvatarFilename: contact.avatarFilename || "",
         },
         {
           customerId: customerStore.getLoggedCustomer.id,
           customerName: customerStore.getLoggedCustomer.profile.firstName,
-          customerAvatar:
+          customerAvatarFilename:
             customerStore.getLoggedCustomer.profile.avatarFilename || "",
         },
       ],
@@ -115,17 +116,13 @@ async function deleteContact(contact: Contact) {
         >
           <div class="flex items-center gap-2">
             <!-- Avatar -->
-            <img
-              v-if="contact.avatarFilename"
-              :src="contact.avatarFilename"
-              alt="avatar"
-              class="w-10 h-10 rounded-full object-cover border"
-            />
             <div
-              v-else
-              class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
+              class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
             >
-              {{ contact.name.charAt(0) }}
+              <CustomerAvatar
+                :filename="contact.avatarFilename ?? ''"
+                :fallbackString="contact.name"
+              />
             </div>
 
             <!-- Nombre y botones -->

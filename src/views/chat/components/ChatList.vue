@@ -4,6 +4,9 @@ import { ref, computed, defineEmits } from "vue";
 import { useChatStore } from "@/stores/chat";
 import { MessageSquarePlus } from "lucide-vue-next";
 import { ChatMessage } from "@/types/ChatMessage";
+import CustomerAvatar from "@/components/CustomerAvatar.vue";
+import { useChat } from "@/composables/useChat";
+const { getAvatarFilenameFromChat } = useChat();
 
 // store
 const chatStore = useChatStore();
@@ -91,17 +94,13 @@ function getLastMessageFromChat(chat: Chat) {
       >
         <!-- avatar -->
         <div class="flex-shrink-0">
-          <!-- TODO -->
-          <!-- <img
-            v-if="chat.type === 'CONVERSATION'"
-            :src="chat.participants[0].avatar_filename || ''"
-            alt="avatar"
-            class="w-8 h-8 rounded-full object-cover"
-          /> -->
           <div
             class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
           >
-            {{ chat.name.charAt(0) }}
+            <CustomerAvatar
+              :filename="getAvatarFilenameFromChat(chat) ?? ''"
+              :fallbackString="chat.name"
+            />
           </div>
         </div>
 

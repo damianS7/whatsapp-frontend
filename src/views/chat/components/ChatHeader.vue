@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
-import { useChatStore } from "@/stores/chat";
-import type Chat from "@/types/Chat";
-import type Customer from "@/types/Customer";
-const chatStore = useChatStore();
+import { computed, defineProps, onMounted, onUpdated, ref } from "vue";
+import type { Chat } from "@/types/Chat";
+import { useChat } from "@/composables/useChat";
+const { getDestinationCustomer } = useChat();
+import CustomerAvatar from "@/components/CustomerAvatar.vue";
 interface Props {
   chat: Chat;
 }
 const props = defineProps<Props>();
+const filename = computed(() => {
+  return getDestinationCustomer(props.chat)?.customerAvatarFilename;
+});
 </script>
 <template>
   <div class="flex items-center gap-2 p-2 border-gray-300">
@@ -15,9 +18,8 @@ const props = defineProps<Props>();
     <div
       class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
     >
-      {{ chat.name.charAt(0) }}
+      <CustomerAvatar :filename="filename" :fallbackString="chat.name" />
     </div>
-
     <!-- chat name -->
     <div>
       <h2 class="text-md font-semibold text-gray-800">{{ chat.name }}</h2>

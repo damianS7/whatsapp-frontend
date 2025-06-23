@@ -7,6 +7,7 @@ import { useGroupStore } from "@/stores/group";
 import { Chat } from "@/types/Chat";
 import { MessageCircle, UserRoundMinus, UserRoundPlus } from "lucide-vue-next";
 import { useContactStore } from "@/stores/contact";
+import CustomerAvatar from "@/components/CustomerAvatar.vue";
 
 // emit
 const emit = defineEmits(["hidePanel"]);
@@ -64,17 +65,14 @@ function addContact(customerId: number) {
         >
           <div class="flex items-center gap-2">
             <!-- Avatar -->
-            <img
-              v-if="member.avatarFilename"
-              :src="member.avatarFilename"
-              alt="avatar"
-              class="w-10 h-10 rounded-full object-cover border"
-            />
+
             <div
-              v-else
               class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
             >
-              {{ member.customerName.charAt(0) }}
+              <CustomerAvatar
+                :filename="member.customerAvatarFilename ?? ''"
+                :fallbackString="member.customerName"
+              />
             </div>
 
             <!-- Nombre y botones -->

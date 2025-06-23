@@ -30,7 +30,7 @@ function openChat(groupId: number) {
     const groupParticipants = group.members.map((member) => ({
       customerId: member.customerId,
       customerName: member.customerName,
-      avatarFilename: member.avatarFilename,
+      customerAvatarFilename: member.avatarFilename,
     })) as ChatMember[];
 
     chatStore.addChat({
