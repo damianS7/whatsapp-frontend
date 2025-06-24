@@ -59,8 +59,8 @@ export const useChatStore = defineStore("chat", {
 
       await this.subscribeToChat(newChat.id);
     },
-    async deleteChat(chatName: string) {
-      const index = this.chats.findIndex((chat) => chat.name === chatName);
+    async deleteChat(chatId: string) {
+      const index = this.chats.findIndex((chat) => chat.id === chatId);
       this.chats.splice(index, 1);
       this.saveChatState();
     },
