@@ -13,6 +13,7 @@ export const useChatStore = defineStore("chat", {
     selectedChatId: "" as string,
     socket: null as WebSocket | null,
     stompClient: null as CompatClient | null,
+    subscriptions: new Map<string, string>(),
     initialized: false,
   }),
 
@@ -49,17 +50,17 @@ export const useChatStore = defineStore("chat", {
       this.saveChatState();
     },
     async addChat(newChat: Chat) {
-      const chatExists = this.chats.find((chat) => chat.name === newChat.name);
+      const chatExists = this.chats.find((chat) => chat.id === newChat.id);
       if (chatExists) {
         return;
       }
 
+      await this.subscribeToChat(newChat.id);
       this.chats.push(newChat);
       this.saveChatState();
-
-      await this.subscribeToChat(newChat.id);
     },
     async deleteChat(chatId: string) {
+      await this.unSuscribeFromChat(chatId);
       const index = this.chats.findIndex((chat) => chat.id === chatId);
       this.chats.splice(index, 1);
       this.saveChatState();
@@ -76,7 +77,7 @@ export const useChatStore = defineStore("chat", {
       );
       this.saveChatState();
     },
-    handleMessage(chatMessage: ChatMessage) {
+    async handleMessage(chatMessage: ChatMessage) {
       console.log(
         `Received message for chat: ${chatMessage.chatId}`,
         chatMessage
@@ -117,7 +118,7 @@ export const useChatStore = defineStore("chat", {
               },
             ],
           };
-          this.addChat(newChat);
+          await this.addChat(newChat);
         }
       }
 
@@ -129,19 +130,40 @@ export const useChatStore = defineStore("chat", {
         return;
       }
 
-      this.stompClient.subscribe(`/topic/chat.${chatId}`, (message) => {
-        const chatMessage = JSON.parse(message.body) as ChatMessage;
-        if (!chatMessage.chatId) {
-          return;
+      // check if subscription already exists
+      if (this.subscriptions.get(chatId)) {
+        return;
+      }
+
+      const sub = this.stompClient.subscribe(
+        `/topic/chat.${chatId}`,
+        (message) => {
+          const chatMessage = JSON.parse(message.body) as ChatMessage;
+          if (!chatMessage.chatId) {
+            return;
+          }
+          this.handleMessage(chatMessage);
         }
-        this.handleMessage(chatMessage);
-      });
+      );
+
+      // add the subscription
+      this.subscriptions.set(chatId, sub.id);
     },
     async unSuscribeFromChat(chatId: string) {
       if (!this.stompClient) {
         return;
       }
-      this.stompClient.unsubscribe(`/topic/chat/${chatId}`);
+
+      // get the sub id for the chatId
+      const subId = this.subscriptions.get(chatId);
+
+      // if the subscription exists
+      if (subId) {
+        // unsubscribe
+        this.stompClient.unsubscribe(subId);
+        // delete the sub
+        this.subscriptions.delete(chatId);
+      }
     },
     async initialize() {
       const storedChats = localStorage.getItem("chats");
