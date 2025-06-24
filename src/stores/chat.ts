@@ -5,7 +5,7 @@ import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
 import { useCustomerStore } from "@/stores/customer";
 import { useChat } from "@/composables/useChat";
-const { generateChatId } = useChat();
+const { generateChatId, createChatFromMessage } = useChat();
 
 export const useChatStore = defineStore("chat", {
   state: () => ({
@@ -99,25 +99,7 @@ export const useChatStore = defineStore("chat", {
 
         // Create a new chat if it doesn't exist
         if (!this.getChat(chatMessage.chatId)) {
-          const newChat: Chat = {
-            id: chatMessage.chatId,
-            name: chatMessage.fromCustomerName,
-            type: "PRIVATE",
-            history: [],
-            participants: [
-              {
-                customerId: chatMessage.fromCustomerId,
-                customerName: chatMessage.fromCustomerName,
-                customerAvatarFilename: "",
-              },
-              {
-                customerId: customerStore.getLoggedCustomer.id,
-                customerName: customerStore.getLoggedCustomer.profile.firstName,
-                customerAvatarFilename:
-                  customerStore.getLoggedCustomer.profile.avatarFilename || "",
-              },
-            ],
-          };
+          const newChat: Chat = await createChatFromMessage(chatMessage);
           await this.addChat(newChat);
         }
       }

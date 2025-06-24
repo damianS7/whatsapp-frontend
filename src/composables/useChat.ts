@@ -1,4 +1,6 @@
+import { useChatStore } from "@/stores/chat";
 import { useCustomerStore } from "@/stores/customer";
+import { useGroupStore } from "@/stores/group";
 import { Chat, ChatType } from "@/types/Chat";
 import { ChatMember } from "@/types/ChatMember";
 import { ChatMessage } from "@/types/ChatMessage";
@@ -87,6 +89,38 @@ export function useChat() {
     };
   };
 
+  const createChatFromMessage = async (message: ChatMessage): Promise<Chat> => {
+    const customerStore = useCustomerStore();
+    const groupStore = useGroupStore();
+    // const chatStore = useChatStore();
+
+    if (message.chatType === "GROUP" && message.groupId) {
+      // const groupExist = groupStore.getGroup(message.groupId);
+      const group = await groupStore.fetchGroup(message.groupId);
+      return createGroupChat(group);
+    }
+
+    return {
+      id: message.chatId,
+      name: message.fromCustomerName,
+      type: message.chatType,
+      history: [],
+      participants: [
+        {
+          customerId: message.fromCustomerId,
+          customerName: message.fromCustomerName,
+          customerAvatarFilename: "",
+        },
+        {
+          customerId: customerStore.getLoggedCustomer.id,
+          customerName: customerStore.getLoggedCustomer.profile.firstName,
+          customerAvatarFilename:
+            customerStore.getLoggedCustomer.profile.avatarFilename || "",
+        },
+      ],
+    };
+  };
+
   return {
     getDestinationCustomer,
     getLastMessageFromChat,
@@ -96,5 +130,6 @@ export function useChat() {
     getAvatarFilenameFromChat,
     createGroupChat,
     createPrivateChat,
+    createChatFromMessage,
   };
 }
