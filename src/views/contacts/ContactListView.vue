@@ -12,7 +12,7 @@ import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
 import { useCustomerStore } from "@/stores/customer";
 import { useChat } from "@/composables/useChat";
 import CustomerAvatar from "@/components/CustomerAvatar.vue";
-const { generateChatId, getAvatarFilenameFromChat } = useChat();
+const { createPrivateChat } = useChat();
 
 // router
 const router = useRouter();
@@ -28,7 +28,6 @@ const modals = {
 // store
 const chatStore = useChatStore();
 const contactStore = useContactStore();
-const customerStore = useCustomerStore();
 
 // data
 const contacts = computed(() => contactStore.getContacts as Contact[]);
@@ -36,34 +35,16 @@ const contacts = computed(() => contactStore.getContacts as Contact[]);
 // functions
 // Open chat with the contact
 function openChat(contact: Contact) {
-  const chatId = generateChatId("PRIVATE", contact.contactCustomerId);
-  const existingChat = chatStore.getChat(chatId);
+  const chat = createPrivateChat(contact);
+  const existingChat = chatStore.getChat(chat.id);
 
   // if the chat not exists, create a new one
   if (!existingChat) {
-    chatStore.addChat({
-      id: chatId,
-      name: contact.name,
-      type: "PRIVATE",
-      history: [],
-      participants: [
-        {
-          customerId: contact.contactCustomerId,
-          customerName: contact.name,
-          customerAvatarFilename: contact.avatarFilename || "",
-        },
-        {
-          customerId: customerStore.getLoggedCustomer.id,
-          customerName: customerStore.getLoggedCustomer.profile.firstName,
-          customerAvatarFilename:
-            customerStore.getLoggedCustomer.profile.avatarFilename || "",
-        },
-      ],
-    } as Chat);
+    chatStore.addChat(chat);
   }
 
   // select the chat created or existing
-  chatStore.selectChat(chatId);
+  chatStore.selectChat(chat.id);
 
   // redirect to the chat view
   router.push("/chats");

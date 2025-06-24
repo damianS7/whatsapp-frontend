@@ -8,7 +8,7 @@ import MessageAlert from "@/components/MessageAlert.vue";
 import CreateGroupPanel from "./components/CreateGroupPanel.vue";
 import { useChat } from "@/composables/useChat";
 import { ChatMember } from "@/types/ChatMember";
-const { isLoggedCustomer, generateChatId } = useChat();
+const { isLoggedCustomer, generateChatId, createGroupChat } = useChat();
 // message to show
 const alert = ref();
 const router = useRouter();
@@ -18,32 +18,18 @@ const groups = computed(() => groupStore.getGroups as Group[]);
 
 // open an existing chat or create a new one if not exists
 function openChat(groupId: number) {
-  const chatId = generateChatId("GROUP", groupId);
-  const chatExist = chatStore.getChat(chatId);
+  const group = groupStore.getGroup(groupId);
+  if (!group) {
+    return;
+  }
+  const chat = createGroupChat(group);
+  const chatExist = chatStore.getChat(chat.id);
 
   if (!chatExist) {
-    const group = groupStore.getGroup(groupId);
-    if (!group) {
-      return;
-    }
-
-    const groupParticipants = group.members.map((member) => ({
-      customerId: member.customerId,
-      customerName: member.customerName,
-      customerAvatarFilename: member.avatarFilename,
-    })) as ChatMember[];
-
-    chatStore.addChat({
-      id: chatId,
-      groupId: group.id,
-      name: group?.name,
-      type: "GROUP",
-      history: [],
-      participants: groupParticipants,
-    });
+    chatStore.addChat(chat);
   }
 
-  chatStore.selectChat(chatId);
+  chatStore.selectChat(chat.id);
   router.push("/chats");
 }
 
