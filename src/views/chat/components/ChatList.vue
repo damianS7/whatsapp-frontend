@@ -7,10 +7,12 @@ import { ChatMessage } from "@/types/ChatMessage";
 import CustomerAvatar from "@/components/CustomerAvatar.vue";
 import { useChat } from "@/composables/useChat";
 import ChatContactGroupList from "./ChatContactGroupList.vue";
-const { getAvatarFilenameFromChat } = useChat();
+import { useContactStore } from "@/stores/contact";
+const { getAvatarFilenameFromChat, getDestinationCustomer } = useChat();
 
 // store
 const chatStore = useChatStore();
+const contactStore = useContactStore();
 
 // data
 const chats = computed(() => {
@@ -62,6 +64,27 @@ function getLastMessageFromChat(chat: Chat) {
     return;
   }
   return chat.history[lastMessageIndex].message;
+}
+
+function isContact() {
+  const chat = chatStore.getChat(clickedChatId);
+  if (chat && chat.type === "PRIVATE") {
+    const destCustomer = getDestinationCustomer(chat);
+    if (destCustomer?.customerId) {
+      return contactStore.isContact(destCustomer.customerId);
+    }
+  }
+  return true;
+}
+
+function addContact() {
+  const chat = chatStore.getChat(clickedChatId);
+  if (chat && chat.type === "PRIVATE") {
+    const destCustomer = getDestinationCustomer(chat);
+    if (destCustomer?.customerId) {
+      contactStore.addContact(destCustomer.customerId);
+    }
+  }
 }
 
 const contactGroupListVisible = ref(false);
@@ -135,6 +158,7 @@ function toggleContactGroupList() {
       :style="{ top: `${menuY}px`, left: `${menuX}px` }"
     >
       <ul>
+        <li v-if="!isContact()" @click="addContact()">Add to contacts</li>
         <li @click="clearChat()">Clear chat</li>
         <li @click="deleteChat()">Delete chat</li>
       </ul>

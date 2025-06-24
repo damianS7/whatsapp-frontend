@@ -11,6 +11,15 @@ export const useContactStore = defineStore("contact", {
     getContacts: (state) => {
       return state.contacts;
     },
+    isContact: (state) => {
+      return (customerId: number) => {
+        return state.contacts.find(
+          (contact) => contact.contactCustomerId === customerId
+        )
+          ? true
+          : false;
+      };
+    },
   },
 
   actions: {
