@@ -6,6 +6,7 @@ import { MessageSquarePlus } from "lucide-vue-next";
 import { ChatMessage } from "@/types/ChatMessage";
 import CustomerAvatar from "@/components/CustomerAvatar.vue";
 import { useChat } from "@/composables/useChat";
+import ChatContactGroupList from "./ChatContactGroupList.vue";
 const { getAvatarFilenameFromChat } = useChat();
 
 // store
@@ -62,14 +63,25 @@ function getLastMessageFromChat(chat: Chat) {
   }
   return chat.history[lastMessageIndex].message;
 }
+
+const contactGroupListVisible = ref(false);
+function toggleContactGroupList() {
+  contactGroupListVisible.value = !contactGroupListVisible.value;
+}
 </script>
 <template>
   <div class="flex flex-col border-r-2 border-gray-300 h-full">
-    <div class="flex p-2 justify-between items-center">
+    <div class="flex p-2 justify-between items-center relative">
       <span class="text-sm font-bold">Chats</span>
-      <MessageSquarePlus
-        class="hover:text-blue-600 cursor-pointer"
-        :size="20"
+      <button @click="toggleContactGroupList">
+        <MessageSquarePlus
+          class="hover:text-blue-600 cursor-pointer"
+          :size="20"
+        />
+      </button>
+      <ChatContactGroupList
+        v-if="contactGroupListVisible"
+        @toggleContactGroupList="toggleContactGroupList"
       />
     </div>
     <div class="p-2">
