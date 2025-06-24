@@ -7,5 +7,5 @@ export interface Profile {
   phone: string;
   birthdate: string;
   gender: GenderType;
-  avatarFilename?: string;
+  avatarFilename: string;
 }

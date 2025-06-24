@@ -1,4 +1,4 @@
-import { GroupMember } from "./GroupMember";
+import { ChatMember } from "./ChatMember";
 
 export interface Group {
   id: number;
@@ -9,5 +9,5 @@ export interface Group {
     customerName: string;
     avatarFilename: string;
   };
-  members: GroupMember[];
+  members: ChatMember[];
 }
