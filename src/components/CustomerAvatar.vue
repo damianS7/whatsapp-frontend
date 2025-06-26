@@ -19,6 +19,15 @@ async function loadBlobURL() {
     `avatar-${props.filename}`
   ) as string;
 
+  // check if the img works
+  if (storedBlobURL) {
+    const img = new Image();
+    img.src = storedBlobURL;
+    img.onerror = () => {
+      storedBlobURL = "";
+    };
+  }
+
   // if the avatar its not in localstorage, fetch it from the server
   if (!storedBlobURL) {
     await customerStore
