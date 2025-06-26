@@ -57,13 +57,13 @@ export function useChat() {
   const createPrivateChat = (contact: Contact): Chat => {
     const customerStore = useCustomerStore();
     return {
-      id: generateChatId("PRIVATE", contact.contactCustomerId),
+      id: generateChatId("PRIVATE", contact.customerId),
       name: contact.name,
       type: "PRIVATE",
       history: [],
       participants: [
         {
-          customerId: contact.contactCustomerId,
+          customerId: contact.customerId,
           customerName: contact.name,
           customerAvatarFilename: contact.avatarFilename,
         },

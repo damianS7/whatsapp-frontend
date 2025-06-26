@@ -14,7 +14,7 @@ export const useContactStore = defineStore("contact", {
     isContact: (state) => {
       return (customerId: number) => {
         return state.contacts.find(
-          (contact) => contact.contactCustomerId === customerId
+          (contact) => contact.customerId === customerId
         )
           ? true
           : false;
