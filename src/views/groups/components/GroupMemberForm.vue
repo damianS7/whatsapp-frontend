@@ -7,6 +7,7 @@ import type { Contact } from "@/types/Contact";
 import { useRoute } from "vue-router";
 import { GroupMember } from "@/types/GroupMember";
 import { useChat } from "@/composables/useChat";
+import { ChatMember } from "@/types/ChatMember";
 const { isLoggedCustomer } = useChat();
 const contactNameFilter = ref("");
 const route = useRoute();
@@ -33,15 +34,12 @@ const contacts = computed(() => {
 });
 
 // group members to show in the form
-// const groupMembers = ref(group.value?.members ?? []) as Ref<GroupMember[]>;
-const groupMembers = computed(() => {
-  return (
-    group.value?.members.filter((member) => {
-      // filter out the logged customer (OWNER) from the group members
-      return !isLoggedCustomer(member.customerId);
-    }) ?? []
-  );
-}) as Ref<GroupMember[]>;
+const groupMembers = ref(
+  group.value?.members.filter((member) => {
+    // filter out the logged customer (OWNER) from the group members
+    return !isLoggedCustomer(member.customerId);
+  }) ?? []
+) as Ref<ChatMember[]>;
 
 // functions
 // add members to the group
@@ -52,10 +50,9 @@ function addMember(contact: Contact) {
 
   if (!memberExist) {
     groupMembers.value.push({
-      id: 0,
       customerName: contact.name,
       customerId: contact.contactCustomerId,
-      avatarFilename: contact.avatarFilename,
+      customerAvatarFilename: contact.avatarFilename,
       groupId: group.value?.id || 0,
     });
 
@@ -68,10 +65,15 @@ function addMember(contact: Contact) {
   contactNameFilter.value = "";
 }
 
-function removeMember(id: number) {
-  const index = groupMembers.value.findIndex((contact) => {
-    contact.id === id;
+function removeMember(customerId: number) {
+  const index = groupMembers.value.findIndex((groupMember) => {
+    return groupMember.customerId === customerId;
   });
+
+  if (index === -1) {
+    return;
+  }
+
   groupMembers.value.splice(index, 1);
 
   emit(
@@ -113,11 +115,13 @@ function removeMember(id: number) {
     <div class="flex flex-wrap gap-2">
       <span
         v-for="member in groupMembers"
-        :key="member.id"
+        :key="member.customerId"
         class="flex pill pill-primary items-center"
       >
         {{ member.customerName }}
-        <X class="cursor-pointer" @click="removeMember(member.id)" />
+        <button @click="removeMember(member.customerId)">
+          <X class="cursor-pointer" />
+        </button>
       </span>
     </div>
   </div>
