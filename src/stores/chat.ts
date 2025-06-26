@@ -96,12 +96,12 @@ export const useChatStore = defineStore("chat", {
             chatMessage.fromCustomerId
           );
         }
+      }
 
-        // Create a new chat if it doesn't exist
-        if (!this.getChat(chatMessage.chatId)) {
-          const newChat: Chat = await createChatFromMessage(chatMessage);
-          await this.addChat(newChat);
-        }
+      // Create a new chat if it doesn't exist
+      if (!this.getChat(chatMessage.chatId)) {
+        const newChat: Chat = await createChatFromMessage(chatMessage);
+        await this.addChat(newChat);
       }
 
       this.getChat(chatMessage.chatId)?.history.push(chatMessage);
@@ -172,6 +172,7 @@ export const useChatStore = defineStore("chat", {
       this.stompClient.connect(
         { Authorization: `Bearer ${token}` },
         async () => {
+          // TODO subscribe to all your contacts and groups instead save chats ...
           for (const chat of this.chats) {
             await this.subscribeToChat(chat.id);
           }
