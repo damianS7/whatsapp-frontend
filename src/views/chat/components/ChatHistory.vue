@@ -32,6 +32,7 @@ onMounted(() => {
       :key="index"
       :class="{
         'flex justify-end': isLoggedCustomer(message.fromCustomerId),
+        'flex justify-center': message.fromCustomerName === 'SYSTEM',
         'flex justify-start': !isLoggedCustomer(message.fromCustomerId),
       }"
     >
@@ -44,7 +45,10 @@ onMounted(() => {
             !isLoggedCustomer(message.fromCustomerId),
         }"
       >
-        <p v-if="chatType === 'GROUP'" class="font-bold">
+        <p
+          v-if="chatType === 'GROUP' && message.fromCustomerName !== 'SYSTEM'"
+          class="font-bold"
+        >
           {{ message.fromCustomerName }}
         </p>
         <p class="text-base break-words mb-1">
