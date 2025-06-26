@@ -5,6 +5,8 @@ import { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
 import { useCustomerStore } from "@/stores/customer";
 import { useChat } from "@/composables/useChat";
+import { useGroupStore } from "./group";
+import { useContactStore } from "./contact";
 const { generateChatId, createChatFromMessage } = useChat();
 
 export const useChatStore = defineStore("chat", {
@@ -172,9 +174,14 @@ export const useChatStore = defineStore("chat", {
       this.stompClient.connect(
         { Authorization: `Bearer ${token}` },
         async () => {
-          // TODO subscribe to all your contacts and groups instead save chats ...
-          for (const chat of this.chats) {
-            await this.subscribeToChat(chat.id);
+          const contacts = useContactStore().getContacts;
+          for (const contact of contacts) {
+            await this.subscribeToChat(generateChatId("PRIVATE", contact.id));
+          }
+
+          const groups = useGroupStore().getGroups;
+          for (const group of groups) {
+            await this.subscribeToChat(generateChatId("GROUP", group.id));
           }
 
           // Subscribe to the logged-in customer's private chat

@@ -17,7 +17,6 @@ export const useGroupStore = defineStore("group", {
       };
     },
   },
-
   actions: {
     async fetchGroups(): Promise<Group[]> {
       try {
