@@ -96,7 +96,15 @@ function toggleContactGroupList() {
   <div class="flex flex-col border-r-2 border-gray-300 h-full">
     <div class="flex p-2 justify-between items-center relative">
       <span class="text-sm font-bold">Chats</span>
-      <button @click="toggleContactGroupList">
+      <button
+        @click="toggleContactGroupList"
+        :class="{
+          'bg-gray-100 p-1 rounded shadow active:translate-y-[1px] active:shadow-inner active:bg-gray-200 transition duration-100':
+            contactGroupListVisible,
+          'p-1 rounded shadow': !contactGroupListVisible,
+        }"
+        class="hover:bg-blue-200 cursor-pointer"
+      >
         <MessageSquarePlus
           class="hover:text-blue-600 cursor-pointer"
           :size="20"

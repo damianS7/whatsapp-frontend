@@ -96,8 +96,8 @@ function openChat(chat: Chat) {
 <style scoped>
 #contactGroupList {
   @apply flex flex-col;
-  @apply w-40 max-h-64 right-6 top-6 absolute z-10;
-  @apply bg-gray-300 p-0 border-2 border-gray-900;
+  @apply w-52 max-h-64 right-2 top-8 absolute z-10;
+  @apply bg-blue-100 p-0 border-2 border-gray-300;
   @apply rounded-br-md rounded-bl-md rounded-tl-md;
 }
 </style>

@@ -44,6 +44,34 @@ export const useGroupStore = defineStore("group", {
         throw new Error("Failed to fetch groups.");
       }
     },
+    async fetchGroup(groupId: number): Promise<Group> {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${process.env.VUE_APP_API_URL}/groups/${groupId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // if response is not 200, throw an error
+        if (response.status !== 200) {
+          const jsonResponse = await response.json();
+          throw new Error("Failed to fetch group. " + jsonResponse.message);
+        }
+
+        return (await response.json()) as Group;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw error;
+        }
+        throw new Error("Failed to fetch group.");
+      }
+    },
     async createGroup(group: {
       name: string;
       description: string;
