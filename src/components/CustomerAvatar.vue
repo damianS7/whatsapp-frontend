@@ -9,23 +9,30 @@ const props = defineProps<{
   fallbackString: string;
 }>();
 
+function validateImage(url: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => resolve(true);
+    img.onerror = () => resolve(false);
+  });
+}
+
 async function loadBlobURL() {
   if (!props.filename) {
     return;
   }
 
   // find the avatar in localStorage
-  let storedBlobURL = localStorage.getItem(
-    `avatar-${props.filename}`
-  ) as string;
+  let storedBlobURL = localStorage.getItem(`avatar-${props.filename}`) as
+    | string
+    | undefined;
 
   // check if the img works
   if (storedBlobURL) {
-    const img = new Image();
-    img.src = storedBlobURL;
-    img.onerror = () => {
-      storedBlobURL = "";
-    };
+    if (!(await validateImage(storedBlobURL))) {
+      storedBlobURL = undefined;
+    }
   }
 
   // if the avatar its not in localstorage, fetch it from the server
