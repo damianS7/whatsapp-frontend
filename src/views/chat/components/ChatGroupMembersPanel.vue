@@ -1,19 +1,26 @@
 <script setup lang="ts">
 import { ArrowLeft } from "lucide-vue-next";
-import { ref, defineEmits, defineProps, Ref } from "vue";
+import { ref, defineEmits, defineProps } from "vue";
 import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
-import { useGroupStore } from "@/stores/group";
 import { Chat } from "@/types/Chat";
-import { MessageCircle, UserRoundMinus, UserRoundPlus } from "lucide-vue-next";
+import { MessageCircle, UserRoundPlus } from "lucide-vue-next";
 import { useContactStore } from "@/stores/contact";
 import CustomerAvatar from "@/components/CustomerAvatar.vue";
+import { useChat } from "@/composables/useChat";
+import { useRouter } from "vue-router";
+import { useChatStore } from "@/stores/chat";
+import { ChatMember } from "@/types/ChatMember";
+const { isLoggedCustomer, createPrivateChat } = useChat();
+
+// router
+const router = useRouter();
 
 // emit
 const emit = defineEmits(["hidePanel"]);
 
 // store
-const groupStore = useGroupStore();
+const chatStore = useChatStore();
 const contactStore = useContactStore();
 
 // message to show
@@ -23,6 +30,7 @@ const alert = ref();
 interface Props {
   chat: Chat;
 }
+
 const props = defineProps<Props>();
 // TODO: call to endpoint group.members to get the members of the group
 function addContact(customerId: number) {
@@ -37,6 +45,28 @@ function addContact(customerId: number) {
     .catch((error) => {
       alert.value.showMessage(error.message, MessageType.ERROR);
     });
+}
+
+// Open chat with the contact
+function openChat(chatMember: ChatMember) {
+  const chat = createPrivateChat({
+    id: 0,
+    customerId: chatMember.customerId,
+    name: chatMember.customerName,
+    avatarFilename: chatMember.customerAvatarFilename,
+  });
+  const existingChat = chatStore.getChat(chat.id);
+
+  // if the chat not exists, create a new one
+  if (!existingChat) {
+    chatStore.addChat(chat);
+  }
+
+  // select the chat created or existing
+  chatStore.selectChat(chat.id);
+
+  // redirect to the chat view
+  router.push("/chats");
 }
 </script>
 <template>
@@ -61,9 +91,12 @@ function addContact(customerId: number) {
         <div
           v-for="(member, index) in props.chat.participants"
           :key="index"
-          class="p-4 w-full bg-gray-300 rounded flex flex-col gap-2"
+          class="flex flex-col"
         >
-          <div class="flex items-center gap-2">
+          <div
+            v-if="!isLoggedCustomer(member.customerId)"
+            class="flex items-center gap-2 p-4 w-full bg-gray-300 rounded"
+          >
             <!-- Avatar -->
 
             <div
@@ -81,9 +114,17 @@ function addContact(customerId: number) {
                 {{ member.customerName }}
               </p>
               <button
+                @click="openChat(member)"
+                class="flex justify-between btn btn-primary btn-xs p-2 gap-2 items-center"
+                title="Private chat"
+              >
+                PRIVATE CHAT<MessageCircle :size="20" />
+              </button>
+              <button
+                v-if="!contactStore.isContact(member.customerId)"
                 @click="addContact(member.customerId)"
                 class="flex justify-between btn btn-primary btn-xs p-2 gap-2 items-center"
-                title="Delete contact"
+                title="add contact"
               >
                 ADD CONTACT<UserRoundPlus :size="20" />
               </button>
