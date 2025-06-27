@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ArrowLeft } from "lucide-vue-next";
-import { ref, defineEmits, defineProps } from "vue";
+import { ref, defineEmits, defineProps, computed } from "vue";
 import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
 import { Chat } from "@/types/Chat";
@@ -11,6 +11,7 @@ import { useChat } from "@/composables/useChat";
 import { useRouter } from "vue-router";
 import { useChatStore } from "@/stores/chat";
 import { ChatMember } from "@/types/ChatMember";
+import { useGroupStore } from "@/stores/group";
 const { isLoggedCustomer, createPrivateChat } = useChat();
 
 // router
@@ -22,6 +23,7 @@ const emit = defineEmits(["hidePanel"]);
 // store
 const chatStore = useChatStore();
 const contactStore = useContactStore();
+const groupStore = useGroupStore();
 
 // message to show
 const alert = ref();
@@ -30,6 +32,11 @@ const alert = ref();
 interface Props {
   chat: Chat;
 }
+
+const participants = computed<ChatMember[]>(() => {
+  const group = groupStore.getGroup(props.chat.groupId ?? -1);
+  return group?.members ?? [];
+});
 
 const props = defineProps<Props>();
 // TODO: call to endpoint group.members to get the members of the group
@@ -88,49 +95,47 @@ function openChat(chatMember: ChatMember) {
       <div
         class="grid grid-cols-1 sm:grid-cols-2 grid-rows-[min-content_max-content] gap-2"
       >
-        <div
-          v-for="(member, index) in props.chat.participants"
-          :key="index"
-          class="flex flex-col"
-        >
+        <template v-for="(member, index) in participants" :key="index">
           <div
             v-if="!isLoggedCustomer(member.customerId)"
-            class="flex items-center gap-2 p-4 w-full bg-gray-300 rounded"
+            class="flex flex-col"
           >
-            <!-- Avatar -->
+            <div class="flex items-center gap-2 p-4 w-full bg-gray-300 rounded">
+              <!-- Avatar -->
 
-            <div
-              class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
-            >
-              <CustomerAvatar
-                :filename="member.customerAvatarFilename ?? ''"
-                :fallbackString="member.customerName"
-              />
-            </div>
+              <div
+                class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
+              >
+                <CustomerAvatar
+                  :filename="member.customerAvatarFilename ?? ''"
+                  :fallbackString="member.customerName"
+                />
+              </div>
 
-            <!-- Nombre y botones -->
-            <div class="flex-1 flex flex-col gap-2">
-              <p class="text-sm font-medium text-gray-800 truncate">
-                {{ member.customerName }}
-              </p>
-              <button
-                @click="openChat(member)"
-                class="flex justify-between btn btn-primary btn-xs p-2 gap-2 items-center"
-                title="Private chat"
-              >
-                PRIVATE CHAT<MessageCircle :size="20" />
-              </button>
-              <button
-                v-if="!contactStore.isContact(member.customerId)"
-                @click="addContact(member.customerId)"
-                class="flex justify-between btn btn-primary btn-xs p-2 gap-2 items-center"
-                title="add contact"
-              >
-                ADD CONTACT<UserRoundPlus :size="20" />
-              </button>
+              <!-- Nombre y botones -->
+              <div class="flex-1 flex flex-col gap-2">
+                <p class="text-sm font-medium text-gray-800 truncate">
+                  {{ member.customerName }}
+                </p>
+                <button
+                  @click="openChat(member)"
+                  class="flex justify-between btn btn-primary btn-xs p-2 gap-2 items-center"
+                  title="Private chat"
+                >
+                  PRIVATE CHAT<MessageCircle :size="20" />
+                </button>
+                <button
+                  v-if="!contactStore.isContact(member.customerId)"
+                  @click="addContact(member.customerId)"
+                  class="flex justify-between btn btn-primary btn-xs p-2 gap-2 items-center"
+                  title="add contact"
+                >
+                  ADD CONTACT<UserRoundPlus :size="20" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </template>
       </div>
     </section>
   </div>
