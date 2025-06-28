@@ -96,13 +96,11 @@ function openChat(chatMember: ChatMember) {
         class="grid grid-cols-1 sm:grid-cols-2 grid-rows-[min-content_max-content] gap-2"
       >
         <template v-for="(member, index) in participants" :key="index">
-          <div
-            v-if="!isLoggedCustomer(member.customerId)"
-            class="flex flex-col"
-          >
-            <div class="flex items-center gap-2 p-4 w-full bg-gray-300 rounded">
+          <div v-if="!isLoggedCustomer(member.customerId)">
+            <div
+              class="flex flex-col flex-1 items-center gap-1 bg-gray-300 p-4 rounded"
+            >
               <!-- Avatar -->
-
               <div
                 class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
               >
@@ -111,26 +109,28 @@ function openChat(chatMember: ChatMember) {
                   :fallbackString="member.customerName"
                 />
               </div>
-
-              <!-- Nombre y botones -->
-              <div class="flex-1 flex flex-col gap-2">
+              <div>
                 <p class="text-sm font-medium text-gray-800 truncate">
                   {{ member.customerName }}
                 </p>
+              </div>
+
+              <!-- Nombre y botones -->
+              <div class="flex-1 flex flex-col gap-1">
                 <button
                   @click="openChat(member)"
-                  class="flex justify-between btn btn-primary btn-xs p-2 gap-2 items-center"
+                  class="btn btn-primary btn-xs p-2"
                   title="Private chat"
                 >
-                  PRIVATE CHAT<MessageCircle :size="20" />
+                  <MessageCircle :size="20" />
                 </button>
                 <button
                   v-if="!contactStore.isContact(member.customerId)"
                   @click="addContact(member.customerId)"
-                  class="flex justify-between btn btn-primary btn-xs p-2 gap-2 items-center"
+                  class="btn btn-primary btn-xs p-2"
                   title="add contact"
                 >
-                  ADD CONTACT<UserRoundPlus :size="20" />
+                  <UserRoundPlus :size="20" />
                 </button>
               </div>
             </div>

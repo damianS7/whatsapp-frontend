@@ -31,14 +31,15 @@ onMounted(() => {
       v-for="(message, index) in messages"
       :key="index"
       :class="{
-        'flex justify-end': isLoggedCustomer(message.fromCustomerId),
         'flex justify-center': message.fromCustomerName === 'SYSTEM',
+        'flex justify-end': isLoggedCustomer(message.fromCustomerId),
         'flex justify-start': !isLoggedCustomer(message.fromCustomerId),
       }"
     >
       <div
-        class="px-4 py-2 w-full max-w-min shadow"
+        class="px-4 py-2 w-full min-w-32 max-w-min shadow"
         :class="{
+          'rounded-xl max-w-max': message.fromCustomerName === 'SYSTEM',
           'bg-lime-200 rounded-tl-xl rounded-bl-xl rounded-tr-xl':
             isLoggedCustomer(message.fromCustomerId),
           'bg-stone-100 rounded-bl-xl rounded-tr-xl rounded-br-xl':

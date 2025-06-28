@@ -39,15 +39,16 @@ async function wait(ms: number) {
 }
 
 onMounted(async () => {
-  interval = setInterval(async () => {
-    await checkIfTokenIsValid();
-  }, tokenValidationInterval);
-
+  await checkIfTokenIsValid();
   await customerStore.initialize();
   await contactStore.initialize();
   await groupStore.initialize();
   await chatStore.initialize();
   initialized.value = true;
+
+  interval = setInterval(async () => {
+    await checkIfTokenIsValid();
+  }, tokenValidationInterval);
 });
 
 onUnmounted(() => {
