@@ -62,7 +62,7 @@ export const useChatStore = defineStore("chat", {
       this.saveChatState();
     },
     async deleteChat(chatId: string) {
-      await this.unSuscribeFromChat(chatId);
+      // await this.unSuscribeFromChat(chatId);
       const index = this.chats.findIndex((chat) => chat.id === chatId);
       this.chats.splice(index, 1);
       this.saveChatState();
@@ -85,6 +85,12 @@ export const useChatStore = defineStore("chat", {
         chatMessage
       );
       const customerStore = useCustomerStore();
+
+      if (chatMessage.fromCustomerName === "SYSTEM") {
+        // check notification type
+        // do something
+        // send a message
+      }
 
       // if chatMessage its a private message ...
       if (chatMessage.chatType === "PRIVATE" && chatMessage.toCustomerId) {
