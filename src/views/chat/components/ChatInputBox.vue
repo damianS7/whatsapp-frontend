@@ -5,7 +5,6 @@ import { ChatMessage } from "@/types/ChatMessage";
 import type { Customer } from "@/types/Customer";
 import { ref, defineProps } from "vue";
 import { useChat } from "@/composables/useChat";
-import { ChatMember } from "@/types/ChatMember";
 const { generateChatId, getDestinationCustomer } = useChat();
 interface Props {
   fromCustomer: Customer;

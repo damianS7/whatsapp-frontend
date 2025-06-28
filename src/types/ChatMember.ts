@@ -1,6 +1,6 @@
 export interface ChatMember {
-  customerId: number;
   groupId?: number;
+  customerId: number;
   customerName: string;
   customerAvatarFilename: string;
 }

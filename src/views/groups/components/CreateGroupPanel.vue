@@ -5,7 +5,8 @@ import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
 import { useGroupStore } from "@/stores/group";
 import GroupMemberForm from "@/views/groups/components/GroupMemberForm.vue";
-
+import { useRouter } from "vue-router";
+const router = useRouter();
 // emit
 const emit = defineEmits(["hidePanel"]);
 
@@ -19,18 +20,12 @@ const alert = ref();
 interface FormGroup {
   name: string;
   description: string;
-  membersId: number[];
 }
 
 const form: Ref<FormGroup> = ref({
   name: "",
   description: "",
-  membersId: [],
 });
-
-function setMembers(members: number[]) {
-  form.value.membersId = members;
-}
 
 // function to create a group
 async function createGroup() {
@@ -38,13 +33,13 @@ async function createGroup() {
     .createGroup({
       name: form.value.name,
       description: form.value.description,
-      membersId: form.value.membersId,
     })
     .then((group) => {
       alert.value.showMessage(
         "Group " + group.name + " sucessfully created.",
         MessageType.SUCCESS
       );
+      router.push("/groups/" + group.id);
     })
     .catch((error) => {
       alert.value.showMessage(error.message, MessageType.ERROR);
@@ -97,8 +92,6 @@ async function createGroup() {
           class="bg-gray-200 w-full rounded-md border border-gray-300 px-3 py-2 text-sm resize-none h-24 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         ></textarea>
       </div>
-
-      <GroupMemberForm @setMembers="setMembers" />
     </section>
   </div>
 </template>

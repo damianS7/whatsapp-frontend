@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import { X } from "lucide-vue-next";
-import { ref, defineEmits, Ref, computed } from "vue";
+import { ref, Ref, computed } from "vue";
 import { useGroupStore } from "@/stores/group";
 import { useContactStore } from "@/stores/contact";
 import type { Contact } from "@/types/Contact";
 import { useRoute } from "vue-router";
 import { useChat } from "@/composables/useChat";
-import { ChatMember } from "@/types/ChatMember";
+import { GroupMember } from "@/types/GroupMember";
 const { isLoggedCustomer } = useChat();
 const contactNameFilter = ref("");
 const route = useRoute();
-
-// emit
-const emit = defineEmits(["setMembers"]);
 
 // store
 const groupStore = useGroupStore();
@@ -33,52 +30,31 @@ const contacts = computed(() => {
 });
 
 // group members to show in the form
-const groupMembers = ref(
-  group.value?.members.filter((member) => {
-    // filter out the logged customer (OWNER) from the group members
-    return !isLoggedCustomer(member.customerId);
-  }) ?? []
-) as Ref<ChatMember[]>;
+const groupMembers = computed(() => {
+  return (
+    group.value?.members.filter((member) => {
+      // filter out the logged customer (OWNER) from the group members
+      return !isLoggedCustomer(member.customerId);
+    }) ?? []
+  );
+}) as Ref<GroupMember[]>;
 
 // functions
 // add members to the group
-function addMember(contact: Contact) {
-  const memberExist = groupMembers.value?.find(
-    (member) => member.customerId === contact.customerId
-  );
-
-  if (!memberExist) {
-    groupMembers.value.push({
-      customerName: contact.name,
-      customerId: contact.customerId,
-      customerAvatarFilename: contact.avatarFilename,
-      groupId: group.value?.id || 0,
-    });
-
-    emit(
-      "setMembers",
-      groupMembers.value.map((member) => member.customerId)
-    );
-  }
+async function addMember(contact: Contact) {
+  await groupStore
+    .addGroupMember(group.value.id, contact.customerId)
+    .then()
+    .catch();
 
   contactNameFilter.value = "";
 }
 
-function removeMember(customerId: number) {
-  const index = groupMembers.value.findIndex((groupMember) => {
-    return groupMember.customerId === customerId;
-  });
-
-  if (index === -1) {
-    return;
-  }
-
-  groupMembers.value.splice(index, 1);
-
-  emit(
-    "setMembers",
-    groupMembers.value.map((member) => member.customerId)
-  );
+async function removeMember(groupMemberId: number) {
+  await groupStore
+    .deleteGroupMember(group.value.id, groupMemberId)
+    .then()
+    .catch();
 }
 </script>
 <template>
@@ -118,7 +94,7 @@ function removeMember(customerId: number) {
         class="flex pill pill-primary items-center"
       >
         {{ member.customerName }}
-        <button @click="removeMember(member.customerId)">
+        <button @click="removeMember(member.id)">
           <X class="cursor-pointer" />
         </button>
       </span>

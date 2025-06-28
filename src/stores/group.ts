@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { Group } from "@/types/Group";
+import { ChatMember } from "@/types/ChatMember";
+import { GroupMember } from "@/types/GroupMember";
 
 export const useGroupStore = defineStore("group", {
   state: () => ({
@@ -149,6 +151,75 @@ export const useGroupStore = defineStore("group", {
           throw error;
         }
         throw new Error("Failed to update group.");
+      }
+    },
+    async addGroupMember(id: number, memberId: number): Promise<GroupMember> {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${process.env.VUE_APP_API_URL}/groups/${id}/members`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              memberId,
+            }),
+          }
+        );
+
+        // if response is not 201, throw an error
+        if (response.status !== 201) {
+          throw new Error("Failed to add member to group.");
+        }
+
+        const groupMember = (await response.json()) as GroupMember;
+        const index = this.groups.findIndex(
+          (group) => group.id === groupMember.groupId
+        );
+        this.groups[index].members.push(groupMember);
+        return groupMember;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw error;
+        }
+        throw new Error("Failed to add member to group.");
+      }
+    },
+    async deleteGroupMember(groupId: number, memberId: number) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${process.env.VUE_APP_API_URL}/groups/members/${memberId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // if response is not 201, throw an error
+        if (response.status !== 204) {
+          throw new Error("Failed to delete member from group.");
+        }
+
+        const groupIndex = this.groups.findIndex(
+          (group) => group.id === groupId
+        );
+        const gmIndex = this.groups[groupIndex].members.findIndex(
+          (groupMember) => groupMember.id === memberId
+        );
+
+        this.groups[groupIndex].members.splice(gmIndex, 1);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw error;
+        }
+        throw new Error("Failed to delete member from group.");
       }
     },
     async deleteGroup(id: number) {

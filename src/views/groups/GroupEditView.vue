@@ -30,18 +30,12 @@ const group = computed(() =>
 interface FormGroup {
   name: string;
   description: string;
-  membersId: number[];
 }
 
 const form: Ref<FormGroup> = ref({
   name: group.value?.name || "",
   description: group.value?.description || "",
-  membersId: [],
 });
-
-function setMembers(members: number[]) {
-  form.value.membersId = members;
-}
 
 function saveGroup() {
   groupStore
@@ -119,7 +113,7 @@ async function deleteGroup() {
         ></textarea>
       </div>
 
-      <GroupMemberForm @setMembers="setMembers" />
+      <GroupMemberForm />
     </section>
   </div>
 </template>

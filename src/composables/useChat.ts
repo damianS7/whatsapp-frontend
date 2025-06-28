@@ -32,7 +32,7 @@ export function useChat() {
   const getDestinationCustomer = (chat: Chat): ChatMember | null => {
     for (const participant of chat.participants) {
       if (participant.customerId !== useCustomerStore().getLoggedCustomer.id) {
-        return participant;
+        return participant as ChatMember;
       }
     }
     return null;
