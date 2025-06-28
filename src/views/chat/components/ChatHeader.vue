@@ -9,7 +9,16 @@ interface Props {
 }
 const props = defineProps<Props>();
 const filename = computed(() => {
-  return getDestinationCustomer(props.chat)?.customerAvatarFilename;
+  let avatarFilename = "";
+  if (props.chat.type === "PRIVATE") {
+    avatarFilename =
+      getDestinationCustomer(props.chat)?.customerAvatarFilename ?? "";
+  }
+
+  if (props.chat.type === "GROUP" && props.chat.avatarFilename) {
+    avatarFilename = props.chat.avatarFilename;
+  }
+  return avatarFilename;
 });
 </script>
 <template>
@@ -18,7 +27,7 @@ const filename = computed(() => {
     <div
       class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
     >
-      <CustomerAvatar :filename="filename ?? ''" :fallbackString="chat.name" />
+      <CustomerAvatar :filename="filename" :fallbackString="chat.name" />
     </div>
     <!-- chat name -->
     <div>
