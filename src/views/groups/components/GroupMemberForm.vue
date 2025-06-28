@@ -5,7 +5,6 @@ import { useGroupStore } from "@/stores/group";
 import { useContactStore } from "@/stores/contact";
 import type { Contact } from "@/types/Contact";
 import { useRoute } from "vue-router";
-import { GroupMember } from "@/types/GroupMember";
 import { useChat } from "@/composables/useChat";
 import { ChatMember } from "@/types/ChatMember";
 const { isLoggedCustomer } = useChat();
@@ -45,13 +44,13 @@ const groupMembers = ref(
 // add members to the group
 function addMember(contact: Contact) {
   const memberExist = groupMembers.value?.find(
-    (member) => member.customerId === contact.contactCustomerId
+    (member) => member.customerId === contact.customerId
   );
 
   if (!memberExist) {
     groupMembers.value.push({
       customerName: contact.name,
-      customerId: contact.contactCustomerId,
+      customerId: contact.customerId,
       customerAvatarFilename: contact.avatarFilename,
       groupId: group.value?.id || 0,
     });
