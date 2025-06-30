@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineProps, onMounted, onUpdated, ref } from "vue";
+import { computed, defineProps } from "vue";
 import type { Chat } from "@/types/Chat";
 import { useChat } from "@/composables/useChat";
 const { getDestinationCustomer } = useChat();

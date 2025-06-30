@@ -11,12 +11,6 @@ import { Chat } from "@/types/Chat";
 const { createPrivateChat, createGroupChat } = useChat();
 const emit = defineEmits(["toggleContactGroupList"]);
 
-// interface Chat {
-//   id: string;
-//   name: string;
-//   type: string;
-//   avatarFilename: string;
-// }
 // store
 const chatStore = useChatStore();
 const groupStore = useGroupStore();

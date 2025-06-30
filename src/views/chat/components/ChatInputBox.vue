@@ -15,7 +15,7 @@ const props = defineProps<Props>();
 const chatStore = useChatStore();
 const textarea = ref("");
 function send() {
-  if (!textarea.value.length > 0) {
+  if (!textarea.value || textarea.value.length > 0) {
     return;
   }
 

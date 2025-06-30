@@ -8,14 +8,13 @@ import { useGroupStore } from "@/stores/group";
 import { useCustomerStore } from "@/stores/customer";
 import { useContactStore } from "@/stores/contact";
 import { useChatStore } from "@/stores/chat";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 const customerStore = useCustomerStore();
 const authStore = useAuthStore();
 const groupStore = useGroupStore();
 const chatStore = useChatStore();
 const contactStore = useContactStore();
 const router = useRouter();
-const route = useRoute();
 const tokenValidationInterval = 30 * 1000; // 30s
 let interval: number;
 let initialized = ref(false);

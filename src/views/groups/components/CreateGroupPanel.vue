@@ -4,7 +4,6 @@ import { ref, defineEmits, Ref } from "vue";
 import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
 import { useGroupStore } from "@/stores/group";
-import GroupMemberForm from "@/views/groups/components/GroupMemberForm.vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
 // emit
@@ -35,10 +34,6 @@ async function createGroup() {
       description: form.value.description,
     })
     .then((group) => {
-      alert.value.showMessage(
-        "Group " + group.name + " sucessfully created.",
-        MessageType.SUCCESS
-      );
       router.push("/groups/" + group.id);
     })
     .catch((error) => {

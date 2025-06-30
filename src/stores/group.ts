@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { Group } from "@/types/Group";
-import { ChatMember } from "@/types/ChatMember";
 import { GroupMember } from "@/types/GroupMember";
 
 export const useGroupStore = defineStore("group", {

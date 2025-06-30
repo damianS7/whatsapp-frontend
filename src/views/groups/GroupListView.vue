@@ -7,8 +7,7 @@ import { useRouter } from "vue-router";
 import MessageAlert from "@/components/MessageAlert.vue";
 import CreateGroupPanel from "./components/CreateGroupPanel.vue";
 import { useChat } from "@/composables/useChat";
-import { ChatMember } from "@/types/ChatMember";
-const { isLoggedCustomer, generateChatId, createGroupChat } = useChat();
+const { isLoggedCustomer, createGroupChat } = useChat();
 // message to show
 const alert = ref();
 const router = useRouter();

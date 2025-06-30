@@ -42,6 +42,10 @@ const groupMembers = computed(() => {
 // functions
 // add members to the group
 async function addMember(contact: Contact) {
+  if (!group.value) {
+    return;
+  }
+
   await groupStore
     .addGroupMember(group.value.id, contact.customerId)
     .then()
@@ -51,6 +55,10 @@ async function addMember(contact: Contact) {
 }
 
 async function removeMember(groupMemberId: number) {
+  if (!group.value) {
+    return;
+  }
+
   await groupStore
     .deleteGroupMember(group.value.id, groupMemberId)
     .then()
@@ -72,7 +80,6 @@ async function removeMember(groupMemberId: number) {
         placeholder="David, Maria ..."
         class="bg-gray-200 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
       />
-      <!-- Sugerencias -->
       <ul
         v-if="contacts.length && contactNameFilter"
         class="absolute left-0 right-0 top-full w-full max-w-full border border-gray-300 rounded-md bg-white shadow z-10"

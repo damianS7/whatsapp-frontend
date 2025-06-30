@@ -4,7 +4,7 @@ import ChatHistory from "@/views/chat/components/ChatHistory.vue";
 import ChatList from "@/views/chat/components/ChatList.vue";
 import ChatHeader from "@/views/chat/components/ChatHeader.vue";
 import { useCustomerStore } from "@/stores/customer";
-import { ref, onMounted, computed } from "vue";
+import { ref, computed } from "vue";
 import { useChatStore } from "@/stores/chat";
 import ChatGroupMembersPanel from "./components/ChatGroupMembersPanel.vue";
 const chatStore = useChatStore();

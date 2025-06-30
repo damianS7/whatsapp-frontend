@@ -37,8 +37,12 @@ const form: Ref<FormGroup> = ref({
   description: group.value?.description || "",
 });
 
-function saveGroup() {
-  groupStore
+async function saveGroup() {
+  if (!group.value) {
+    return;
+  }
+
+  await groupStore
     .updateGroup(group.value.id, form.value)
     .then((group) => {
       alert.value.showMessage(

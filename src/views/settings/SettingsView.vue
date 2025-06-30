@@ -1,9 +1,10 @@
 <template>
   <div class="main-container shadow-none rounded-none">
     <section
-      class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
+      class="sm:flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
       <h1>Settings</h1>
+      <button class="btn btn-sm btn-blue">SAVE</button>
     </section>
 
     <section class="container">
@@ -56,16 +57,6 @@
             <option value="dark">Dark</option>
             <option value="system">System</option>
           </select>
-        </div>
-
-        <!-- Save Button -->
-        <div class="text-right">
-          <button
-            type="button"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
-          >
-            Save Settings
-          </button>
         </div>
       </form>
     </section>

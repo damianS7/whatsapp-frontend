@@ -10,22 +10,11 @@ import { Group } from "@/types/Group";
 
 // src/composables/useChat.ts
 export function useChat() {
-  const getLastMessageFromChat = () => {
-    //
-  };
-
-  const formatMessageDate = (message: ChatMessage) => {
-    // return message.datetime.toLocaleDateString({
-    //   year: 2,
-    // });
-  };
-
   const isLoggedCustomer = (customerId: number) => {
     const customer: Customer = useCustomerStore().getLoggedCustomer;
     if (customer.id === customerId) {
       return true;
     }
-
     return false;
   };
 
@@ -40,7 +29,7 @@ export function useChat() {
 
   const getAvatarFilenameFromChat = (chat: Chat): string => {
     if (chat.type === "GROUP") {
-      return "";
+      return chat.avatarFilename || "";
     }
 
     const destinationCustomer = getDestinationCustomer(chat) as ChatMember;
@@ -87,7 +76,7 @@ export function useChat() {
 
   const createGroupChat = (group: Group): Chat => {
     return {
-      id: generateChatId("GROUP", group.id),
+      id: generateGroupChatId(group),
       groupId: group.id,
       name: group.name,
       type: "GROUP",
@@ -99,10 +88,8 @@ export function useChat() {
   const createChatFromMessage = async (message: ChatMessage): Promise<Chat> => {
     const customerStore = useCustomerStore();
     const groupStore = useGroupStore();
-    // const chatStore = useChatStore();
 
     if (message.chatType === "GROUP" && message.groupId) {
-      // const groupExist = groupStore.getGroup(message.groupId);
       const group = await groupStore.fetchGroup(message.groupId);
       return createGroupChat(group);
     }
