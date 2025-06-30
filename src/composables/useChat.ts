@@ -117,8 +117,6 @@ export function useChat() {
 
   return {
     getDestinationCustomer,
-    getLastMessageFromChat,
-    formatMessageDate,
     isLoggedCustomer,
     generateChatId,
     generateGroupChatId,
