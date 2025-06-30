@@ -49,15 +49,22 @@ export function useChat() {
     }
     return "";
   };
-
   const generateChatId = (chatType: ChatType, id: number) => {
-    return chatType === "PRIVATE" ? `PRIVATE${id}` : `GROUP${id}`;
+    return `${chatType}${id}`;
+  };
+
+  const generatePrivateChatId = (contact: Contact) => {
+    return generateChatId("PRIVATE", contact.customerId);
+  };
+
+  const generateGroupChatId = (group: Group) => {
+    return generateChatId("GROUP", group.id);
   };
 
   const createPrivateChat = (contact: Contact): Chat => {
     const customerStore = useCustomerStore();
     return {
-      id: generateChatId("PRIVATE", contact.customerId),
+      id: generatePrivateChatId(contact),
       name: contact.name,
       type: "PRIVATE",
       history: [],
@@ -127,6 +134,8 @@ export function useChat() {
     formatMessageDate,
     isLoggedCustomer,
     generateChatId,
+    generateGroupChatId,
+    generatePrivateChatId,
     getAvatarFilenameFromChat,
     createGroupChat,
     createPrivateChat,

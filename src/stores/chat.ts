@@ -7,7 +7,12 @@ import { useCustomerStore } from "@/stores/customer";
 import { useChat } from "@/composables/useChat";
 import { useGroupStore } from "./group";
 import { useContactStore } from "./contact";
-const { generateChatId, createChatFromMessage } = useChat();
+const {
+  generateChatId,
+  generateGroupChatId,
+  generatePrivateChatId,
+  createChatFromMessage,
+} = useChat();
 
 export const useChatStore = defineStore("chat", {
   state: () => ({
@@ -16,7 +21,7 @@ export const useChatStore = defineStore("chat", {
     socket: null as WebSocket | null,
     stompClient: null as CompatClient | null,
     subscriptions: new Map<string, string>(),
-    initialized: false,
+    // initialized: false,
   }),
 
   getters: {
@@ -176,18 +181,19 @@ export const useChatStore = defineStore("chat", {
       // set up WebSocket connection
       this.socket = new SockJS(`${process.env.VUE_APP_WS_URL}`);
       this.stompClient = Stomp.over(this.socket);
+      this.subscriptions = new Map<string, string>();
 
       this.stompClient.connect(
         { Authorization: `Bearer ${token}` },
         async () => {
           const contacts = useContactStore().getContacts;
           for (const contact of contacts) {
-            await this.subscribeToChat(generateChatId("PRIVATE", contact.id));
+            await this.subscribeToChat(generatePrivateChatId(contact));
           }
 
           const groups = useGroupStore().getGroups;
           for (const group of groups) {
-            await this.subscribeToChat(generateChatId("GROUP", group.id));
+            await this.subscribeToChat(generateGroupChatId(group));
           }
 
           // Subscribe to the logged-in customer's private chat
@@ -197,7 +203,7 @@ export const useChatStore = defineStore("chat", {
         }
       );
 
-      this.initialized = true;
+      // this.initialized = true;
     },
   },
 });
