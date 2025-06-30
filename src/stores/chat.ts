@@ -181,7 +181,6 @@ export const useChatStore = defineStore("chat", {
       // set up WebSocket connection
       this.socket = new SockJS(`${process.env.VUE_APP_WS_URL}`);
       this.stompClient = Stomp.over(this.socket);
-      this.subscriptions = new Map<string, string>();
 
       this.stompClient.connect(
         { Authorization: `Bearer ${token}` },
