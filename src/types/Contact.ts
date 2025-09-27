@@ -1,6 +1,6 @@
 export interface Contact {
   id: number;
-  customerId: number;
+  userId: number;
   name: string;
   avatarFilename: string;
 }

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { defineEmits, ref } from "vue";
 import ProfilePhoto from "@/components/ProfilePhoto.vue";
-import { useCustomerStore } from "@/stores/customer";
+import { useUserStore } from "@/stores/user";
 const emit = defineEmits(["update", "close"]);
-const customerStore = useCustomerStore();
+const userStore = useUserStore();
 const fileInput = ref<HTMLInputElement | null>(null);
 // it shows the file chooser dialog
 function showFileChooserDialog() {
@@ -25,7 +25,7 @@ function updatePhoto(event: Event) {
     <div class="md:col-span-2">
       <input type="file" ref="fileInput" class="hidden" @change="updatePhoto" />
       <ProfilePhoto
-        v-if="customerStore.customer.profile?.avatarFilename"
+        v-if="userStore.user?.avatarFilename"
         alt="Profile photo"
         @click="showFileChooserDialog"
         class="w-24 h-24 rounded-full object-cover border cursor-pointer"

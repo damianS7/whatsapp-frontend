@@ -1,11 +1,11 @@
-import { ChatType } from "./Chat";
+import type { ChatType } from "./Chat";
 
 export interface ChatMessage {
   chatId: string;
   groupId?: number;
-  fromCustomerName: string;
-  fromCustomerId: number;
-  toCustomerId?: number;
+  fromUserName: string;
+  fromUserId: number;
+  toUserId?: number;
   message: string;
   chatType: ChatType;
   timestamp: Date;

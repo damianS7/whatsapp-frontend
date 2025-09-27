@@ -1,6 +1,6 @@
-import { Customer } from "@/types/Customer";
+import type { User } from "@/types/User";
 import { defineStore } from "pinia";
-
+const API = import.meta.env.VITE_APP_API_URL;
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     token: "",
@@ -21,7 +21,7 @@ export const useAuthStore = defineStore("auth", {
     async login(email: string, password: string) {
       try {
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/auth/login`,
+          `${API}/auth/login`,
           {
             method: "POST",
             headers: {
@@ -47,10 +47,10 @@ export const useAuthStore = defineStore("auth", {
         throw new Error("Invalid credentials.");
       }
     },
-    async register(fields: Customer) {
+    async register(fields: User) {
       try {
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/auth/register`,
+          `${API}/auth/register`,
           {
             method: "POST",
             headers: {
@@ -78,7 +78,7 @@ export const useAuthStore = defineStore("auth", {
     async isTokenValid(token: string) {
       try {
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/auth/token/validate`,
+          `${API}/auth/token/validate`,
           {
             method: "GET",
             headers: {

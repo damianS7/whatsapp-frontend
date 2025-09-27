@@ -1,26 +1,26 @@
 import { useChatStore } from "@/stores/chat";
-import { useCustomerStore } from "@/stores/customer";
+import { useUserStore } from "@/stores/user";
 import { useGroupStore } from "@/stores/group";
-import { Chat, ChatType } from "@/types/Chat";
-import { ChatMember } from "@/types/ChatMember";
-import { ChatMessage } from "@/types/ChatMessage";
-import { Contact } from "@/types/Contact";
-import { Customer } from "@/types/Customer";
-import { Group } from "@/types/Group";
+import type { Chat, ChatType } from "@/types/Chat";
+import type { ChatMember } from "@/types/ChatMember";
+import type { ChatMessage } from "@/types/ChatMessage";
+import type { Contact } from "@/types/Contact";
+import type { User } from "@/types/User";
+import type { Group } from "@/types/Group";
 
 // src/composables/useChat.ts
 export function useChat() {
-  const isLoggedCustomer = (customerId: number) => {
-    const customer: Customer = useCustomerStore().getLoggedCustomer;
-    if (customer.id === customerId) {
+  const isLoggedUser = (userId: number) => {
+    const user: User = useUserStore().getLoggedUser;
+    if (user.id === userId) {
       return true;
     }
     return false;
   };
 
-  const getDestinationCustomer = (chat: Chat): ChatMember | null => {
+  const getDestinationUser = (chat: Chat): ChatMember | null => {
     for (const participant of chat.participants) {
-      if (participant.customerId !== useCustomerStore().getLoggedCustomer.id) {
+      if (participant.userId !== useUserStore().getLoggedUser.id) {
         return participant as ChatMember;
       }
     }
@@ -32,9 +32,9 @@ export function useChat() {
       return chat.avatarFilename || "";
     }
 
-    const destinationCustomer = getDestinationCustomer(chat) as ChatMember;
+    const destinationCustomer = getDestinationUser(chat) as ChatMember;
     if (destinationCustomer) {
-      return destinationCustomer.customerAvatarFilename;
+      return destinationCustomer.userAvatarFilename;
     }
     return "";
   };
@@ -43,7 +43,7 @@ export function useChat() {
   };
 
   const generatePrivateChatId = (contact: Contact) => {
-    return generateChatId("PRIVATE", contact.customerId);
+    return generateChatId("PRIVATE", contact.userId);
   };
 
   const generateGroupChatId = (group: Group) => {
@@ -51,7 +51,7 @@ export function useChat() {
   };
 
   const createPrivateChat = (contact: Contact): Chat => {
-    const customerStore = useCustomerStore();
+    const customerStore = useUserStore();
     return {
       id: generatePrivateChatId(contact),
       name: contact.name,
@@ -59,15 +59,14 @@ export function useChat() {
       history: [],
       participants: [
         {
-          customerId: contact.customerId,
-          customerName: contact.name,
-          customerAvatarFilename: contact.avatarFilename,
+          userId: contact.userId,
+          userName: contact.name,
+          userAvatarFilename: contact.avatarFilename,
         },
         {
-          customerId: customerStore.getLoggedCustomer.id,
-          customerName: customerStore.getLoggedCustomer.profile.firstName,
-          customerAvatarFilename:
-            customerStore.getLoggedCustomer.profile.avatarFilename,
+          userId: customerStore.getLoggedUser.id,
+          userName: customerStore.getLoggedUser.firstName,
+          userAvatarFilename: customerStore.getLoggedUser.avatarFilename,
         },
       ],
       avatarFilename: contact.avatarFilename,
@@ -86,7 +85,7 @@ export function useChat() {
   };
 
   const createChatFromMessage = async (message: ChatMessage): Promise<Chat> => {
-    const customerStore = useCustomerStore();
+    const customerStore = useUserStore();
     const groupStore = useGroupStore();
 
     if (message.chatType === "GROUP" && message.groupId) {
@@ -96,28 +95,27 @@ export function useChat() {
 
     return {
       id: message.chatId,
-      name: message.fromCustomerName,
+      name: message.fromUserName,
       type: message.chatType,
       history: [],
       participants: [
         {
-          customerId: message.fromCustomerId,
-          customerName: message.fromCustomerName,
-          customerAvatarFilename: "",
+          userId: message.fromUserId,
+          userName: message.fromUserName,
+          userAvatarFilename: "",
         },
         {
-          customerId: customerStore.getLoggedCustomer.id,
-          customerName: customerStore.getLoggedCustomer.profile.firstName,
-          customerAvatarFilename:
-            customerStore.getLoggedCustomer.profile.avatarFilename || "",
+          userId: customerStore.getLoggedUser.id,
+          userName: customerStore.getLoggedUser.firstName,
+          userAvatarFilename: customerStore.getLoggedUser.avatarFilename || "",
         },
       ],
     };
   };
 
   return {
-    getDestinationCustomer,
-    isLoggedCustomer,
+    getDestinationUser,
+    isLoggedUser,
     generateChatId,
     generateGroupChatId,
     generatePrivateChatId,

@@ -2,7 +2,7 @@
 import { computed, defineProps } from "vue";
 import type { Chat } from "@/types/Chat";
 import { useChat } from "@/composables/useChat";
-const { getDestinationCustomer } = useChat();
+const { getDestinationUser } = useChat();
 import CustomerAvatar from "@/components/CustomerAvatar.vue";
 interface Props {
   chat: Chat;
@@ -11,8 +11,7 @@ const props = defineProps<Props>();
 const filename = computed(() => {
   let avatarFilename = "";
   if (props.chat.type === "PRIVATE") {
-    avatarFilename =
-      getDestinationCustomer(props.chat)?.customerAvatarFilename ?? "";
+    avatarFilename = getDestinationUser(props.chat)?.userAvatarFilename ?? "";
   }
 
   if (props.chat.type === "GROUP" && props.chat.avatarFilename) {

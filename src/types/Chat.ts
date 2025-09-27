@@ -1,6 +1,6 @@
-import { ChatMessage } from "@/types/ChatMessage";
-import { ChatMember } from "@/types/ChatMember";
-import { GroupMember } from "./GroupMember";
+import type { ChatMessage } from "@/types/ChatMessage";
+import type { ChatMember } from "@/types/ChatMember";
+import type { GroupMember } from "@/types/GroupMember";
 
 export const types = ["PRIVATE", "GROUP"] as const;
 export type ChatType = (typeof types)[number];

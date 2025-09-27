@@ -4,7 +4,7 @@ import { z } from "zod";
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
-import { Customer } from "@/types/Customer";
+import { User } from "@/types/User";
 import { GenderType } from "@/types/Profile";
 const authStore = useAuthStore();
 const router = useRouter();
@@ -107,7 +107,7 @@ const onFormSubmit = async () => {
     return;
   }
 
-  const customer: Customer = {
+  const customer: User = {
     email: formData.email,
     password: formData.password,
     profile: {

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, defineProps, onUpdated, onMounted } from "vue";
 import type { ChatMessage } from "@/types/ChatMessage";
-import type { Customer } from "@/types/Customer";
+import type { User } from "@/types/User";
 import type { ChatType } from "@/types/Chat";
 import { useChat } from "@/composables/useChat";
-const { isLoggedCustomer } = useChat();
+const { isLoggedUser } = useChat();
 interface Props {
-  user: Customer;
+  user: User;
   messages: ChatMessage[];
   chatType: ChatType;
 }
@@ -31,26 +31,27 @@ onMounted(() => {
       v-for="(message, index) in messages"
       :key="index"
       :class="{
-        'flex justify-center': message.fromCustomerName === 'SYSTEM',
-        'flex justify-end': isLoggedCustomer(message.fromCustomerId),
-        'flex justify-start': !isLoggedCustomer(message.fromCustomerId),
+        'flex justify-center': message.fromUserName === 'SYSTEM',
+        'flex justify-end': isLoggedUser(message.fromUserId),
+        'flex justify-start': !isLoggedUser(message.fromUserId),
       }"
     >
       <div
         class="px-4 py-2 w-full min-w-32 max-w-min shadow"
         :class="{
-          'rounded-xl max-w-max': message.fromCustomerName === 'SYSTEM',
-          'bg-lime-200 rounded-tl-xl rounded-bl-xl rounded-tr-xl':
-            isLoggedCustomer(message.fromCustomerId),
+          'rounded-xl max-w-max': message.fromUserName === 'SYSTEM',
+          'bg-lime-200 rounded-tl-xl rounded-bl-xl rounded-tr-xl': isLoggedUser(
+            message.fromUserId
+          ),
           'bg-stone-100 rounded-bl-xl rounded-tr-xl rounded-br-xl':
-            !isLoggedCustomer(message.fromCustomerId),
+            !isLoggedUser(message.fromUserId),
         }"
       >
         <p
-          v-if="chatType === 'GROUP' && message.fromCustomerName !== 'SYSTEM'"
+          v-if="chatType === 'GROUP' && message.fromUserName !== 'SYSTEM'"
           class="font-bold"
         >
-          {{ message.fromCustomerName }}
+          {{ message.fromUserName }}
         </p>
         <p class="text-base break-words mb-1">
           {{ message.message }}

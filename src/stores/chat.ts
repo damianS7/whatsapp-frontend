@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
 import SockJS from "sockjs-client";
 import { CompatClient, Stomp } from "@stomp/stompjs";
-import { Chat } from "@/types/Chat";
-import { ChatMessage } from "@/types/ChatMessage";
-import { useCustomerStore } from "@/stores/customer";
+import type { Chat } from "@/types/Chat";
+import type { ChatMessage } from "@/types/ChatMessage";
+import { useUserStore } from "@/stores/user";
 import { useChat } from "@/composables/useChat";
 import { useGroupStore } from "./group";
 import { useContactStore } from "./contact";
@@ -89,24 +89,24 @@ export const useChatStore = defineStore("chat", {
         `Received message for chat: ${chatMessage.chatId}`,
         chatMessage
       );
-      const customerStore = useCustomerStore();
+      const customerStore = useUserStore();
 
-      if (chatMessage.fromCustomerName === "SYSTEM") {
+      if (chatMessage.fromUserName === "SYSTEM") {
         // check notification type
         // do something
         // send a message
       }
 
       // if chatMessage its a private message ...
-      if (chatMessage.chatType === "PRIVATE" && chatMessage.toCustomerId) {
+      if (chatMessage.chatType === "PRIVATE" && chatMessage.toUserId) {
         // if the message its sent to the logged customer
         if (
-          chatMessage.toCustomerId === customerStore.getLoggedCustomer.id &&
-          chatMessage.fromCustomerId
+          chatMessage.toUserId === customerStore.getLoggedUser.id &&
+          chatMessage.fromUserId
         ) {
           chatMessage.chatId = generateChatId(
             "PRIVATE",
-            chatMessage.fromCustomerId
+            chatMessage.fromUserId
           );
         }
       }
@@ -176,10 +176,10 @@ export const useChatStore = defineStore("chat", {
         return;
       }
 
-      const customerStore = useCustomerStore();
+      const customerStore = useUserStore();
 
       // set up WebSocket connection
-      this.socket = new SockJS(`${process.env.VUE_APP_WS_URL}`);
+      this.socket = new SockJS(`${import.meta.env.VITE_APP_WS_URL}`);
       this.stompClient = Stomp.over(this.socket);
 
       this.stompClient.connect(
@@ -197,7 +197,7 @@ export const useChatStore = defineStore("chat", {
 
           // Subscribe to the logged-in customer's private chat
           await this.subscribeToChat(
-            generateChatId("PRIVATE", customerStore.getLoggedCustomer.id)
+            generateChatId("PRIVATE", customerStore.getLoggedUser.id)
           );
         }
       );

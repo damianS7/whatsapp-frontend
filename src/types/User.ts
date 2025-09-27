@@ -1,7 +1,9 @@
 export type GenderType = "MALE" | "FEMALE";
-export interface Profile {
-  id?: number;
-  customerId?: number;
+export interface User {
+  id: number;
+  email: string;
+  password: string;
+  userName: string;
   firstName: string;
   lastName: string;
   phone: string;

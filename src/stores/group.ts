@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import { Group } from "@/types/Group";
-import { GroupMember } from "@/types/GroupMember";
-
+import type { Group } from "@/types/Group";
+import type { GroupMember } from "@/types/GroupMember";
+const API = import.meta.env.VITE_APP_API_URL;
 export const useGroupStore = defineStore("group", {
   state: () => ({
     groups: [] as Group[],
@@ -22,7 +22,7 @@ export const useGroupStore = defineStore("group", {
     async fetchGroups(): Promise<Group[]> {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/groups`, {
+        const response = await fetch(`${API}/groups`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export const useGroupStore = defineStore("group", {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/groups/${groupId}`,
+          `${API}/groups/${groupId}`,
           {
             method: "GET",
             headers: {
@@ -79,7 +79,7 @@ export const useGroupStore = defineStore("group", {
     }): Promise<Group> {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(`${process.env.VUE_APP_API_URL}/groups`, {
+        const response = await fetch(`${API}/groups`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -118,7 +118,7 @@ export const useGroupStore = defineStore("group", {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/groups/${id}`,
+          `${API}/groups/${id}`,
           {
             method: "PUT",
             headers: {
@@ -156,7 +156,7 @@ export const useGroupStore = defineStore("group", {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/groups/${id}/members`,
+          `${API}/groups/${id}/members`,
           {
             method: "POST",
             headers: {
@@ -191,7 +191,7 @@ export const useGroupStore = defineStore("group", {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/groups/members/${memberId}`,
+          `${API}/groups/members/${memberId}`,
           {
             method: "DELETE",
             headers: {
@@ -225,7 +225,7 @@ export const useGroupStore = defineStore("group", {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/groups/${id}`,
+          `${API}/groups/${id}`,
           {
             method: "DELETE",
             headers: {

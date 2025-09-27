@@ -58,9 +58,9 @@ function addContact(customerId: number) {
 function openChat(chatMember: ChatMember) {
   const chat = createPrivateChat({
     id: 0,
-    customerId: chatMember.customerId,
-    name: chatMember.customerName,
-    avatarFilename: chatMember.customerAvatarFilename,
+    userId: chatMember.userId,
+    name: chatMember.userName,
+    avatarFilename: chatMember.userAvatarFilename,
   });
   const existingChat = chatStore.getChat(chat.id);
 
@@ -96,7 +96,7 @@ function openChat(chatMember: ChatMember) {
         class="grid grid-cols-1 sm:grid-cols-2 grid-rows-[min-content_max-content] gap-2"
       >
         <template v-for="(member, index) in participants" :key="index">
-          <div v-if="!isLoggedCustomer(member.customerId)">
+          <div v-if="!isLoggedCustomer(member.userId)">
             <div
               class="flex flex-col flex-1 items-center gap-1 bg-gray-300 p-4 rounded"
             >
@@ -105,13 +105,13 @@ function openChat(chatMember: ChatMember) {
                 class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
               >
                 <CustomerAvatar
-                  :filename="member.customerAvatarFilename ?? ''"
-                  :fallbackString="member.customerName"
+                  :filename="member.userAvatarFilename ?? ''"
+                  :fallbackString="member.userName"
                 />
               </div>
               <div>
                 <p class="text-sm font-medium text-gray-800 truncate">
-                  {{ member.customerName }}
+                  {{ member.userName }}
                 </p>
               </div>
 
@@ -125,8 +125,8 @@ function openChat(chatMember: ChatMember) {
                   <MessageCircle :size="20" />
                 </button>
                 <button
-                  v-if="!contactStore.isContact(member.customerId)"
-                  @click="addContact(member.customerId)"
+                  v-if="!contactStore.isContact(member.userId)"
+                  @click="addContact(member.userId)"
                   class="btn btn-primary btn-xs p-2"
                   title="add contact"
                 >

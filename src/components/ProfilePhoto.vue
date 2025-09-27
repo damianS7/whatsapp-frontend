@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import { useCustomerStore } from "@/stores/customer";
-const customerStore = useCustomerStore();
+import { useUserStore } from "@/stores/user";
+const userStore = useUserStore();
 const profileImgURL = ref("");
 
 onMounted(() => {
-  if (customerStore.customer.profile?.avatarFilename) {
+  if (userStore.user.avatarFilename) {
     reloadProfileImg();
   }
 });
 
 watch(
-  () => customerStore.customer.profile?.avatarFilename,
+  () => userStore.user.avatarFilename,
   () => {
     reloadProfileImg();
   },

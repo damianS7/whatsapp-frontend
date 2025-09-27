@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { useCustomerStore } from "@/stores/customer";
+import { useUserStore } from "@/stores/user";
 import MessageAlert from "@/components/MessageAlert.vue";
 import { onMounted, ref } from "vue";
 import ProfileEditableField from "./components/ProfileEditableField.vue";
 import ProfilePhoto from "./components/ProfilePhotoUploader.vue";
 import ConfirmPasswordModal from "@/components/modal/ConfirmPasswordModal.vue";
 import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
-import { GenderType } from "@/types/Profile";
 import { MessageType } from "@/types/Message";
+import { GenderType } from "@/types/User";
 
-const customerStore = useCustomerStore();
-const customer = customerStore.getLoggedCustomer;
+const userStore = useUserStore();
+const user = userStore.getLoggedUser;
 const genderTypes: GenderType[] = ["MALE", "FEMALE"];
 const genderOptions = genderTypes.map((value) => ({
   value,
@@ -34,7 +34,7 @@ const formFields = ref([
     name: "firstName",
     type: "text",
     placeholder: "First name",
-    value: customerStore.customer.profile?.firstName,
+    value: userStore.user.firstName,
     error: "",
     isEditing: false,
     edited: false,
@@ -44,7 +44,7 @@ const formFields = ref([
     name: "lastName",
     type: "text",
     placeholder: "Last name",
-    value: customer.profile?.lastName,
+    value: user.lastName,
     error: "",
     isEditing: false,
     edited: false,
@@ -53,7 +53,7 @@ const formFields = ref([
     name: "email",
     type: "email",
     placeholder: "Email",
-    value: customer.email,
+    value: user.email,
     error: "",
     isEditing: false,
     edited: false,
@@ -62,7 +62,7 @@ const formFields = ref([
     name: "phone",
     type: "text",
     placeholder: "Phone",
-    value: customer.profile?.phone,
+    value: user.phone,
     error: "",
     isEditing: false,
     edited: false,
@@ -71,7 +71,7 @@ const formFields = ref([
     name: "gender",
     type: "select",
     placeholder: "Gender",
-    value: customer.profile?.gender,
+    value: user.gender,
     options: genderOptions,
     error: "",
     isEditing: false,
@@ -81,7 +81,7 @@ const formFields = ref([
     name: "birthdate",
     type: "date",
     placeholder: "Birthdate",
-    value: customer.profile?.birthdate,
+    value: user.birthdate,
     error: "",
     isEditing: false,
     edited: false,
@@ -123,12 +123,12 @@ async function updateField(
   }
 
   // request for update
-  await customerStore
+  await userStore
     .patchProfile(currentPassword, {
       [field.name]: field.value,
     })
     .then((profile) => {
-      customerStore.setProfile(profile);
+      userStore.setProfile(profile);
       formFields.value[index].value = field.value;
       alert.value.showMessage(
         "Field successfully updated.",
@@ -151,7 +151,7 @@ async function updatePassword(index: number, newPassword: string) {
   }
 
   // request for update
-  await customerStore
+  await userStore
     .changePassword(currentPassword, newPassword)
     .then(() => {
       alert.value.showMessage(
@@ -174,11 +174,11 @@ async function updatePhoto(photo: any) {
     return;
   }
 
-  await customerStore
+  await userStore
     .uploadPhoto(password, photo)
     .then((blob) => {
       localStorage.setItem("profilePhotoURL", URL.createObjectURL(blob));
-      customerStore.setPhoto(blob);
+      userStore.setPhoto(blob);
       alert.value.showMessage(
         "Photo successfully updated.",
         MessageType.SUCCESS
@@ -204,10 +204,10 @@ async function updateEmail(index: number, newEmail: string) {
   }
 
   // request for update
-  await customerStore
+  await userStore
     .patchEmail(currentPassword, newEmail)
-    .then((customer) => {
-      customerStore.setEmail(customer.email);
+    .then((user) => {
+      userStore.setEmail(user.email);
       formFields.value[index].value = newEmail;
       alert.value.showMessage(
         "Field successfully updated.",
@@ -239,10 +239,7 @@ onMounted(() => {
       <div class="flex justify-center">
         <ProfilePhoto @update="updatePhoto" />
       </div>
-      <div
-        v-if="customerStore.customer.profile"
-        class="grid grid-cols-1 md:grid-cols-2 gap-4"
-      >
+      <div v-if="userStore.user" class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ProfileEditableField
           v-for="(field, index) in formFields"
           :key="index"

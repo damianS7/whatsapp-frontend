@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, defineProps, onUpdated } from "vue";
-import { useCustomerStore } from "@/stores/customer";
+import { useUserStore } from "@/stores/user";
 
-const customerStore = useCustomerStore();
+const customerStore = useUserStore();
 const blobURL = ref("");
 const props = defineProps<{
   filename: string;

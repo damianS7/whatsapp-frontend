@@ -3,12 +3,12 @@ import ChatInputBox from "@/views/chat/components/ChatInputBox.vue";
 import ChatHistory from "@/views/chat/components/ChatHistory.vue";
 import ChatList from "@/views/chat/components/ChatList.vue";
 import ChatHeader from "@/views/chat/components/ChatHeader.vue";
-import { useCustomerStore } from "@/stores/customer";
+import { useUserStore } from "@/stores/user";
 import { ref, computed } from "vue";
 import { useChatStore } from "@/stores/chat";
 import ChatGroupMembersPanel from "./components/ChatGroupMembersPanel.vue";
 const chatStore = useChatStore();
-const customerStore = useCustomerStore();
+const userStore = useUserStore();
 const currentChat = computed(() => {
   return chatStore.getSelectedChat;
 });
@@ -46,17 +46,14 @@ function toggleGroupMemberPanel() {
 
       <div class="overflow-hidden">
         <ChatHistory
-          :user="customerStore.getLoggedCustomer"
+          :user="userStore.getLoggedUser"
           :messages="currentChat.history"
           :chatType="currentChat.type"
         />
       </div>
 
       <div>
-        <ChatInputBox
-          :fromCustomer="customerStore.getLoggedCustomer"
-          :chat="currentChat"
-        />
+        <ChatInputBox :fromUser="userStore.getLoggedUser" :chat="currentChat" />
       </div>
     </div>
   </div>

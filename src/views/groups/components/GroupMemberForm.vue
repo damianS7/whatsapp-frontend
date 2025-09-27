@@ -34,7 +34,7 @@ const groupMembers = computed(() => {
   return (
     group.value?.members.filter((member) => {
       // filter out the logged customer (OWNER) from the group members
-      return !isLoggedCustomer(member.customerId);
+      return !isLoggedCustomer(member.userId);
     }) ?? []
   );
 }) as Ref<GroupMember[]>;
@@ -47,7 +47,7 @@ async function addMember(contact: Contact) {
   }
 
   await groupStore
-    .addGroupMember(group.value.id, contact.customerId)
+    .addGroupMember(group.value.id, contact.userId)
     .then()
     .catch();
 
@@ -97,10 +97,10 @@ async function removeMember(groupMemberId: number) {
     <div class="flex flex-wrap gap-2">
       <span
         v-for="member in groupMembers"
-        :key="member.customerId"
+        :key="member.userId"
         class="flex pill pill-primary items-center"
       >
-        {{ member.customerName }}
+        {{ member.userName }}
         <button @click="removeMember(member.id)">
           <X class="cursor-pointer" />
         </button>

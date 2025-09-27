@@ -8,7 +8,7 @@ import CustomerAvatar from "@/components/CustomerAvatar.vue";
 import { useChat } from "@/composables/useChat";
 import ChatContactGroupList from "./ChatContactGroupList.vue";
 import { useContactStore } from "@/stores/contact";
-const { getAvatarFilenameFromChat, getDestinationCustomer } = useChat();
+const { getAvatarFilenameFromChat, getDestinationUser } = useChat();
 
 // store
 const chatStore = useChatStore();
@@ -69,9 +69,9 @@ function getLastMessageFromChat(chat: Chat) {
 function isContact() {
   const chat = chatStore.getChat(clickedChatId);
   if (chat && chat.type === "PRIVATE") {
-    const destCustomer = getDestinationCustomer(chat);
-    if (destCustomer?.customerId) {
-      return contactStore.isContact(destCustomer.customerId);
+    const destUser = getDestinationUser(chat);
+    if (destUser?.userId) {
+      return contactStore.isContact(destUser.userId);
     }
   }
   return true;
@@ -80,9 +80,9 @@ function isContact() {
 function addContact() {
   const chat = chatStore.getChat(clickedChatId);
   if (chat && chat.type === "PRIVATE") {
-    const destCustomer = getDestinationCustomer(chat);
-    if (destCustomer?.customerId) {
-      contactStore.addContact(destCustomer.customerId);
+    const destUser = getDestinationUser(chat);
+    if (destUser?.userId) {
+      contactStore.addContact(destUser.userId);
     }
   }
 }

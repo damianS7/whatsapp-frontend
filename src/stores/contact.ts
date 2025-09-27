@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { Contact } from "@/types/Contact";
-
+const API = import.meta.env.VITE_APP_API_URL;
 export const useContactStore = defineStore("contact", {
   state: () => ({
     contacts: [{}] as Contact[],
@@ -12,10 +12,8 @@ export const useContactStore = defineStore("contact", {
       return state.contacts;
     },
     isContact: (state) => {
-      return (customerId: number) => {
-        return state.contacts.find(
-          (contact) => contact.customerId === customerId
-        )
+      return (userId: number) => {
+        return state.contacts.find((contact) => contact.userId === userId)
           ? true
           : false;
       };
@@ -27,7 +25,7 @@ export const useContactStore = defineStore("contact", {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/contacts`,
+          `${API}/contacts`,
           {
             method: "GET",
             headers: {
@@ -55,7 +53,7 @@ export const useContactStore = defineStore("contact", {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/contacts/${id}`,
+          `${API}/contacts/${id}`,
           {
             method: "DELETE",
             headers: {
@@ -83,7 +81,7 @@ export const useContactStore = defineStore("contact", {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/contacts`,
+          `${API}/contacts`,
           {
             method: "POST",
             headers: {
@@ -91,7 +89,7 @@ export const useContactStore = defineStore("contact", {
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
-              customerId: id,
+              userId: id,
             }),
           }
         );
@@ -114,7 +112,7 @@ export const useContactStore = defineStore("contact", {
         const token = localStorage.getItem("token");
 
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/{id}/profile/photo/${filename}`,
+          `${API}/customers/{id}/profile/photo/${filename}`,
           {
             method: "GET",
             headers: {

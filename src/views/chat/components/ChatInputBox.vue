@@ -2,12 +2,12 @@
 import { useChatStore } from "@/stores/chat";
 import type { Chat } from "@/types/Chat";
 import { ChatMessage } from "@/types/ChatMessage";
-import type { Customer } from "@/types/Customer";
+import type { User } from "@/types/User";
 import { ref, defineProps } from "vue";
 import { useChat } from "@/composables/useChat";
-const { generateChatId, getDestinationCustomer } = useChat();
+const { generateChatId, getDestinationUser } = useChat();
 interface Props {
-  fromCustomer: Customer;
+  fromUser: User;
   chat: Chat;
 }
 const props = defineProps<Props>();
@@ -21,8 +21,8 @@ function send() {
 
   const message = {
     chatId: "",
-    fromCustomerId: props.fromCustomer.id,
-    fromCustomerName: props.fromCustomer.profile.firstName,
+    fromUserId: props.fromUser.id,
+    fromUserName: props.fromUser.firstName,
     chatType: props.chat.type,
     message: textarea.value,
     timestamp: new Date(),
@@ -34,12 +34,12 @@ function send() {
   }
 
   if (props.chat.type === "PRIVATE") {
-    const destinationCustomer = getDestinationCustomer(props.chat);
-    if (!destinationCustomer) {
+    const destinationUser = getDestinationUser(props.chat);
+    if (!destinationUser) {
       return;
     }
-    message.toCustomerId = destinationCustomer.customerId;
-    message.chatId = generateChatId("PRIVATE", destinationCustomer.customerId);
+    message.toUserId = destinationUser.userId;
+    message.chatId = generateChatId("PRIVATE", destinationUser.userId);
   }
 
   chatStore.sendMessage(message);

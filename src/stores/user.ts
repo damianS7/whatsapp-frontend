@@ -1,92 +1,80 @@
 import { defineStore } from "pinia";
-import type { Customer } from "@/types/Customer";
-import { Profile } from "@/types/Profile";
-
-export const useCustomerStore = defineStore("customer", {
+import type { User } from "@/types/User";
+const API = import.meta.env.VITE_APP_API_URL;
+export const useUserStore = defineStore("user", {
   state: () => ({
-    customer: {} as Customer,
+    user: {} as User,
     initialized: false,
   }),
 
   getters: {
-    getLoggedCustomer: (state) => {
-      return state.customer;
+    getLoggedUser: (state) => {
+      return state.user;
     },
     getFullName: (state) => {
-      return (
-        state.customer.profile.firstName + " " + state.customer.profile.lastName
-      );
+      return state.user.firstName + " " + state.user.lastName;
     },
   },
 
   actions: {
-    async getCustomer(): Promise<Customer> {
+    async getCustomer(): Promise<User> {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch(`${API}/users`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         // if response is not 200, throw an error
         if (response.status !== 200) {
           const jsonResponse = await response.json();
-          throw new Error("Failed to fetch customer. " + jsonResponse.message);
+          throw new Error("Failed to fetch user. " + jsonResponse.message);
         }
 
-        return (await response.json()) as Customer;
+        return (await response.json()) as User;
       } catch (error: unknown) {
         if (error instanceof Error) {
           throw error;
         }
-        throw new Error("Failed to fetch customer.");
+        throw new Error("Failed to fetch user.");
       }
     },
     async patchProfile(
       currentPassword: string,
       fieldsToUpdate: Record<string, any>
-    ): Promise<Profile> {
+    ): Promise<User> {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me/profile`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({ currentPassword, fieldsToUpdate }),
-          }
-        );
+        const response = await fetch(`${API}/users`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ currentPassword, fieldsToUpdate }),
+        });
 
         // if response is not 200, throw an error
         if (response.status !== 200) {
-          throw new Error("Failed to updated profile.");
+          throw new Error("Failed to updated ");
         }
 
-        return (await response.json()) as Profile;
+        return (await response.json()) as User;
       } catch (error: unknown) {
         if (error instanceof Error) {
           throw error;
         }
-        throw new Error("Failed to update profile.");
+        throw new Error("Failed to update ");
       }
     },
-    async patchEmail(
-      currentPassword: string,
-      newEmail: string
-    ): Promise<Customer> {
+    async patchEmail(currentPassword: string, newEmail: string): Promise<User> {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me/email`,
+          `${API}/users/email`,
           {
             method: "PATCH",
             headers: {
@@ -102,7 +90,7 @@ export const useCustomerStore = defineStore("customer", {
           throw new Error("Failed to update email.");
         }
 
-        return (await response.json()) as Customer;
+        return (await response.json()) as User;
       } catch (error: unknown) {
         if (error instanceof Error) {
           throw error;
@@ -114,7 +102,7 @@ export const useCustomerStore = defineStore("customer", {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/auth/customers/password`,
+          `${API}/users/password`,
           {
             method: "PATCH",
             headers: {
@@ -136,12 +124,16 @@ export const useCustomerStore = defineStore("customer", {
         throw new Error("Failed to change password.");
       }
     },
-    async getPhoto(filename: string): Promise<Blob> {
+    async getPhoto(userId?: number): Promise<Blob> {
+      if (!userId) {
+        userId = this.user.id;
+      }
+
       try {
         const token = localStorage.getItem("token");
 
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me/profile/photo/${filename}`,
+          `${API}/users/${userId}/image`,
           {
             method: "GET",
             headers: {
@@ -152,7 +144,7 @@ export const useCustomerStore = defineStore("customer", {
 
         // if response is not 200, throw an error
         if (response.status !== 200) {
-          throw new Error("Failed to get photo.");
+          throw new Error("Failed to get image.");
         }
 
         return (await response.blob()) as Blob;
@@ -160,7 +152,7 @@ export const useCustomerStore = defineStore("customer", {
         if (error instanceof Error) {
           throw error;
         }
-        throw new Error("Failed to get photo.");
+        throw new Error("Failed to get image.");
       }
     },
     async uploadPhoto(currentPassword: string, file: any): Promise<Blob> {
@@ -171,7 +163,7 @@ export const useCustomerStore = defineStore("customer", {
         formData.append("currentPassword", currentPassword); // otro campo necesario
 
         const response = await fetch(
-          `${process.env.VUE_APP_API_URL}/customers/me/profile/photo`,
+          `${API}/users/image`,
           {
             method: "POST",
             headers: {
@@ -183,7 +175,7 @@ export const useCustomerStore = defineStore("customer", {
 
         // if response is not 201, throw an error
         if (response.status !== 201) {
-          throw new Error("Failed to upload photo.");
+          throw new Error("Failed to upload image.");
         }
 
         return (await response.blob()) as Blob;
@@ -191,20 +183,20 @@ export const useCustomerStore = defineStore("customer", {
         if (error instanceof Error) {
           throw error;
         }
-        throw new Error("Failed to upload photo");
+        throw new Error("Failed to upload image");
       }
     },
-    async setCustomer(customer: any) {
-      this.customer = customer;
+    async setCustomer(user: any) {
+      this.user = user;
     },
     async setEmail(email: string) {
-      this.customer.email = email;
+      this.user.email = email;
     },
     async setProfile(profile: any) {
-      this.customer.profile = profile;
+      this.user = profile;
     },
     async setPhoto(image: any) {
-      this.customer.profile.avatarFilename = ".";
+      this.user.avatarFilename = ".";
     },
     async initialize() {
       const token = localStorage.getItem("token");
@@ -213,18 +205,18 @@ export const useCustomerStore = defineStore("customer", {
       }
 
       await this.getCustomer()
-        .then((customer) => {
-          this.setCustomer(customer);
+        .then((user) => {
+          this.setCustomer(user);
         })
         .catch((error) => {
           console.log(error);
         });
 
-      if (!this.customer?.profile?.avatarFilename) {
+      if (!this.user.avatarFilename) {
         return;
       }
 
-      await this.getPhoto(this.customer.profile.avatarFilename)
+      await this.getPhoto()
         .then((filename) => {
           localStorage.setItem(
             "profilePhotoURL",

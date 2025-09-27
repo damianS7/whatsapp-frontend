@@ -1,7 +1,7 @@
 export interface GroupMember {
   id: number;
   groupId: number;
-  customerId: number;
-  customerName: string;
+  userId: number;
+  userName: string;
   avatarFilename: string;
 }
