@@ -5,7 +5,7 @@ import { useUserStore } from "@/stores/user";
 const customerStore = useUserStore();
 const blobURL = ref("");
 const props = defineProps<{
-  filename: string;
+  userId: number;
   fallbackString: string;
 }>();
 
@@ -19,12 +19,12 @@ function validateImage(url: string): Promise<boolean> {
 }
 
 async function loadBlobURL() {
-  if (!props.filename) {
+  if (!props.userId) {
     return;
   }
 
   // find the avatar in localStorage
-  let storedBlobURL = localStorage.getItem(`avatar-${props.filename}`) as
+  let storedBlobURL = localStorage.getItem(`avatar-${props.userId}`) as
     | string
     | undefined;
 
@@ -38,10 +38,10 @@ async function loadBlobURL() {
   // if the avatar its not in localstorage, fetch it from the server
   if (!storedBlobURL) {
     await customerStore
-      .getPhoto(props.filename)
+      .getPhoto(props.userId)
       .then((blob) => {
         localStorage.setItem(
-          `avatar-${props.filename}`,
+          `avatar-${props.userId}`,
           URL.createObjectURL(blob)
         );
       })
@@ -50,7 +50,7 @@ async function loadBlobURL() {
       });
   }
 
-  blobURL.value = localStorage.getItem(`avatar-${props.filename}`) as string;
+  blobURL.value = localStorage.getItem(`avatar-${props.userId}`) as string;
 }
 
 onMounted(async () => {
@@ -62,6 +62,6 @@ onUpdated(async () => {
 });
 </script>
 <template>
-  <img class="rounded-full" v-if="filename && blobURL" :src="blobURL" />
+  <img class="rounded-full" v-if="userId && blobURL" :src="blobURL" />
   <span v-else>{{ fallbackString.charAt(0) }}</span>
 </template>

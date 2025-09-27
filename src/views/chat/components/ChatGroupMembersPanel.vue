@@ -3,16 +3,16 @@ import { ArrowLeft } from "lucide-vue-next";
 import { ref, defineEmits, defineProps, computed } from "vue";
 import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
-import { Chat } from "@/types/Chat";
+import type { Chat } from "@/types/Chat";
 import { MessageCircle, UserRoundPlus } from "lucide-vue-next";
 import { useContactStore } from "@/stores/contact";
 import CustomerAvatar from "@/components/CustomerAvatar.vue";
 import { useChat } from "@/composables/useChat";
 import { useRouter } from "vue-router";
 import { useChatStore } from "@/stores/chat";
-import { ChatMember } from "@/types/ChatMember";
+import type { ChatMember } from "@/types/ChatMember";
 import { useGroupStore } from "@/stores/group";
-const { isLoggedCustomer, createPrivateChat } = useChat();
+const { isLoggedUser, createPrivateChat } = useChat();
 
 // router
 const router = useRouter();
@@ -33,9 +33,15 @@ interface Props {
   chat: Chat;
 }
 
+// Map members to ensure property names match ChatMember interface
 const participants = computed<ChatMember[]>(() => {
   const group = groupStore.getGroup(props.chat.groupId ?? -1);
-  return group?.members ?? [];
+  // TODO check this
+  // return group?.members ?? [];
+  return (group?.members ?? []).map((member: any) => ({
+    ...member,
+    userAvatarFilename: member.userAvatarFilename ?? member.avatarFilename,
+  }));
 });
 
 const props = defineProps<Props>();
@@ -96,7 +102,7 @@ function openChat(chatMember: ChatMember) {
         class="grid grid-cols-1 sm:grid-cols-2 grid-rows-[min-content_max-content] gap-2"
       >
         <template v-for="(member, index) in participants" :key="index">
-          <div v-if="!isLoggedCustomer(member.userId)">
+          <div v-if="!isLoggedUser(member.userId)">
             <div
               class="flex flex-col flex-1 items-center gap-1 bg-gray-300 p-4 rounded"
             >
@@ -105,8 +111,8 @@ function openChat(chatMember: ChatMember) {
                 class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
               >
                 <CustomerAvatar
-                  :filename="member.userAvatarFilename ?? ''"
-                  :fallbackString="member.userName"
+                  :userId="member.userId ?? 0"
+                  :fallbackString="member.userName ?? ''"
                 />
               </div>
               <div>

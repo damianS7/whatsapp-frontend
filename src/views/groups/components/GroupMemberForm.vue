@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { X } from "lucide-vue-next";
-import { ref, Ref, computed } from "vue";
+import { ref, type Ref, computed } from "vue";
 import { useGroupStore } from "@/stores/group";
 import { useContactStore } from "@/stores/contact";
 import type { Contact } from "@/types/Contact";
 import { useRoute } from "vue-router";
 import { useChat } from "@/composables/useChat";
-import { GroupMember } from "@/types/GroupMember";
-const { isLoggedCustomer } = useChat();
+import type { GroupMember } from "@/types/GroupMember";
+const { isLoggedUser } = useChat();
 const contactNameFilter = ref("");
 const route = useRoute();
 
@@ -33,8 +33,8 @@ const contacts = computed(() => {
 const groupMembers = computed(() => {
   return (
     group.value?.members.filter((member) => {
-      // filter out the logged customer (OWNER) from the group members
-      return !isLoggedCustomer(member.userId);
+      // filter out the logged user (OWNER) from the group members
+      return !isLoggedUser(member.userId);
     }) ?? []
   );
 }) as Ref<GroupMember[]>;

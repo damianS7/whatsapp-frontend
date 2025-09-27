@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineEmits, Ref, computed, onMounted } from "vue";
+import { ref, type Ref, computed } from "vue";
 import MessageAlert from "@/components/MessageAlert.vue";
 import { MessageType } from "@/types/Message";
 import { useGroupStore } from "@/stores/group";
