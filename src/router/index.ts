@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router"
 import LoginView from "@/views/auth/LoginView.vue";
 import MainLayout from "@/layouts/MainLayout.vue";
 import AuthLayout from "@/layouts/AuthLayout.vue";
-import RegisterView from "@/views/auth/RegisterView.vue";
+import RegisterView from "@/views/accounts/RegisterView.vue";
 import SettingsView from "@/views/settings/SettingsView.vue";
 import ProfileView from "@/views/profile/ProfileView.vue";
 import GroupListView from "@/views/groups/GroupListView.vue";
