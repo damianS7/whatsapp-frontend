@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Chat } from "@/types/Chat";
+import type { Chat } from "@/types/Chat";
 import { ref, computed, defineEmits } from "vue";
 import { useChatStore } from "@/stores/chat";
 import { MessageSquarePlus } from "lucide-vue-next";
-import { ChatMessage } from "@/types/ChatMessage";
+import type { ChatMessage } from "@/types/ChatMessage";
 import CustomerAvatar from "@/components/CustomerAvatar.vue";
 import { useChat } from "@/composables/useChat";
 import ChatContactGroupList from "./ChatContactGroupList.vue";
@@ -141,7 +141,7 @@ function toggleContactGroupList() {
             class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
           >
             <CustomerAvatar
-              :filename="getAvatarFilenameFromChat(chat) ?? ''"
+              :userId="getDestinationUser(chat)?.userId ?? -1"
               :fallbackString="chat.name"
             />
           </div>

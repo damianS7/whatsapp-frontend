@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
-import { Bell } from "lucide-vue-next";
 import ProfilePhoto from "@/components/ProfilePhoto.vue";
 const userStore = useUserStore();
 </script>
@@ -14,6 +13,5 @@ const userStore = useUserStore();
     <span>
       <ProfilePhoto class="rounded-full w-6 h-6 bg-gray-300" />
     </span>
-    <Bell />
   </header>
 </template>

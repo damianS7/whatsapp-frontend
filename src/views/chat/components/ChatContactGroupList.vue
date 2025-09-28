@@ -3,12 +3,12 @@ import { ref, computed, defineEmits } from "vue";
 import { useChatStore } from "@/stores/chat";
 import CustomerAvatar from "@/components/CustomerAvatar.vue";
 import { useChat } from "@/composables/useChat";
-import { Group } from "@/types/Group";
-import { Contact } from "@/types/Contact";
+import type { Group } from "@/types/Group";
+import type { Contact } from "@/types/Contact";
 import { useContactStore } from "@/stores/contact";
 import { useGroupStore } from "@/stores/group";
-import { Chat } from "@/types/Chat";
-const { createPrivateChat, createGroupChat } = useChat();
+import type { Chat } from "@/types/Chat";
+const { createPrivateChat, createGroupChat, getDestinationUser } = useChat();
 const emit = defineEmits(["toggleContactGroupList"]);
 
 // store
@@ -73,8 +73,8 @@ function openChat(chat: Chat) {
             class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
           >
             <CustomerAvatar
-              :filename="chat.avatarFilename ?? ''"
-              :fallbackString="chat.name"
+              :userId="getDestinationUser(chat)?.userId ?? -1"
+              :fallbackString="chat.name ?? ''"
             />
           </div>
         </div>

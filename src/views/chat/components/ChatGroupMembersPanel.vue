@@ -108,10 +108,10 @@ function openChat(chatMember: ChatMember) {
             >
               <!-- Avatar -->
               <div
-                class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
+                class="flex items-center justify-center text-white font-bold uppercase"
               >
                 <CustomerAvatar
-                  :userId="member.userId ?? 0"
+                  :userId="member.userId"
                   :fallbackString="member.userName ?? ''"
                 />
               </div>

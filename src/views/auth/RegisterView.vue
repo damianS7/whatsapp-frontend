@@ -4,8 +4,8 @@ import { z } from "zod";
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
-import { User } from "@/types/User";
-import { GenderType } from "@/types/Profile";
+import type { GenderType } from "@/types/User";
+import type { UserRegisterRequest } from "@/types/UserRegisterRequest";
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
@@ -18,10 +18,13 @@ const genderOptions = genderTypes.map((value) => ({
 
 // convertir array a objeto plano
 function getFormData() {
-  return formFields.value.reduce((acc, field) => {
-    acc[field.name] = field.value;
-    return acc;
-  }, {} as Record<string, string>);
+  return formFields.value.reduce(
+    (acc, field) => {
+      acc[field.name] = field.value;
+      return acc;
+    },
+    {} as Record<string, string>
+  );
 }
 
 function redirectBackToLastPage() {
@@ -45,6 +48,13 @@ const formFields = ref([
     name: "password",
     type: "password",
     placeholder: "Password",
+    value: "",
+    error: "",
+  },
+  {
+    name: "username",
+    type: "text",
+    placeholder: "Your @username",
     value: "",
     error: "",
   },
@@ -107,20 +117,19 @@ const onFormSubmit = async () => {
     return;
   }
 
-  const customer: User = {
+  const user: UserRegisterRequest = {
     email: formData.email,
     password: formData.password,
-    profile: {
-      firstName: formData.firstname,
-      lastName: formData.lastname,
-      phone: formData.phone,
-      birthdate: formData.birthdate,
-      gender: formData.gender as GenderType,
-    },
+    username: formData.username,
+    firstName: formData.firstname,
+    lastName: formData.lastname,
+    phone: formData.phone,
+    birthdate: formData.birthdate,
+    gender: formData.gender as GenderType,
   };
 
   await authStore
-    .register(customer)
+    .register(user)
     .then(() => {
       formStatus.value.message = "User registered.";
     })

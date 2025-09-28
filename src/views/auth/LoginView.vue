@@ -23,9 +23,7 @@ const form = ref({
   password: "",
 });
 
-const errors = ref<{ form?: string; email?: string[]; password?: string[] }>(
-  {}
-);
+const errors = ref<{ form?: string; email?: string[]; password?: string[] }>({});
 
 const resolver = ref(
   z.object({
@@ -39,7 +37,7 @@ const resolver = ref(
   })
 );
 
-const onFormSubmit = async () => {
+const onFormSubmit = () => {
   let email = form.value.email;
   let password = form.value.password;
   const result = resolver.value.safeParse(form.value);
@@ -51,7 +49,7 @@ const onFormSubmit = async () => {
 
   // clean errors
   errors.value = {};
-  await authStore
+  authStore
     .login(email, password)
     .then(() => {
       redirectBackToLastPage();
@@ -63,11 +61,7 @@ const onFormSubmit = async () => {
 </script>
 <template>
   <div class="bg-white p-6 rounded-lg shadow-md">
-    <form
-      :resolver="resolver"
-      @submit.prevent="onFormSubmit"
-      class="flex flex-col gap-4"
-    >
+    <form :resolver="resolver" @submit.prevent="onFormSubmit" class="flex flex-col gap-4">
       <div class="flex flex-col gap-1">
         <input
           v-model="form.email"
@@ -76,9 +70,7 @@ const onFormSubmit = async () => {
           placeholder="Email"
           class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
-        <span v-if="errors?.email" class="text-sm text-red-500">{{
-          errors.email[0]
-        }}</span>
+        <span v-if="errors?.email" class="text-sm text-red-500">{{ errors.email[0] }}</span>
       </div>
 
       <div class="flex flex-col gap-1">
@@ -89,18 +81,13 @@ const onFormSubmit = async () => {
           placeholder="Password"
           class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
-        <span v-if="errors?.password" class="text-sm text-red-500">{{
-          errors.password[0]
-        }}</span>
+        <span v-if="errors?.password" class="text-sm text-red-500">{{ errors.password[0] }}</span>
       </div>
 
       <div class="flex flex-col gap-1">
-        <span v-if="errors?.form" class="text-sm text-red-500">{{
-          errors.form
-        }}</span>
+        <button type="submit" class="btn btn-sm btn-blue">Sign in</button>
+        <span v-if="errors?.form" class="text-sm text-red-500">{{ errors.form }}</span>
       </div>
-
-      <button type="submit" class="btn btn-blue">Sign in</button>
     </form>
   </div>
 </template>

@@ -107,34 +107,6 @@ export const useContactStore = defineStore("contact", {
         throw new Error("Failed to add contact.");
       }
     },
-    async getPhoto(filename: string): Promise<Blob> {
-      try {
-        const token = localStorage.getItem("token");
-
-        const response = await fetch(
-          `${API}/customers/{id}/profile/photo/${filename}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        // if response is not 200, throw an error
-        if (response.status !== 200) {
-          const json = await response.json();
-          throw new Error(json?.message || "Failed to get photo.");
-        }
-
-        return (await response.blob()) as Blob;
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to get photo. Unknown error.");
-      }
-    },
     async setContacts(contacts: any) {
       this.contacts = contacts;
     },

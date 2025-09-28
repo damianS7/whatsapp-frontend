@@ -2,7 +2,7 @@
 import { ref, onMounted, defineProps, onUpdated } from "vue";
 import { useUserStore } from "@/stores/user";
 
-const customerStore = useUserStore();
+const userStore = useUserStore();
 const blobURL = ref("");
 const props = defineProps<{
   userId: number;
@@ -37,7 +37,7 @@ async function loadBlobURL() {
 
   // if the avatar its not in localstorage, fetch it from the server
   if (!storedBlobURL) {
-    await customerStore
+    await userStore
       .getPhoto(props.userId)
       .then((blob) => {
         localStorage.setItem(
@@ -62,6 +62,14 @@ onUpdated(async () => {
 });
 </script>
 <template>
-  <img class="rounded-full" v-if="userId && blobURL" :src="blobURL" />
-  <span v-else>{{ fallbackString.charAt(0) }}</span>
+  <img
+    v-if="userId && blobURL"
+    :src="blobURL"
+    @error="(e: any) => (e.target.src = '/default-avatar.jpg')"
+    alt="Profile photo"
+    class="rounded-full object-cover min-w-10 min-h-10 aspect-square max-h-16 max-w-16 bg-blue-500"
+  />
+  <span class="bg-blue-500 rounded-full" v-else>{{
+    fallbackString.charAt(0)
+  }}</span>
 </template>

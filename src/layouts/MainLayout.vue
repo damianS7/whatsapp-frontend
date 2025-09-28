@@ -2,60 +2,12 @@
 import FullScreenLoadingSpinner from "@/components/FullScreenLoadingSpinner.vue";
 import Sidebar from "@/layouts/SidebarLayout.vue";
 import Header from "@/components/HeaderBar.vue";
-import { onMounted, onUnmounted, ref } from "vue";
-import { useAuthStore } from "@/stores/auth";
-import { useGroupStore } from "@/stores/group";
-import { useUserStore } from "@/stores/user";
-import { useContactStore } from "@/stores/contact";
-import { useChatStore } from "@/stores/chat";
-import { useRouter } from "vue-router";
-const customerStore = useUserStore();
-const authStore = useAuthStore();
-const groupStore = useGroupStore();
-const chatStore = useChatStore();
-const contactStore = useContactStore();
-const router = useRouter();
-const tokenValidationInterval = 30 * 1000; // 30s
-let interval: number;
-let initialized = ref(false);
+import { useAppInit } from "@/composables/useAppInit";
 
-async function checkIfTokenIsValid() {
-  const token = authStore.token;
-  await authStore.isTokenValid(token).catch(async () => {
-    initialized.value = false;
-    await authStore.logout();
-    await wait(100);
-    router.push("/auth/login");
-  });
-}
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function wait(ms: number) {
-  await sleep(ms); // Espera 2 segundos
-}
-
-onMounted(async () => {
-  await checkIfTokenIsValid();
-  await customerStore.initialize();
-  await contactStore.initialize();
-  await groupStore.initialize();
-  await chatStore.initialize();
-  initialized.value = true;
-
-  interval = setInterval(async () => {
-    await checkIfTokenIsValid();
-  }, tokenValidationInterval);
-});
-
-onUnmounted(() => {
-  clearInterval(interval);
-});
+const appInit = useAppInit();
 </script>
 <template>
-  <FullScreenLoadingSpinner v-if="!initialized" />
+  <FullScreenLoadingSpinner v-if="!appInit.isInitialized()" />
   <main v-else class="flex flex-col h-screen overflow-hidden">
     <header>
       <Header />
