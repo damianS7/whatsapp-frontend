@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 </script>
 
 <template>
-  <Card class="">
+  <Card>
     <CardHeader>
       <CardTitle class="text-2xl"> Login </CardTitle>
       <CardDescription>

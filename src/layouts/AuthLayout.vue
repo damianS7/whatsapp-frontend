@@ -3,9 +3,7 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 </script>
 <template>
-  <div
-    class="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-2 py-8"
-  >
+  <div class="min-h-screen flex flex-col items-center justify-center px-2 py-8">
     <div class="w-full text-center mb-8">
       <span class="logo" to="/"> Whatsapp </span>
     </div>

@@ -1,28 +1,38 @@
-<template>
-  <router-view />
-</template>
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 const authStore = useAuthStore();
 onMounted(() => {
   authStore.initialize();
 });
 </script>
+<template>
+  <router-view />
+</template>
 <style>
+@reference "tailwindcss";
+
 * {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans",
+    sans-serif;
 }
 
 header,
 nav,
 .container {
-  @apply bg-gray-200;
+  @apply bg-zinc-200;
 }
 
 nav {
-  @apply border-r-2 border-solid border-gray-300;
+  @apply border-r-2 border-solid border-zinc-300;
 }
 
 .container {

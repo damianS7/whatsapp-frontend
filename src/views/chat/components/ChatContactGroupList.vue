@@ -88,6 +88,8 @@ function openChat(chat: Chat) {
   </div>
 </template>
 <style scoped>
+@reference "tailwindcss";
+
 #contactGroupList {
   @apply flex flex-col;
   @apply w-52 max-h-64 right-2 top-8 absolute z-10;

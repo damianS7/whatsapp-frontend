@@ -174,6 +174,8 @@ function toggleContactGroupList() {
   </div>
 </template>
 <style>
+@reference "tailwindcss";
+
 .chatItemMenu {
   @apply absolute bg-gray-300 border border-gray-300 rounded p-1 shadow z-50;
 }
