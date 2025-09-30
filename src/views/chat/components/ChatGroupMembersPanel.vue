@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ArrowLeft } from "lucide-vue-next";
 import { ref, defineEmits, defineProps, computed } from "vue";
-import MessageAlert from "@/components/MessageAlert.vue";
-import { MessageType } from "@/types/Message";
+import CustomAlert from "@/components/CustomAlert.vue";
 import type { Chat } from "@/types/Chat";
 import { MessageCircle, UserRoundPlus } from "lucide-vue-next";
 import { useContactStore } from "@/stores/contact";
@@ -50,13 +49,10 @@ function addContact(customerId: number) {
   contactStore
     .addContact(customerId)
     .then(() => {
-      alert.value.showMessage(
-        "Contact added successfully",
-        MessageType.SUCCESS
-      );
+      alert.value.success("Contact added successfully");
     })
     .catch((error) => {
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error);
     });
 }
 
@@ -97,7 +93,7 @@ function openChat(chatMember: ChatMember) {
       </div>
     </section>
     <section class="container overflow-auto h-full">
-      <MessageAlert class="mb-2" ref="alert" />
+      <CustomAlert class="mb-2" ref="alert" />
       <div
         class="grid grid-cols-1 sm:grid-cols-2 grid-rows-[min-content_max-content] gap-2"
       >

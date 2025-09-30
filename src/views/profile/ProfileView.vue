@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
-import MessageAlert from "@/components/MessageAlert.vue";
+import CustomAlert from "@/components/CustomAlert.vue";
 import { onMounted, ref } from "vue";
 import ProfileEditableField from "./components/ProfileEditableField.vue";
 import ProfilePhoto from "./components/ProfilePhotoUploader.vue";
 import ConfirmPasswordModal from "@/components/modal/ConfirmPasswordModal.vue";
 import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
-import { MessageType } from "@/types/Message";
-import { GenderType } from "@/types/User";
+import type { GenderType } from "@/types/User";
 
 const userStore = useUserStore();
 const user = userStore.getLoggedUser;
@@ -130,13 +129,10 @@ async function updateField(
     .then((profile) => {
       userStore.setProfile(profile);
       formFields.value[index].value = field.value;
-      alert.value.showMessage(
-        "Field successfully updated.",
-        MessageType.SUCCESS
-      );
+      alert.value.success("Field successfully updated.");
     })
     .catch((error) => {
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error);
     });
 }
 
@@ -154,13 +150,10 @@ async function updatePassword(index: number, newPassword: string) {
   await userStore
     .changePassword(currentPassword, newPassword)
     .then(() => {
-      alert.value.showMessage(
-        "Password successfully updated.",
-        MessageType.SUCCESS
-      );
+      alert.value.success("Password successfully updated.");
     })
     .catch((error) => {
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error);
     });
 }
 
@@ -179,13 +172,10 @@ async function updatePhoto(photo: any) {
     .then((blob) => {
       localStorage.setItem("profilePhotoURL", URL.createObjectURL(blob));
       userStore.setPhoto(blob);
-      alert.value.showMessage(
-        "Photo successfully updated.",
-        MessageType.SUCCESS
-      );
+      alert.value.sucess("Photo successfully updated.");
     })
     .catch((error) => {
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error);
     });
 }
 
@@ -209,13 +199,10 @@ async function updateEmail(index: number, newEmail: string) {
     .then((user) => {
       userStore.setEmail(user.email);
       formFields.value[index].value = newEmail;
-      alert.value.showMessage(
-        "Field successfully updated.",
-        MessageType.SUCCESS
-      );
+      alert.value.success("Field successfully updated.");
     })
     .catch((error) => {
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error);
     });
 }
 
@@ -235,7 +222,7 @@ onMounted(() => {
     </section>
 
     <section class="container overflow-scroll h-full">
-      <MessageAlert class="mb-4" ref="alert" />
+      <CustomAlert class="mb-4" ref="alert" />
       <div class="flex justify-center">
         <ProfilePhoto @update="updatePhoto" />
       </div>

@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import CustomAlert from "@/components/CustomAlert.vue";
 
-const alert = ref();
+const alert = ref<InstanceType<typeof CustomAlert>>();
 
 // form fields
 const form = ref({
@@ -72,13 +72,9 @@ async function onFormSubmit() {
       form.value.email.value
     );
 
-    // alert.value.showMessage(response.message, AlertType.SUCCESS);
-    alert.value.info(response.message, { timeout: 10 });
+    alert.value?.info(response.message, { timeout: 10 });
   } catch (error: any) {
-    error.errors = { email: ["Email inválido", "Email requerido"] };
-    // alert.value.handleException(error);
-    // alert.value.error(error.message);
-    alert.value.exception(error.message, { errors: error.errors });
+    alert.value?.exception(error);
   }
 }
 </script>
@@ -117,7 +113,7 @@ async function onFormSubmit() {
         </div>
       </CardContent>
       <CardFooter class="flex flex-col gap-2">
-        <Button class="w-full" type="submit"> Send email </Button>
+        <Button class="w-full" type="submit"> Submit </Button>
         <p v-if="onSubmitError" class="text-sm text-red-500">
           {{ onSubmitError }}
         </p>

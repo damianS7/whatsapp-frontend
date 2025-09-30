@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, type Ref, computed } from "vue";
-import MessageAlert from "@/components/MessageAlert.vue";
-import { MessageType } from "@/types/Message";
+import CustomAlert from "@/components/CustomAlert.vue";
 import { useGroupStore } from "@/stores/group";
 import { useRoute, useRouter } from "vue-router";
 import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
@@ -45,13 +44,10 @@ async function saveGroup() {
   await groupStore
     .updateGroup(group.value.id, form.value)
     .then((group) => {
-      alert.value.showMessage(
-        "Group " + group.name + " sucessfully updated.",
-        MessageType.SUCCESS
-      );
+      alert.value.success("Group " + group.name + " sucessfully updated.");
     })
     .catch((error) => {
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error);
     });
 }
 async function deleteGroup() {
@@ -68,7 +64,7 @@ async function deleteGroup() {
       router.push("/groups");
     })
     .catch((error) => {
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error);
     });
 }
 </script>
@@ -90,7 +86,7 @@ async function deleteGroup() {
     </section>
 
     <section class="flex flex-col container gap-4 overflow-auto h-full">
-      <MessageAlert ref="alert" />
+      <CustomAlert ref="alert" />
       <div class="bg-gray-300 rounded p-4">
         <label for="groupName" class="font-semibold block text-sm text-gray-600"
           >Group name</label

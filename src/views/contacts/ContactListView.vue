@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { Contact } from "@/types/Contact";
+import type { Contact } from "@/types/Contact";
 import { useContactStore } from "@/stores/contact";
 import { ref, computed } from "vue";
 import { useChatStore } from "@/stores/chat";
 import { MessageCircle, UserRoundMinus } from "lucide-vue-next";
 import { useRouter } from "vue-router";
-import MessageAlert from "@/components/MessageAlert.vue";
-import { MessageType } from "@/types/Message";
+import CustomAlert from "@/components/CustomAlert.vue";
 import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
 import { useChat } from "@/composables/useChat";
 import CustomerAvatar from "@/components/CustomerAvatar.vue";
@@ -62,13 +61,10 @@ async function deleteContact(contact: Contact) {
   await contactStore
     .deleteContact(contact.id)
     .then(() => {
-      alert.value.showMessage(
-        "Deleted " + contact.name + " from contacts.",
-        MessageType.SUCCESS
-      );
+      alert.value.success("Deleted " + contact.name + " from contacts.");
     })
     .catch((error) => {
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error);
     });
 }
 </script>
@@ -84,7 +80,7 @@ async function deleteContact(contact: Contact) {
     </section>
 
     <section class="container overflow-auto h-full">
-      <MessageAlert class="mb-2" ref="alert" />
+      <CustomAlert class="mb-2" ref="alert" />
       <div
         class="grid grid-cols-1 sm:grid-cols-3 grid-rows-[min-content_max-content] gap-2"
       >

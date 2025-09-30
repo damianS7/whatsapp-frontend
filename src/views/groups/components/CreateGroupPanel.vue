@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ArrowLeft } from "lucide-vue-next";
 import { ref, defineEmits, type Ref } from "vue";
-import MessageAlert from "@/components/MessageAlert.vue";
-import { MessageType } from "@/types/Message";
+import CustomAlert from "@/components/CustomAlert.vue";
 import { useGroupStore } from "@/stores/group";
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -37,7 +36,7 @@ async function createGroup() {
       router.push("/groups/" + group.id);
     })
     .catch((error) => {
-      alert.value.showMessage(error.message, MessageType.ERROR);
+      alert.value.exception(error);
     });
 }
 </script>
@@ -59,7 +58,7 @@ async function createGroup() {
       </div>
     </section>
     <section class="flex flex-col container gap-4 overflow-auto h-full">
-      <MessageAlert ref="alert" />
+      <CustomAlert ref="alert" />
       <div class="bg-gray-300 rounded p-4">
         <label
           for="groupName"

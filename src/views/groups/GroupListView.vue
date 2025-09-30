@@ -4,7 +4,7 @@ import type { Group } from "@/types/Group";
 import { useGroupStore } from "@/stores/group";
 import { useChatStore } from "@/stores/chat";
 import { useRouter } from "vue-router";
-import MessageAlert from "@/components/MessageAlert.vue";
+import CustomAlert from "@/components/CustomAlert.vue";
 import CreateGroupPanel from "./components/CreateGroupPanel.vue";
 import { useChat } from "@/composables/useChat";
 const { isLoggedUser, createGroupChat } = useChat();
@@ -56,7 +56,7 @@ function toggleCreateGroupPanel() {
     </section>
 
     <section class="flex flex-col container gap-2 overflow-auto h-full">
-      <MessageAlert class="mb-2" ref="alert" />
+      <CustomAlert class="mb-2" ref="alert" />
       <div
         v-for="(group, index) in groups"
         :key="index"
