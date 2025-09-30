@@ -199,11 +199,8 @@ const onFormSubmit = async () => {
         </div>
       </CardContent>
       <CardFooter class="flex flex-col gap-2">
-        <Button class="w-full" type="submit"> Sign up </Button>
+        <Button class="w-full" type="submit"> Submit </Button>
         <CustomAlert ref="alert" />
-        <!-- <p v-if="onSubmitError" class="text-sm text-red-500">
-          {{ onSubmitError }}
-        </p> -->
       </CardFooter>
     </Card>
   </form>
