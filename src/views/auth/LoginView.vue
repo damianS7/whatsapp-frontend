@@ -125,7 +125,7 @@ function onFormSubmit() {
         </div>
       </CardContent>
       <CardFooter class="flex flex-col gap-2">
-        <Button class="w-full" type="submit"> Sign in </Button>
+        <Button class="w-full" type="submit"> Submit </Button>
         <CustomAlert ref="alert" />
       </CardFooter>
     </Card>
