@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CustomAlert from "@/components/CustomAlert.vue";
 import Button from "@/components/ui/button/Button.vue";
 import {
   Card,
@@ -15,6 +16,8 @@ import { z } from "zod";
 import type { GenderType } from "@/types/User";
 import type { UserRegisterRequest } from "@/types/UserRegisterRequest";
 import { useAuthStore } from "@/stores/auth";
+
+const alert = ref<InstanceType<typeof CustomAlert>>();
 
 // store
 const authStore = useAuthStore();
@@ -142,12 +145,10 @@ const onFormSubmit = async () => {
   await authStore
     .register(userRegisterRequest)
     .then(() => {
-      // TODO alert success
-      onSubmitError.value = "Account created.";
+      alert.value?.success("Account created.");
     })
     .catch((error) => {
-      // TODO alert error
-      onSubmitError.value = error.message;
+      alert.value?.exception(error);
     });
 };
 </script>
@@ -199,9 +200,10 @@ const onFormSubmit = async () => {
       </CardContent>
       <CardFooter class="flex flex-col gap-2">
         <Button class="w-full" type="submit"> Sign up </Button>
-        <p v-if="onSubmitError" class="text-sm text-red-500">
+        <CustomAlert ref="alert" />
+        <!-- <p v-if="onSubmitError" class="text-sm text-red-500">
           {{ onSubmitError }}
-        </p>
+        </p> -->
       </CardFooter>
     </Card>
   </form>

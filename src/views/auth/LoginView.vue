@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CustomAlert from "@/components/CustomAlert.vue";
 import Button from "@/components/ui/button/Button.vue";
 import {
   Card,
@@ -15,6 +16,7 @@ import { z } from "zod";
 import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
+const alert = ref<InstanceType<typeof CustomAlert>>();
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
@@ -72,7 +74,7 @@ function onFormSubmit() {
       router.push(to);
     })
     .catch((error) => {
-      onSubmitError.value = error.message;
+      alert.value?.exception(error);
     });
 }
 </script>
@@ -124,9 +126,7 @@ function onFormSubmit() {
       </CardContent>
       <CardFooter class="flex flex-col gap-2">
         <Button class="w-full" type="submit"> Sign in </Button>
-        <p v-if="onSubmitError" class="text-sm text-red-500">
-          {{ onSubmitError }}
-        </p>
+        <CustomAlert ref="alert" />
       </CardFooter>
     </Card>
   </form>
