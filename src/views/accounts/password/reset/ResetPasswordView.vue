@@ -2,37 +2,127 @@
 import { ref } from "vue";
 import { authService } from "@/services/authService";
 import type { ApiResponse } from "@/types/ApiResponse";
-import { AlertType } from "@/types/AlertType";
-import Alert from "@/components/Alert.vue";
+import Button from "@/components/ui/button/Button.vue";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { z } from "zod";
+import CustomAlert from "@/components/CustomAlert.vue";
 
-const email = ref("");
 const alert = ref();
 
-async function resetPassword() {
-  if (email.value.trim().length <= 0) {
-    alert.value.showMessage("Email cannot be empty.", AlertType.ERROR);
+// form fields
+const form = ref({
+  email: {
+    type: "email",
+    placeholder: "Insert your email.",
+    value: "",
+  },
+});
+
+// form errors
+const formErrors = ref<Record<keyof typeof form.value, string[]>>({
+  email: [],
+});
+
+// form error on submit
+const onSubmitError = ref();
+
+const resolver = z.object({
+  email: z.string().email("Email is required"),
+});
+
+// Convert form fields to key, value array
+function getFormData() {
+  return Object.fromEntries(
+    Object.entries(form.value).map(([key, field]) => [key, field.value])
+  );
+}
+
+function resetFormErrors() {
+  Object.keys(formErrors.value).forEach(
+    (key) => (formErrors.value[key as keyof typeof form.value] = [])
+  );
+}
+
+async function onFormSubmit() {
+  resetFormErrors();
+  const result = resolver.safeParse(getFormData());
+
+  // if fails to validate fields
+  if (!result.success) {
+    const fieldErrors: any = result.error.flatten().fieldErrors;
+
+    Object.keys(fieldErrors).forEach((key) =>
+      formErrors.value[key as keyof typeof form.value].push(...fieldErrors[key])
+    );
+
     return;
   }
 
   try {
-    const response: ApiResponse = await authService.resetPasswordRequest(email.value);
-    alert.value.showMessage(response.message, AlertType.SUCCESS);
+    const response: ApiResponse = await authService.resetPasswordRequest(
+      form.value.email.value
+    );
+
+    // alert.value.showMessage(response.message, AlertType.SUCCESS);
+    alert.value.info(response.message, { timeout: 10 });
   } catch (error: any) {
-    alert.value.handleException(error);
+    error.errors = { email: ["Email inválido", "Email requerido"] };
+    // alert.value.handleException(error);
+    // alert.value.error(error.message);
+    alert.value.exception(error.message, { errors: error.errors });
   }
 }
 </script>
 <template>
-  <div class="flex flex-col gap-2">
-    <input
-      v-model="email"
-      type="email"
-      class="bg-white p-3 rounded-lg shadow-md"
-      placeholder="Insert your email"
-    />
-    <div class="p-1 w-full">
-      <Alert ref="alert" />
-    </div>
-    <button @click="resetPassword" class="btn btn-sm btn-primary">Reset password</button>
-  </div>
+  <form :resolver="resolver" @submit.prevent="onFormSubmit">
+    <Card>
+      <CardHeader>
+        <CardTitle class="text-2xl"> Password reset </CardTitle>
+        <CardDescription>
+          You will receive an email with instructions.
+        </CardDescription>
+      </CardHeader>
+      <CardContent class="grid gap-4">
+        <div
+          v-for="(field, fieldKey) in form"
+          :key="fieldKey"
+          class="grid gap-2"
+        >
+          <Label :for="fieldKey" class="capitalize">{{ fieldKey }}</Label>
+          <Input
+            v-if="field.type !== 'select'"
+            v-model="field.value"
+            :name="fieldKey"
+            :type="field.type"
+            :placeholder="field.placeholder"
+            class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <p
+            v-if="formErrors[fieldKey]"
+            v-for="(error, index) in formErrors[fieldKey]"
+            :key="index"
+            class="text-sm text-red-500 ml-2"
+          >
+            {{ error }}
+          </p>
+        </div>
+      </CardContent>
+      <CardFooter class="flex flex-col gap-2">
+        <Button class="w-full" type="submit"> Send email </Button>
+        <p v-if="onSubmitError" class="text-sm text-red-500">
+          {{ onSubmitError }}
+        </p>
+        <CustomAlert ref="alert" />
+      </CardFooter>
+    </Card>
+  </form>
 </template>

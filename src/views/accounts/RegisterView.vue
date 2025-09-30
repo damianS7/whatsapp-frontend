@@ -1,126 +1,137 @@
 <script setup lang="ts">
+import Button from "@/components/ui/button/Button.vue";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ref } from "vue";
 import { z } from "zod";
-import { useRouter } from "vue-router";
-import { useRoute } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
 import type { GenderType } from "@/types/User";
 import type { UserRegisterRequest } from "@/types/UserRegisterRequest";
-const authStore = useAuthStore();
-const router = useRouter();
-const route = useRoute();
-const genderTypes: GenderType[] = ["MALE", "FEMALE"];
+import { useAuthStore } from "@/stores/auth";
 
+// store
+const authStore = useAuthStore();
+
+// gender types/options
+const genderTypes: GenderType[] = ["MALE", "FEMALE"];
 const genderOptions = genderTypes.map((value) => ({
   value,
   label: value.charAt(0) + value.slice(1).toLowerCase(),
 }));
 
-// convertir array a objeto plano
-function getFormData() {
-  return formFields.value.reduce(
-    (acc, field) => {
-      acc[field.name] = field.value;
-      return acc;
-    },
-    {} as Record<string, string>
-  );
-}
-
-function redirectBackToLastPage() {
-  const redirectPath = route.query.redirect?.toString() || "/auth/login";
-  router.push(redirectPath);
-}
-
-// Check if the user is already authenticated
-if (authStore.isAuthenticated) {
-  redirectBackToLastPage();
-}
-
-const formStatus = ref({
-  message: "",
-  status: "",
-});
-
-const formFields = ref([
-  { name: "email", type: "email", placeholder: "Email", value: "", error: "" },
-  {
-    name: "password",
+// form fields
+const form = ref({
+  email: {
+    type: "email",
+    placeholder: "Email",
+    value: "",
+  },
+  password: {
     type: "password",
     placeholder: "Password",
     value: "",
-    error: "",
   },
-  {
-    name: "username",
+  username: {
     type: "text",
     placeholder: "Your @username",
     value: "",
-    error: "",
   },
-  {
-    name: "firstname",
+  firstname: {
     type: "text",
     placeholder: "First name",
     value: "",
-    error: "",
   },
-  {
-    name: "lastname",
+  lastname: {
     type: "text",
     placeholder: "Last name",
     value: "",
-    error: "",
   },
-  { name: "phone", type: "text", placeholder: "Phone", value: "", error: "" },
-  {
-    name: "gender",
+  phone: {
+    type: "text",
+    placeholder: "Phone",
+    value: "",
+  },
+  gender: {
     type: "select",
     placeholder: "Gender",
     value: "",
     options: genderOptions,
-    error: "",
   },
-  {
-    name: "birthdate",
+  birthdate: {
     type: "date",
     placeholder: "Birthdate",
     value: "",
-    error: "",
   },
-]);
+});
+
+// form errors
+const formErrors = ref<Record<keyof typeof form.value, string[]>>({
+  email: [],
+  password: [],
+  username: [],
+  firstname: [],
+  lastname: [],
+  phone: [],
+  gender: [],
+  birthdate: [],
+});
+
+// form error on submit
+const onSubmitError = ref();
 
 const resolver = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters long"),
+  username: z.string().min(1, "Username is required"),
   firstname: z.string().min(1, "First name is required"),
   lastname: z.string().min(1, "Last name is required"),
   phone: z.string().min(1, "Phone number is required"),
+  // TODO fix this. use genderOptions
   gender: z.enum(["MALE", "FEMALE"], {
     errorMap: () => ({ message: "Invalid gender" }),
   }),
 });
 
+// Convert form fields to key, value array
+function getFormData() {
+  return Object.fromEntries(
+    Object.entries(form.value).map(([key, field]) => [key, field.value])
+  );
+}
+
+function resetFormErrors() {
+  Object.keys(formErrors.value).forEach(
+    (key) => (formErrors.value[key as keyof typeof form.value] = [])
+  );
+}
+
 const onFormSubmit = async () => {
+  resetFormErrors();
   const formData = getFormData();
   const result = resolver.safeParse(formData);
-  formFields.value.forEach((f) => (f.error = ""));
 
+  // if fails to validate fields
   if (!result.success) {
     const fieldErrors: any = result.error.flatten().fieldErrors;
 
-    formFields.value.forEach((field) => {
-      if (fieldErrors[field.name]) {
-        field.error = fieldErrors[field.name];
-      }
-    });
+    Object.keys(fieldErrors).forEach((key) =>
+      formErrors.value[key as keyof typeof form.value].push(...fieldErrors[key])
+    );
+
     return;
   }
 
-  const user: UserRegisterRequest = {
+  const userRegisterRequest: UserRegisterRequest = {
     email: formData.email,
     password: formData.password,
-    username: formData.username,
+    userName: formData.username,
     firstName: formData.firstname,
     lastName: formData.lastname,
     phone: formData.phone,
@@ -129,70 +140,69 @@ const onFormSubmit = async () => {
   };
 
   await authStore
-    .register(user)
+    .register(userRegisterRequest)
     .then(() => {
-      formStatus.value.message = "User registered.";
+      // TODO alert success
+      onSubmitError.value = "Account created.";
     })
     .catch((error) => {
-      formStatus.value.message = error.message;
+      // TODO alert error
+      onSubmitError.value = error.message;
     });
 };
 </script>
 <template>
-  <div class="bg-white p-6 rounded-lg shadow-md">
-    <form
-      :resolver="resolver"
-      @submit.prevent="onFormSubmit"
-      class="flex flex-col gap-4"
-    >
-      <div
-        v-for="(field, index) in formFields"
-        :key="index"
-        class="flex flex-col gap-1"
-      >
-        <input
-          v-if="field.type !== 'select'"
-          v-model="field.value"
-          :name="field.name"
-          :type="field.type"
-          :placeholder="field.placeholder"
-          class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-        <select
-          v-if="field.type === 'select'"
-          v-model="field.value"
-          :name="field.name"
-          class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+  <form :resolver="resolver" @submit.prevent="onFormSubmit">
+    <Card>
+      <CardHeader>
+        <CardTitle class="text-2xl"> Register </CardTitle>
+        <CardDescription> Fill every field to register </CardDescription>
+      </CardHeader>
+      <CardContent class="grid gap-4">
+        <div
+          v-for="(field, fieldKey) in form"
+          :key="fieldKey"
+          class="grid gap-2"
         >
-          <option
-            v-for="option in field.options"
-            :key="option.value"
-            :value="option.value"
+          <Label :for="fieldKey" class="capitalize">{{ fieldKey }}</Label>
+          <Input
+            v-if="field.type !== 'select'"
+            v-model="field.value"
+            :name="fieldKey"
+            :type="field.type"
+            :placeholder="field.placeholder"
+            class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <select
+            v-if="field.type === 'select'"
+            v-model="field.value"
+            :name="fieldKey"
+            class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
-            {{ option.label }}
-          </option>
-        </select>
-        <span v-if="field?.error" class="text-sm text-red-500">{{
-          field.error[0]
-        }}</span>
-      </div>
-      <div v-if="formStatus.message" class="flex flex-col gap-1">
-        <span
-          :class="[
-            'flex items-center border px-4 py-3 rounded relative',
-            formStatus.status === '201'
-              ? 'text-green-700 bg-green-100'
-              : 'text-red-700 bg-red-100',
-          ]"
-          >{{ formStatus.message }}</span
-        >
-      </div>
-      <button
-        type="submit"
-        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
-      >
-        Register
-      </button>
-    </form>
-  </div>
+            <option
+              v-for="option in field.options"
+              :key="option.value"
+              :value="option.value"
+            >
+              {{ option.label }}
+            </option>
+          </select>
+          <p
+            v-if="formErrors[fieldKey]"
+            v-for="(error, index) in formErrors[fieldKey]"
+            :key="index"
+            class="text-sm text-red-500 ml-2"
+          >
+            {{ error }}
+          </p>
+        </div>
+      </CardContent>
+      <CardFooter class="flex flex-col gap-2">
+        <Button class="w-full" type="submit"> Sign up </Button>
+        <p v-if="onSubmitError" class="text-sm text-red-500">
+          {{ onSubmitError }}
+        </p>
+      </CardFooter>
+    </Card>
+  </form>
 </template>
