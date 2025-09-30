@@ -141,9 +141,9 @@ defineExpose({ error, info, success, exception });
     <AlertDescription>
       {{ alert.message }}
       <ul v-if="alert.errors" class="list-disc ml-8">
-        <li v-for="(errors, field) in alert.errors" :key="field">
+        <li v-for="(error, field) in alert.errors" :key="field">
           <b>{{ field }}</b>
-          <p v-for="(error, field) in errors" :key="field">{{ error }}</p>
+          <p>{{ error }}</p>
         </li>
       </ul>
     </AlertDescription>
