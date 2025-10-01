@@ -54,9 +54,8 @@ export const contactService = {
       headers: authHeader(),
     });
 
-    const json = await response.json();
-
     if (response.status !== 204) {
+      const json = await response.json();
       throw new ApiError(
         json.message || "Failed to delete contact.",
         response.status,

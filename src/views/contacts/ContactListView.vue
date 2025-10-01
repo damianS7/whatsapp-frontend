@@ -9,20 +9,17 @@ import CustomAlert from "@/components/CustomAlert.vue";
 import { useChat } from "@/composables/useChat";
 import CustomAvatar from "@/components/CustomAvatar.vue";
 import { useUserStore } from "@/stores/user";
+import { useModalStore } from "@/stores/modal";
 const { createPrivateChat } = useChat();
 
 // router
 const router = useRouter();
 
 // message to show
-const alert = ref();
-
-// modals to show
-const modals = {
-  confirmMessage: ref(),
-};
+const alert = ref<InstanceType<typeof CustomAlert>>();
 
 // store
+const modalStore = useModalStore();
 const userStore = useUserStore();
 const chatStore = useChatStore();
 const contactStore = useContactStore();
@@ -50,22 +47,23 @@ function openChat(contact: Contact) {
 
 // Delete a contact
 async function deleteContact(contact: Contact) {
-  const confirm = await modals.confirmMessage.value.open(
-    "Are you sure you want to delete this contact?"
-  );
+  const confirmed = await modalStore.open("ConfirmMessage", {
+    title: "Delete contact",
+    message: "Are you sure you want to delete this contact?",
+  });
 
   // if the user cancels the confirmation, do nothing
-  if (!confirm) {
+  if (!confirmed) {
     return;
   }
   // if the user confirms, delete the contact
   await contactStore
     .deleteContact(contact.id)
     .then(() => {
-      alert.value.success("Deleted " + contact.name + " from contacts.");
+      alert.value?.success("Deleted " + contact.name + " from contacts.");
     })
     .catch((error) => {
-      alert.value.exception(error);
+      alert.value?.exception(error);
     });
 }
 </script>
