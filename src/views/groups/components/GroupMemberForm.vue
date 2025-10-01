@@ -21,7 +21,7 @@ const group = computed(() =>
 );
 
 const contacts = computed(() => {
-  return contactStore.getContacts.filter((contact) => {
+  return contactStore.contacts.filter((contact) => {
     // check if the contact is already a member of the group
     return contact.name
       .toLowerCase()

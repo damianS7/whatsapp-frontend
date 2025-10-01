@@ -3,22 +3,19 @@ import { ref, type Ref, computed } from "vue";
 import CustomAlert from "@/components/CustomAlert.vue";
 import { useGroupStore } from "@/stores/group";
 import { useRoute, useRouter } from "vue-router";
-import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
 import GroupMemberForm from "@/views/groups/components/GroupMemberForm.vue";
+import { useModalStore } from "@/stores/modal";
+import { title } from "process";
 
 const route = useRoute();
 const router = useRouter();
 
-// modals to show
-const modals = {
-  confirmMessage: ref(),
-};
-
 // store
+const modalStore = useModalStore();
 const groupStore = useGroupStore();
 
 // message to show
-const alert = ref();
+const alert = ref<InstanceType<typeof CustomAlert>>();
 
 // data
 const group = computed(() =>
@@ -44,19 +41,22 @@ async function saveGroup() {
   await groupStore
     .updateGroup(group.value.id, form.value)
     .then((group) => {
-      alert.value.success("Group " + group.name + " sucessfully updated.");
+      alert.value?.success("Group " + group.name + " sucessfully updated.");
     })
     .catch((error) => {
-      alert.value.exception(error);
+      alert.value?.exception(error);
     });
 }
 async function deleteGroup() {
-  const confirm = await modals.confirmMessage.value.open(
-    "Are you sure you want to delete this group?"
-  );
+  const confirm = await modalStore.open("ConfirmMessage", {
+    title: "Delete group",
+    message: "Are you sure you want to delete this group?",
+  });
+
   if (!confirm) {
     return;
   }
+
   const id = parseInt(route.params.id as string, 10);
   groupStore
     .deleteGroup(id)
@@ -64,7 +64,7 @@ async function deleteGroup() {
       router.push("/groups");
     })
     .catch((error) => {
-      alert.value.exception(error);
+      alert.value?.exception(error);
     });
 }
 </script>
@@ -72,7 +72,6 @@ async function deleteGroup() {
   <div
     class="main-container grid grid-rows-[auto_1fr] shadow-none rounded-none overflow-hidden h-full"
   >
-    <ConfirmMessageModal :ref="modals.confirmMessage" />
     <section
       class="flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
