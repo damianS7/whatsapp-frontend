@@ -84,7 +84,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "verification/resend",
-        name: "resend-activation",
+        name: "resend-verification",
         component: ResendVerificationView,
       },
       {
