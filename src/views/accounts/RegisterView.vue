@@ -86,9 +86,6 @@ const formErrors = ref<Record<keyof typeof form.value, string[]>>({
   birthdate: [],
 });
 
-// form error on submit
-const onSubmitError = ref();
-
 const resolver = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters long"),

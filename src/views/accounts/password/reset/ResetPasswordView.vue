@@ -32,9 +32,6 @@ const formErrors = ref<Record<keyof typeof form.value, string[]>>({
   email: [],
 });
 
-// form error on submit
-const onSubmitError = ref();
-
 const resolver = z.object({
   email: z.string().email("Email is required"),
 });
@@ -114,9 +111,6 @@ async function onFormSubmit() {
       </CardContent>
       <CardFooter class="flex flex-col gap-2">
         <Button class="w-full" type="submit"> Submit </Button>
-        <p v-if="onSubmitError" class="text-sm text-red-500">
-          {{ onSubmitError }}
-        </p>
         <CustomAlert ref="alert" />
       </CardFooter>
     </Card>

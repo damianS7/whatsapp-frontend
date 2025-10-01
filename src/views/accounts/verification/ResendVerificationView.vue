@@ -39,9 +39,6 @@ const resolver = z.object({
   email: fieldSchema,
 });
 
-// form error on submit
-const onSubmitError = ref();
-
 async function onFormSubmit() {
   resetFormErrors();
 
@@ -105,9 +102,6 @@ function resetFormErrors() {
       </CardContent>
       <CardFooter class="flex flex-col gap-2">
         <Button class="w-full" type="submit"> Submit </Button>
-        <p v-if="onSubmitError" class="text-sm text-red-500">
-          {{ onSubmitError }}
-        </p>
         <CustomAlert ref="alert" />
       </CardFooter>
     </Card>

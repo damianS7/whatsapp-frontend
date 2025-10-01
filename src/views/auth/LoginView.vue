@@ -32,8 +32,6 @@ const formErrors = ref<Record<keyof typeof form.value, string[]>>({
   password: [],
 });
 
-const onSubmitError = ref();
-
 const resolver = ref(
   z.object({
     email: z.string().nonempty({
@@ -53,8 +51,6 @@ function resetFormErrors() {
 
 function onFormSubmit() {
   resetFormErrors();
-  let email = form.value.email;
-  let password = form.value.password;
   const result = resolver.value.safeParse(form.value);
 
   // if fails to validate fields
@@ -68,7 +64,7 @@ function onFormSubmit() {
   }
 
   authStore
-    .login(email, password)
+    .login(form.value.email, form.value.password)
     .then(() => {
       const to = route.query.redirect?.toString() || "/";
       router.push(to);
