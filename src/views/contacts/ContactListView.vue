@@ -8,7 +8,6 @@ import { useRouter } from "vue-router";
 import CustomAlert from "@/components/CustomAlert.vue";
 import { useChat } from "@/composables/useChat";
 import CustomAvatar from "@/components/CustomAvatar.vue";
-import { useUserStore } from "@/stores/user";
 import { useModalStore } from "@/stores/modal";
 const { createPrivateChat } = useChat();
 
@@ -20,7 +19,6 @@ const alert = ref<InstanceType<typeof CustomAlert>>();
 
 // store
 const modalStore = useModalStore();
-const userStore = useUserStore();
 const chatStore = useChatStore();
 const contactStore = useContactStore();
 
@@ -87,42 +85,46 @@ async function deleteContact(contact: Contact) {
           :key="index"
           class="p-4 bg-gray-300 rounded"
         >
-          <div class="flex flex-col flex-1 items-center gap-1">
+          <div class="flex gap-1">
             <!-- Avatar -->
-            <div
-              class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
-            >
-              <CustomAvatar
-                :src="contact.avatarUrl ?? ''"
-                :fallback="contact.name"
-              />
-            </div>
+            <CustomAvatar
+              class="h-12 w-12 text-white font-bold text-xl uppercase"
+              :src="contact.avatarUrl ?? ''"
+              :fallback="contact.name"
+            />
 
-            <!-- Nombre y botones -->
-            <div class="flex-1 flex flex-col gap-1">
+            <!-- name and buttons -->
+            <div class="flex-1 flex flex-col gap-1 text-center">
               <p class="text-sm font-medium text-gray-800 truncate">
                 {{ contact.name }}
               </p>
+
+              <div class="flex gap-1 justify-center">
+                <button
+                  @click="openChat(contact)"
+                  class="btn btn-info btn-sm flex gap-2 items-center justify-between"
+                  title="Open chat"
+                >
+                  <MessageCircle :size="16" />
+                </button>
+                <button
+                  @click="deleteContact(contact)"
+                  class="btn btn-danger btn-sm flex gap-2 items-center justify-between"
+                  title="Delete contact"
+                >
+                  <UserRoundMinus :size="16" />
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="flex gap-1 justify-center">
-            <button
-              @click="openChat(contact)"
-              class="btn btn-success btn-xs p-2 flex gap-2 items-center justify-between"
-              title="Open chat"
-            >
-              <MessageCircle :size="20" />
-            </button>
-            <button
-              @click="deleteContact(contact)"
-              class="btn btn-danger btn-xs p-2 flex gap-2 items-center justify-between"
-              title="Delete contact"
-            >
-              <UserRoundMinus :size="20" />
-            </button>
           </div>
         </div>
       </div>
     </section>
   </div>
 </template>
+<style scoped>
+@reference "tailwindcss";
+.avatar {
+  @apply h-12 w-12;
+}
+</style>
