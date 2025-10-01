@@ -1,83 +1,85 @@
 <script setup lang="ts">
-import { ref, defineExpose } from "vue";
+import { useModalStore } from "@/stores/modal";
+import { ref } from "vue";
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormItem,
+  FormLabel,
+  FormField,
+  FormControl,
+  FormDescription,
+  FormMessage,
+} from "@/components/ui/form";
 
-const visible = ref(false);
+defineProps<{
+  title: string;
+}>();
+
 const fields = ref({
   password: "",
-  confirmPassword: "",
+  repeatPassword: "",
 });
 
-let _resolve: (value: string) => void;
+const modalStore = useModalStore();
 
-// open modal
-function open(): Promise<string> {
-  visible.value = true;
-
-  return new Promise((resolve) => {
-    _resolve = resolve;
-  });
-}
-
-function submit() {
-  visible.value = false;
-  if (fields.value.password !== fields.value.confirmPassword) {
-    _resolve("");
+function onSubmit() {
+  if (fields.value.password !== fields.value.repeatPassword) {
     return;
   }
-  _resolve(fields.value.password);
+  modalStore.resolve(fields.value.password);
 }
-
-function cancel() {
-  visible.value = false;
-  _resolve("");
-}
-defineExpose({ open });
 </script>
-
 <template>
-  <div
-    v-if="visible"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-  >
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-      <h2 class="text-xl font-semibold mb-4">Confirm password</h2>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>{{ title }}</DialogTitle>
+    </DialogHeader>
+    <form id="repeatPasswordForm" @submit.prevent="onSubmit" class="space-y-4">
+      <div class="flex flex-col">
+        <label for="password" class="text-gray-400 mb-1 text-sm font-medium"
+          >Password</label
+        >
+        <input
+          id="password"
+          type="password"
+          v-model="fields.password"
+          placeholder="Password"
+          required
+          class="w-full rounded border border-gray-300 px-3 py-2"
+        />
+      </div>
 
-      <form @submit.prevent="submit">
-        <div class="mb-4">
-          <label class="block mb-1">Password</label>
-          <input
-            type="password"
-            v-model="fields.password"
-            class="w-full border rounded p-2"
-            required
-          />
-        </div>
-
-        <div class="mb-4">
-          <label class="block mb-1">Confirm Password</label>
-          <input
-            type="password"
-            v-model="fields.confirmPassword"
-            class="w-full border rounded p-2"
-            required
-          />
-        </div>
-        <div class="flex justify-end gap-2">
-          <button
-            type="button"
-            @click="cancel"
-            class="bg-gray-300 rounded px-4 py-2"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            class="bg-blue-600 text-white rounded px-4 py-2 hover:bg-blue-700"
-          >
-            Confirm
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+      <div class="flex flex-col">
+        <label
+          for="repeatPassword"
+          class="text-gray-400 mb-1 text-sm font-medium"
+          >Repeat your password</label
+        >
+        <input
+          id="repeatPassword"
+          type="password"
+          v-model="fields.repeatPassword"
+          placeholder="Repeat your password"
+          required
+          class="w-full rounded border border-gray-300 px-3 py-2"
+        />
+      </div>
+    </form>
+    <DialogFooter>
+      <DialogClose asChild>
+        <Button variant="secondary">Cancel</Button>
+      </DialogClose>
+      <Button type="submit" form="repeatPasswordForm">Confirm</Button>
+    </DialogFooter>
+  </DialogContent>
 </template>
