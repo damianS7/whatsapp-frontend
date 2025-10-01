@@ -69,7 +69,7 @@ export const authService = {
     // return (await response.json()) as ApiResponse;
   },
   async resendAccountActivation(email: string): Promise<ApiResponse> {
-    const response = await fetch(`${API}/accounts/resend-verification`, {
+    const response = await fetch(`${API}/accounts/verification/resend`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -92,7 +92,7 @@ export const authService = {
   },
 
   async resetPasswordRequest(email: string): Promise<ApiResponse> {
-    const response = await fetch(`${API}/accounts/reset-password`, {
+    const response = await fetch(`${API}/accounts/password/reset`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
