@@ -1,130 +1,65 @@
 import { defineStore } from "pinia";
 import type { Contact } from "@/types/Contact";
-const API = import.meta.env.VITE_APP_API_URL;
-export const useContactStore = defineStore("contact", {
-  state: () => ({
-    contacts: [{}] as Contact[],
-    initialized: false,
-  }),
+import { contactService } from "@/services/contactService";
+import { computed, ref } from "vue";
+import { userService } from "@/services/userService";
 
-  getters: {
-    getContacts: (state) => {
-      return state.contacts;
-    },
-    isContact: (state) => {
-      return (userId: number) => {
-        return state.contacts.find((contact) => contact.userId === userId)
-          ? true
-          : false;
-      };
-    },
-  },
+export const useContactStore = defineStore("contact", () => {
+  const contacts = ref([{}] as Contact[]);
+  const initialized = ref(false);
 
-  actions: {
-    async fetchContacts(): Promise<Contact[]> {
+  const isContact = computed(() => {
+    return (userId: number) => {
+      return contacts.value.find((contact) => contact.userId === userId)
+        ? true
+        : false;
+    };
+  });
+
+  async function initialize() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+
+    await fetchContacts()
+      .then((fcontacts) => {
+        contacts.value = fcontacts;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    initialized.value = true;
+  }
+
+  async function fetchContacts(): Promise<Contact[]> {
+    const contacts = await contactService.fetchContacts();
+
+    // TODO .then .catch
+    // createUrl for each contact image
+    for (const contact of contacts) {
+      // fetch the photo
       try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${API}/contacts`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        // if response is not 200, throw an error
-        if (response.status !== 200) {
-          const jsonResponse = await response.json();
-          throw new Error("Failed to fetch contacts. " + jsonResponse.message);
-        }
-
-        return (await response.json()) as Contact[];
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to fetch contacts.");
+        const resource = await userService.fetchProfileImage(contact.userId);
+        contact.avatarUrl = URL.createObjectURL(resource);
+      } catch (error) {
+        // contact.avatarUrl = "/default-avatar.jpg";
       }
-    },
-    async deleteContact(id: number) {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${API}/contacts/${id}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    }
 
-        // if response is not 204, throw an error
-        if (response.status !== 204) {
-          throw new Error("Failed to delete contact.");
-        }
+    return contacts;
+  }
 
-        // remove contact from state
-        this.contacts = this.contacts.filter((contact) => contact.id !== id);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to delete contact.");
-      }
-    },
-    async addContact(id: number) {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${API}/contacts`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              userId: id,
-            }),
-          }
-        );
+  async function deleteContact(id: number) {
+    await contactService.deleteContact(id);
+    contacts.value = contacts.value.filter((contact) => contact.id !== id);
+  }
 
-        // if response is not 201, throw an error
-        if (response.status !== 201) {
-          throw new Error("Failed to add contact.");
-        }
-        const createdContact = (await response.json()) as Contact;
-        this.contacts.push(createdContact);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to add contact.");
-      }
-    },
-    async setContacts(contacts: any) {
-      this.contacts = contacts;
-    },
-    async initialize() {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return;
-      }
+  async function addContact(id: number) {
+    const contact: Contact = await contactService.addContact(id);
+    contacts.value.push(contact);
+  }
 
-      await this.fetchContacts()
-        .then((contacts) => {
-          this.setContacts(contacts);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      this.initialized = true;
-    },
-  },
+  return { contacts, initialized, isContact, initialize, fetchContacts, deleteContact, addContact };
 });
