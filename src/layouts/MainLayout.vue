@@ -8,21 +8,21 @@ const appInit = useAppInit();
 </script>
 <template>
   <FullScreenLoadingSpinner v-if="!appInit.isInitialized()" />
-  <main v-else class="flex flex-col h-screen overflow-hidden">
+  <div v-else class="flex flex-col h-screen overflow-hidden">
     <header>
       <Header />
     </header>
-    <div class="flex h-full p-6 overflow-hidden w-full sm:max-w-4xl mx-auto">
-      <div
+    <div class="flex w-full h-full p-6 overflow-hidden sm:max-w-4xl mx-auto">
+      <main
         class="flex w-full rounded shadow border-2 border-gray-300 overflow-hidden"
       >
         <div>
           <Sidebar />
         </div>
-        <div class="container p-0 h-full">
+        <div class="w-full h-full">
           <router-view />
         </div>
-      </div>
+      </main>
     </div>
-  </main>
+  </div>
 </template>

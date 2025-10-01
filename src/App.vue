@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
+import ModalManager from "@/components/modal/ModalManager.vue";
 const authStore = useAuthStore();
 onMounted(() => {
   authStore.initialize();
 });
 </script>
 <template>
+  <ModalManager />
   <router-view />
 </template>
 <style>
@@ -27,16 +29,16 @@ onMounted(() => {
 
 header,
 nav,
-.container {
+main {
   @apply bg-zinc-200;
-}
-
-nav {
-  @apply border-r-2 border-solid border-zinc-300;
 }
 
 .container {
   @apply p-4;
+}
+
+nav {
+  @apply border-r-2 border-solid border-zinc-300;
 }
 
 #app {
