@@ -6,9 +6,9 @@ import { useChatStore } from "@/stores/chat";
 import { MessageCircle, UserRoundMinus } from "lucide-vue-next";
 import { useRouter } from "vue-router";
 import CustomAlert from "@/components/CustomAlert.vue";
-import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
 import { useChat } from "@/composables/useChat";
-import CustomerAvatar from "@/components/CustomerAvatar.vue";
+import CustomAvatar from "@/components/CustomAvatar.vue";
+import { useUserStore } from "@/stores/user";
 const { createPrivateChat } = useChat();
 
 // router
@@ -23,11 +23,12 @@ const modals = {
 };
 
 // store
+const userStore = useUserStore();
 const chatStore = useChatStore();
 const contactStore = useContactStore();
 
 // data
-const contacts = computed(() => contactStore.getContacts as Contact[]);
+const contacts = computed(() => contactStore.contacts as Contact[]);
 
 // functions
 // Open chat with the contact
@@ -72,7 +73,6 @@ async function deleteContact(contact: Contact) {
   <div
     class="main-container grid grid-rows-[auto_1fr] shadow-none rounded-none overflow-hidden h-full"
   >
-    <ConfirmMessageModal :ref="modals.confirmMessage" />
     <section
       class="sm:flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
@@ -94,9 +94,9 @@ async function deleteContact(contact: Contact) {
             <div
               class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
             >
-              <CustomerAvatar
-                :filename="contact.avatarFilename ?? ''"
-                :fallbackString="contact.name"
+              <CustomAvatar
+                :src="contact.avatarUrl ?? ''"
+                :fallback="contact.name"
               />
             </div>
 
