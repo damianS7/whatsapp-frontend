@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ref } from "vue";
 import { authService } from "@/services/authService";
 import type { ApiResponse } from "@/types/ApiResponse";
@@ -83,6 +84,7 @@ function resetFormErrors() {
       </CardHeader>
       <CardContent class="grid gap-4">
         <div v-for="(field, key) in form" :key="key" class="grid gap-2">
+          <Label :for="key" class="capitalize">{{ key }}</Label>
           <Input
             v-model="field.value"
             :name="key"
