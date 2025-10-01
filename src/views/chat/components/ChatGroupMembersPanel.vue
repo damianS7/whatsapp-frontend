@@ -62,7 +62,7 @@ function openChat(chatMember: ChatMember) {
     id: 0,
     userId: chatMember.userId,
     name: chatMember.userName,
-    avatarFilename: chatMember.userAvatarFilename,
+    avatarUrl: chatMember.userAvatarFilename,
   });
   const existingChat = chatStore.getChat(chat.id);
 
