@@ -4,10 +4,12 @@ import CustomAlert from "@/components/CustomAlert.vue";
 import { onMounted, ref } from "vue";
 import ProfileEditableField from "./components/ProfileEditableField.vue";
 import ProfilePhoto from "./components/ProfilePhotoUploader.vue";
-import ConfirmPasswordModal from "@/components/modal/ConfirmPasswordModal.vue";
-import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
 import type { GenderType } from "@/types/User";
+import { useModalStore } from "@/stores/modal";
+import ConfirmMessageModal from "@/components/modal/ConfirmMessageModal.vue";
 
+// store
+const modalStore = useModalStore();
 const userStore = useUserStore();
 const user = userStore.getLoggedUser;
 const genderTypes: GenderType[] = ["MALE", "FEMALE"];
@@ -15,17 +17,10 @@ const genderOptions = genderTypes.map((value) => ({
   value,
   label: value.charAt(0) + value.slice(1).toLowerCase(),
 }));
+
 // TODO add zod validation
 // message to show
 const alert = ref();
-
-// modals to show
-const modals = {
-  requestCard: ref(),
-  transfer: ref(),
-  confirmPassword: ref(),
-  confirmMessage: ref(),
-};
 
 // updatable fields to be displayed
 const formFields = ref([
@@ -114,10 +109,13 @@ async function updateField(
   }
 
   // wait for the user to input his password
-  const currentPassword = await modals.confirmPassword.value.open();
+  // const currentPassword = await modals.confirmPassword.value.open();
+  const currentPassword = (await modalStore.open("ConfirmPassword", {
+    title: "Confirm Password",
+  })) as string;
 
   // nothing to update
-  if (field.value.length == 0 || currentPassword.length == 0) {
+  if (field.value.length == 0 || !currentPassword) {
     return;
   }
 
@@ -139,7 +137,9 @@ async function updateField(
 // change the password
 async function updatePassword(index: number, newPassword: string) {
   // wait for the user to input his password
-  const currentPassword = await modals.confirmPassword.value.open();
+  const currentPassword = (await modalStore.open("ConfirmPassword", {
+    title: "Confirm Password",
+  })) as string;
 
   // nothing to update
   if (currentPassword.length == 0 || newPassword.length == 0) {
@@ -160,7 +160,9 @@ async function updatePassword(index: number, newPassword: string) {
 // update profile photo
 async function updatePhoto(photo: any) {
   // wait for the user to input his password
-  const password = await modals.confirmPassword.value.open();
+  const password = (await modalStore.open("ConfirmPassword", {
+    title: "Confirm Password",
+  })) as string;
 
   // if password is not set
   if (password.length == 0) {
@@ -181,12 +183,17 @@ async function updatePhoto(photo: any) {
 
 // upade email field
 async function updateEmail(index: number, newEmail: string) {
-  await modals.confirmMessage.value.open(
-    "Session will be closed after you change your email."
-  );
+  const confirmed = await modalStore.open("ConfirmMessage", {
+    title: "Confirm Email Change",
+    message: "Session will be closed after you change your email.",
+  });
+
+  if (!confirmed) return;
 
   // wait for the user to input his password
-  const currentPassword = await modals.confirmPassword.value.open();
+  const currentPassword = (await modalStore.open("ConfirmPassword", {
+    title: "Confirm Password",
+  })) as string;
 
   // nothing to update
   if (newEmail.length == 0 || currentPassword.length == 0) {
@@ -205,16 +212,9 @@ async function updateEmail(index: number, newEmail: string) {
       alert.value.exception(error);
     });
 }
-
-onMounted(() => {
-  //
-});
 </script>
 <template>
   <div class="main-container grid overflow-hidden h-full">
-    <ConfirmPasswordModal :ref="modals.confirmPassword" />
-    <ConfirmMessageModal :ref="modals.confirmMessage" />
-
     <section
       class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
     >
