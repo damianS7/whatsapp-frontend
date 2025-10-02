@@ -18,7 +18,7 @@ const genderOptions = genderTypes.map((value) => ({
 
 // TODO add zod validation
 // message to show
-const alert = ref();
+const alert = ref<InstanceType<typeof CustomAlert>>();
 
 // updatable fields to be displayed
 const formFields = computed(() => [
@@ -122,10 +122,10 @@ async function updateField(
       [field.name]: field.value,
     })
     .then((profile) => {
-      alert.value.success("Field successfully updated.");
+      alert.value?.success("Field successfully updated.");
     })
     .catch((error) => {
-      alert.value.exception(error);
+      alert.value?.exception(error);
     });
 }
 
@@ -145,10 +145,10 @@ async function updatePassword(index: number, newPassword: string) {
   await userStore
     .updatePassword(currentPassword, newPassword)
     .then(() => {
-      alert.value.success("Password successfully updated.");
+      alert.value?.success("Password successfully updated.");
     })
     .catch((error) => {
-      alert.value.exception(error);
+      alert.value?.exception(error);
     });
 }
 
@@ -167,13 +167,10 @@ async function updatePhoto(photo: any) {
   await userStore
     .uploadPhoto(password, photo)
     .then((blob) => {
-      // TODO review
-      localStorage.setItem("profilePhotoURL", URL.createObjectURL(blob));
-      // userStore.setPhoto(blob);
-      alert.value.sucess("Photo successfully updated.");
+      alert.value?.success("Photo successfully updated.");
     })
     .catch((error) => {
-      alert.value.exception(error);
+      alert.value?.exception(error);
     });
 }
 
@@ -200,10 +197,10 @@ async function updateEmail(index: number, newEmail: string) {
   await userStore
     .updateEmail(currentPassword, newEmail)
     .then((user) => {
-      alert.value.success("Field successfully updated.");
+      alert.value?.success("Field successfully updated.");
     })
     .catch((error) => {
-      alert.value.exception(error);
+      alert.value?.exception(error);
     });
 }
 </script>
