@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
-import ProfilePhoto from "@/components/ProfilePhoto.vue";
+import CustomAvatar from "@/components/CustomAvatar.vue";
 const userStore = useUserStore();
 </script>
 <template>
@@ -11,7 +11,11 @@ const userStore = useUserStore();
     </span>
 
     <span>
-      <ProfilePhoto class="rounded-full w-6 h-6 bg-gray-300" />
+      <CustomAvatar
+        :src="userStore.user.avatarUrl"
+        :fallback="userStore.user.firstName"
+        class="rounded-full w-6 h-6 bg-gray-300"
+      />
     </span>
   </header>
 </template>
