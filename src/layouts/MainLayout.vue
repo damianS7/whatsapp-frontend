@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import FullScreenLoadingSpinner from "@/components/FullScreenLoadingSpinner.vue";
+import FullScreenLoadingSpinner from "@/components/spinner/FullScreenLoadingSpinner.vue";
 import Sidebar from "@/layouts/SidebarLayout.vue";
 import Header from "@/components/HeaderBar.vue";
 import { useAppInit } from "@/composables/useAppInit";
