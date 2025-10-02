@@ -17,6 +17,7 @@ export const useUserStore = defineStore("user", () => {
 
   async function fetchUser(): Promise<User> {
     const user: User = await userService.fetchUser();
+    // TODO use then
     try {
       const resource = await userService.fetchProfileImage(user.id);
       user.avatarUrl = URL.createObjectURL(resource);
@@ -27,7 +28,10 @@ export const useUserStore = defineStore("user", () => {
   }
 
   async function updateUser(currentPassword: string, fieldsToUpdate: Record<string, any>): Promise<User> {
-    const updatedUser = await userService.updateUser(currentPassword, fieldsToUpdate);
+    const updatedUser: User = await userService.updateUser(currentPassword, fieldsToUpdate);
+
+    // set the current avatar for the updated user
+    updatedUser.avatarUrl = user.value.avatarUrl;
     user.value = updatedUser;
     return updatedUser;
   }
