@@ -185,7 +185,7 @@ export const useChatStore = defineStore("chat", {
       this.stompClient.connect(
         { Authorization: `Bearer ${token}` },
         async () => {
-          const contacts = useContactStore().getContacts;
+          const contacts = useContactStore().contacts;
           for (const contact of contacts) {
             await this.subscribeToChat(generatePrivateChatId(contact));
           }
