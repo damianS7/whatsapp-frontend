@@ -16,6 +16,14 @@ export const useContactStore = defineStore("contact", () => {
     };
   });
 
+  const getContact = computed(() => {
+    return (userId: number) => {
+      return contacts.value.find((contact) => contact.userId === userId)
+        ? true
+        : false;
+    };
+  });
+
   async function initialize() {
     const token = localStorage.getItem("token");
     if (!token) {
