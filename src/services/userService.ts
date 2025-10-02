@@ -47,13 +47,16 @@ export const userService = {
     return (await response.blob()) as Blob;
   },
   async uploadProfileImage(currentPassword: string, file: any): Promise<Blob> {
+    const token = localStorage.getItem("token");
     const formData = new FormData();
     formData.append("file", file);
     formData.append("currentPassword", currentPassword);
 
     const response = await fetch(`${API}/users/image`, {
       method: "POST",
-      headers: authHeader(),
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       body: formData,
     });
 
