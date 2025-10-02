@@ -48,8 +48,8 @@ export const contactService = {
 
     return json;
   },
-  async deleteContact(id: number): Promise<void> {
-    const response = await fetch(`${API}/contacts/${id}`, {
+  async deleteContact(userId: number): Promise<void> {
+    const response = await fetch(`${API}/contacts/${userId}`, {
       method: "DELETE",
       headers: authHeader(),
     });
@@ -62,5 +62,5 @@ export const contactService = {
         json.errors
       );
     }
-  }
+  },
 };

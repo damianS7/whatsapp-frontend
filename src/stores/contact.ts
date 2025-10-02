@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
-import type { Contact } from "@/types/Contact";
-import { contactService } from "@/services/contactService";
 import { computed, ref } from "vue";
+import { contactService } from "@/services/contactService";
 import { userService } from "@/services/userService";
+import type { Contact } from "@/types/Contact";
 
 export const useContactStore = defineStore("contact", () => {
-  const contacts = ref([{}] as Contact[]);
+  const contacts = ref<Contact[]>([]);
   const initialized = ref(false);
 
   const isContact = computed(() => {
@@ -25,43 +25,27 @@ export const useContactStore = defineStore("contact", () => {
   });
 
   async function initialize() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      return;
-    }
-
-    await fetchContacts()
-      .then((fcontacts) => {
-        contacts.value = fcontacts;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    await fetchContacts().then((fcontacts) => {
+      contacts.value = fcontacts;
+    });
 
     initialized.value = true;
   }
 
   async function fetchContacts(): Promise<Contact[]> {
-    const contacts = await contactService.fetchContacts();
+    const contacts: Contact[] = await contactService.fetchContacts();
 
-    // TODO .then .catch
-    // createUrl for each contact image
+    // fetch the profile image for each contact
     for (const contact of contacts) {
-      // fetch the photo
       try {
         const resource = await userService.fetchProfileImage(contact.userId);
         contact.avatarUrl = URL.createObjectURL(resource);
       } catch (error) {
-        // contact.avatarUrl = "/default-avatar.jpg";
+        contact.avatarUrl = undefined;
       }
     }
 
     return contacts;
-  }
-
-  async function deleteContact(id: number) {
-    await contactService.deleteContact(id);
-    contacts.value = contacts.value.filter((contact) => contact.id !== id);
   }
 
   async function addContact(id: number) {
@@ -69,5 +53,21 @@ export const useContactStore = defineStore("contact", () => {
     contacts.value.push(contact);
   }
 
-  return { contacts, initialized, isContact, initialize, fetchContacts, deleteContact, addContact };
+  async function deleteContact(userId: number) {
+    await contactService.deleteContact(userId);
+    contacts.value = contacts.value.filter(
+      (contact) => contact.userId !== userId
+    );
+  }
+
+  return {
+    contacts,
+    initialized,
+    isContact,
+    initialize,
+    fetchContacts,
+    getContact,
+    addContact,
+    deleteContact,
+  };
 });

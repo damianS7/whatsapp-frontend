@@ -56,7 +56,7 @@ async function deleteContact(contact: Contact) {
   }
   // if the user confirms, delete the contact
   await contactStore
-    .deleteContact(contact.id)
+    .deleteContact(contact.userId)
     .then(() => {
       alert.value?.success("Deleted " + contact.name + " from contacts.");
     })
