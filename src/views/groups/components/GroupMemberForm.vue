@@ -54,15 +54,12 @@ async function addMember(contact: Contact) {
   contactNameFilter.value = "";
 }
 
-async function removeMember(groupMemberId: number) {
+async function removeMember(userId: number) {
   if (!group.value) {
     return;
   }
 
-  await groupStore
-    .deleteGroupMember(group.value.id, groupMemberId)
-    .then()
-    .catch();
+  await groupStore.deleteGroupMember(group.value.id, userId);
 }
 </script>
 <template>
@@ -85,8 +82,8 @@ async function removeMember(groupMemberId: number) {
         class="absolute left-0 right-0 top-full w-full max-w-full border border-gray-300 rounded-md bg-white shadow z-10"
       >
         <li
-          v-for="contact in contacts"
-          :key="contact.id"
+          v-for="(contact, index) in contacts"
+          :key="index"
           class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
           @click="addMember(contact)"
         >
@@ -101,7 +98,7 @@ async function removeMember(groupMemberId: number) {
         class="flex pill pill-primary items-center"
       >
         {{ member.userName }}
-        <button @click="removeMember(member.id)">
+        <button @click="removeMember(member.userId)">
           <X class="cursor-pointer" />
         </button>
       </span>
