@@ -12,15 +12,9 @@ const emit = defineEmits(["hidePanel"]);
 const groupStore = useGroupStore();
 
 // message to show
-const alert = ref();
+const alert = ref<InstanceType<typeof CustomAlert>>();
 
-// form interface
-interface FormGroup {
-  name: string;
-  description: string;
-}
-
-const form: Ref<FormGroup> = ref({
+const form = ref({
   name: "",
   description: "",
 });
@@ -36,7 +30,7 @@ async function createGroup() {
       router.push("/groups/" + group.id);
     })
     .catch((error) => {
-      alert.value.exception(error);
+      alert.value?.exception(error);
     });
 }
 </script>
