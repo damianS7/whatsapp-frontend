@@ -12,5 +12,5 @@ export interface Chat {
   type: ChatType;
   history: Array<ChatMessage>;
   participants: Array<ChatMember | GroupMember>;
-  avatarFilename?: string;
+  imageSrc?: string;
 }

@@ -25,7 +25,7 @@ function updatePhoto(event: Event) {
     <div class="md:col-span-2">
       <input type="file" ref="fileInput" class="hidden" @change="updatePhoto" />
       <ProfilePhoto
-        v-if="userStore.user?.avatarFilename"
+        v-if="userStore.user?.avatarUrl"
         alt="Profile photo"
         @click="showFileChooserDialog"
         class="w-24 h-24 rounded-full object-cover border cursor-pointer"
