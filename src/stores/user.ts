@@ -16,7 +16,14 @@ export const useUserStore = defineStore("user", () => {
   });
 
   async function fetchUser(): Promise<User> {
-    return await userService.fetchUser();
+    const user: User = await userService.fetchUser();
+    try {
+      const resource = await userService.fetchProfileImage(user.id);
+      user.avatarUrl = URL.createObjectURL(resource);
+    } catch (error) {
+      // contact.avatarUrl = "/default-avatar.jpg";
+    }
+    return user;
   }
 
   async function updateUser(currentPassword: string, fieldsToUpdate: Record<string, any>): Promise<User> {
@@ -27,7 +34,7 @@ export const useUserStore = defineStore("user", () => {
 
   async function updateEmail(currentPassword: string, newEmail: string): Promise<User> {
     const updatedUser = await userService.updateEmail(currentPassword, newEmail);
-    user.value = updatedUser;
+    user.value.email = updatedUser.email;
     return updatedUser;
   }
 
@@ -44,7 +51,9 @@ export const useUserStore = defineStore("user", () => {
   }
 
   async function uploadPhoto(currentPassword: string, file: any): Promise<Blob> {
-    return await userService.uploadProfileImage(currentPassword, file);
+    const blob = await userService.uploadProfileImage(currentPassword, file);
+    user.value.avatarUrl = URL.createObjectURL(blob);
+    return blob;
   }
 
   async function initialize() {
@@ -61,20 +70,9 @@ export const useUserStore = defineStore("user", () => {
         console.log(error);
       });
 
-    if (!user.value.avatarFilename) {
+    if (!user.value.avatarUrl) {
       return;
     }
-
-    await getPhoto()
-      .then((filename) => {
-        localStorage.setItem(
-          "profilePhotoURL",
-          URL.createObjectURL(filename)
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
 
     initialized.value = true;
   }
