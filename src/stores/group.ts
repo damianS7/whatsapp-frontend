@@ -1,271 +1,123 @@
 import { defineStore } from "pinia";
 import type { Group } from "@/types/Group";
+import { computed, ref } from "vue";
+import { groupService } from "@/services/groupService";
+import { userService } from "@/services/userService";
 import type { GroupMember } from "@/types/GroupMember";
-const API = import.meta.env.VITE_APP_API_URL;
-export const useGroupStore = defineStore("group", {
-  state: () => ({
-    groups: [] as Group[],
-    initialized: false,
-  }),
 
-  getters: {
-    getGroups: (state) => {
-      return state.groups;
-    },
-    getGroup: (state) => {
-      return (id: number) => {
-        return state.groups.find((group) => group.id === id);
-      };
-    },
-  },
-  actions: {
-    async fetchGroups(): Promise<Group[]> {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${API}/groups`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+export const useGroupStore = defineStore("group", () => {
+  const groups = ref<Group[]>([]);
+  const initialized = ref(false);
 
-        // if response is not 200, throw an error
-        if (response.status !== 200) {
-          const jsonResponse = await response.json();
-          throw new Error("Failed to fetch groups. " + jsonResponse.message);
+  const getGroup = computed(() => {
+    return (id: number) => {
+      return groups.value.find((group) => group.id === id);
+    };
+  });
+
+  async function fetchGroups(): Promise<Group[]> {
+    const groups: Group[] = await groupService.fetchGroups();
+
+    for (const group of groups) {
+      for (const groupMember of group.members) {
+        try {
+          const resource = await userService.fetchProfileImage(
+            groupMember.userId
+          );
+
+          groupMember.avatarSrc = URL.createObjectURL(resource);
+        } catch (error) {
+          groupMember.avatarSrc = undefined;
         }
-
-        return (await response.json()) as Group[];
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to fetch groups.");
       }
-    },
-    async fetchGroup(groupId: number): Promise<Group> {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${API}/groups/${groupId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    }
 
-        // if response is not 200, throw an error
-        if (response.status !== 200) {
-          const jsonResponse = await response.json();
-          throw new Error("Failed to fetch group. " + jsonResponse.message);
-        }
+    return groups;
+  }
 
-        return (await response.json()) as Group;
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to fetch group.");
-      }
-    },
-    async createGroup(group: {
+  async function fetchGroup(groupId: number): Promise<Group> {
+    return await groupService.fetchGroup(groupId);
+  }
+
+  async function createGroup(group: {
+    name: string;
+    description: string;
+    membersId?: number[];
+  }): Promise<Group> {
+    const createdGroup = await groupService.createGroup(group);
+    groups.value.push(createdGroup);
+    return createdGroup;
+  }
+
+  async function deleteGroup(groupId: number) {
+    await groupService.deleteGroup(groupId);
+    groups.value = groups.value.filter((group) => group.id !== groupId);
+  }
+
+  async function updateGroup(
+    id: number,
+    group: {
       name: string;
       description: string;
       membersId?: number[];
-    }): Promise<Group> {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${API}/groups`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            name: group.name,
-            description: group.description,
-            membersId: group.membersId,
-          }),
-        });
+    }
+  ): Promise<Group> {
+    const updatedGroup: Group = await groupService.updateGroup(id, group);
 
-        // if response is not 201, throw an error
-        if (response.status !== 201) {
-          throw new Error("Failed to create group.");
-        }
+    const index = groups.value.findIndex(
+      (group) => group.id === updatedGroup.id
+    );
 
-        const createdGroup = (await response.json()) as Group;
-        this.groups.push(createdGroup);
-        return createdGroup;
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to create group.");
-      }
-    },
-    async updateGroup(
-      id: number,
-      group: {
-        name: string;
-        description: string;
-        membersId?: number[];
-      }
-    ): Promise<Group> {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${API}/groups/${id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              name: group.name,
-              description: group.description,
-              membersId: group.membersId,
-            }),
-          }
-        );
+    groups.value[index] = updatedGroup;
 
-        // if response is not 200, throw an error
-        if (response.status !== 200) {
-          throw new Error("Failed to update group.");
-        }
+    return updatedGroup;
+  }
 
-        const updatedGroup = (await response.json()) as Group;
-        const index = this.groups.findIndex(
-          (group) => group.id === updatedGroup.id
-        );
-        this.groups[index] = updatedGroup;
+  async function addGroupMember(
+    groupId: number,
+    userId: number
+  ): Promise<GroupMember> {
+    const groupMember: GroupMember = await groupService.addGroupMember(
+      groupId,
+      userId
+    );
 
-        return updatedGroup;
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to update group.");
-      }
-    },
-    async addGroupMember(id: number, memberId: number): Promise<GroupMember> {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${API}/groups/${id}/members`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              memberId,
-            }),
-          }
-        );
+    const index = groups.value.findIndex(
+      (group) => group.id === groupMember.groupId
+    );
+    groups.value[index].members.push(groupMember);
+    return groupMember;
+  }
 
-        // if response is not 201, throw an error
-        if (response.status !== 201) {
-          throw new Error("Failed to add member to group.");
-        }
+  async function deleteGroupMember(groupId: number, userId: number) {
+    await groupService.deleteGroupMember(groupId, userId);
+    const groupIndex = groups.value.findIndex((group) => group.id === groupId);
+    const gmIndex = groups.value[groupIndex].members.findIndex(
+      (groupMember) => groupMember.userId === userId
+    );
 
-        const groupMember = (await response.json()) as GroupMember;
-        const index = this.groups.findIndex(
-          (group) => group.id === groupMember.groupId
-        );
-        this.groups[index].members.push(groupMember);
-        return groupMember;
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to add member to group.");
-      }
-    },
-    async deleteGroupMember(groupId: number, memberId: number) {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${API}/groups/members/${memberId}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    groups.value[groupIndex].members.splice(gmIndex, 1);
+  }
 
-        // if response is not 201, throw an error
-        if (response.status !== 204) {
-          throw new Error("Failed to delete member from group.");
-        }
+  async function initialize() {
+    await fetchGroups().then((fgroups) => {
+      groups.value = fgroups;
+    });
 
-        const groupIndex = this.groups.findIndex(
-          (group) => group.id === groupId
-        );
-        const gmIndex = this.groups[groupIndex].members.findIndex(
-          (groupMember) => groupMember.id === memberId
-        );
+    initialized.value = true;
+  }
 
-        this.groups[groupIndex].members.splice(gmIndex, 1);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to delete member from group.");
-      }
-    },
-    async deleteGroup(id: number) {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${API}/groups/${id}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(id),
-          }
-        );
-
-        // if response is not 204, throw an error
-        if (response.status !== 204) {
-          throw new Error("Failed to delete group.");
-        }
-
-        this.groups = this.groups.filter((group) => group.id !== id);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          throw error;
-        }
-        throw new Error("Failed to delete group.");
-      }
-    },
-    async setGroups(groups: Group[]) {
-      this.groups = groups;
-    },
-    async initialize() {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return;
-      }
-      await this.fetchGroups()
-        .then((groups) => {
-          this.setGroups(groups);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      this.initialized = true;
-    },
-  },
+  return {
+    initialize,
+    createGroup,
+    deleteGroup,
+    updateGroup,
+    addGroupMember,
+    deleteGroupMember,
+    fetchGroup,
+    fetchGroups,
+    initialized,
+    groups,
+    getGroup,
+  };
 });
