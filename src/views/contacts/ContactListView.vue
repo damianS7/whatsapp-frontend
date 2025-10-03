@@ -9,6 +9,7 @@ import CustomAlert from "@/components/CustomAlert.vue";
 import { useChat } from "@/composables/useChat";
 import CustomAvatar from "@/components/CustomAvatar.vue";
 import { useModalStore } from "@/stores/modal";
+import Button from "@/components/ui/button/Button.vue";
 const { createPrivateChat } = useChat();
 
 // router
@@ -93,27 +94,31 @@ async function deleteContact(contact: Contact) {
               :fallback="contact.name"
             />
 
-            <!-- name and buttons -->
+            <!-- name and Buttons -->
             <div class="flex-1 flex flex-col gap-1 text-center">
               <p class="text-sm font-medium text-gray-800 truncate">
                 {{ contact.name }}
               </p>
 
               <div class="flex gap-1 justify-center">
-                <button
+                <Button
                   @click="openChat(contact)"
                   class="btn btn-info btn-sm flex gap-2 items-center justify-between"
+                  size="xs"
+                  variant="success"
                   title="Open chat"
                 >
                   <MessageCircle :size="16" />
-                </button>
-                <button
+                </Button>
+                <Button
                   @click="deleteContact(contact)"
                   class="btn btn-danger btn-sm flex gap-2 items-center justify-between"
+                  size="xs"
+                  variant="destructive"
                   title="Delete contact"
                 >
                   <UserRoundMinus :size="16" />
-                </button>
+                </Button>
               </div>
             </div>
           </div>
