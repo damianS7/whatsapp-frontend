@@ -3,5 +3,5 @@ export interface GroupMember {
   groupId: number;
   userId: number;
   userName: string;
-  avatarFilename: string;
+  avatarSrc: string | undefined;
 }

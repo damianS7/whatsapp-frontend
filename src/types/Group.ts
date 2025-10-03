@@ -1,4 +1,4 @@
-import type { GroupMember } from "@/types/GroupMember";
+import type { GroupMember } from "./GroupMember";
 
 export interface Group {
   id: number;
@@ -9,6 +9,5 @@ export interface Group {
     userName: string;
     avatarFilename: string;
   };
-  // members: ChatMember[];
   members: GroupMember[];
 }
