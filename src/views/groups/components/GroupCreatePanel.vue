@@ -4,6 +4,7 @@ import { ref, defineEmits, type Ref } from "vue";
 import CustomAlert from "@/components/CustomAlert.vue";
 import { useGroupStore } from "@/stores/group";
 import { useRouter } from "vue-router";
+import Button from "@/components/ui/button/Button.vue";
 const router = useRouter();
 // emit
 const emit = defineEmits(["hidePanel"]);
@@ -43,12 +44,10 @@ async function createGroup() {
     >
       <h1>Create Group</h1>
       <div class="flex gap-2 items-center">
-        <button @click="createGroup" class="btn btn-primary btn-sm">
-          CREATE
-        </button>
-        <button @click="emit('hidePanel')" class="btn btn-sm btn-blue">
+        <Button @click="createGroup" size="xs"> CREATE </Button>
+        <Button @click="emit('hidePanel')" size="xs">
           <ArrowLeft :size="20" />
-        </button>
+        </Button>
       </div>
     </section>
     <section class="flex flex-col container gap-4 overflow-auto h-full">

@@ -6,6 +6,7 @@ import { useChatStore } from "@/stores/chat";
 import { useRouter } from "vue-router";
 import { useChat } from "@/composables/useChat";
 import GroupCreatePanel from "./components/GroupCreatePanel.vue";
+import Button from "@/components/ui/button/Button.vue";
 const { isLoggedUser, createGroupChat } = useChat();
 
 const router = useRouter();
@@ -49,9 +50,7 @@ function toggleCreateGroupPanel() {
       class="sm:flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
       <h1>Groups</h1>
-      <button @click="toggleCreateGroupPanel" class="btn btn-sm btn-blue">
-        CREATE GROUP
-      </button>
+      <Button size="xs" @click="toggleCreateGroupPanel"> CREATE GROUP </Button>
     </section>
 
     <section class="flex flex-col container gap-2 overflow-auto h-full">
@@ -66,21 +65,16 @@ function toggleCreateGroupPanel() {
         </div>
 
         <div class="flex gap-1">
-          <!-- TODO: Only show if owner -->
-          <router-link
-            v-if="isLoggedUser(group.owner.userId)"
-            class="btn btn-sm btn-blue self-center"
-            :to="`/groups/${group.id}`"
-          >
-            EDIT
-          </router-link>
+          <Button size="xs">
+            <router-link
+              v-if="isLoggedUser(group.owner.userId)"
+              :to="`/groups/${group.id}`"
+              class=""
+              >EDIT
+            </router-link>
+          </Button>
 
-          <button
-            @click="openChat(group.id)"
-            class="btn btn-sm btn-blue self-center"
-          >
-            OPEN
-          </button>
+          <Button @click="openChat(group.id)" size="xs"> OPEN </Button>
         </div>
       </div>
     </section>

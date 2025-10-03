@@ -7,6 +7,23 @@ import type { Contact } from "@/types/Contact";
 import { useRoute } from "vue-router";
 import { useChat } from "@/composables/useChat";
 import type { GroupMember } from "@/types/GroupMember";
+import {
+  Combobox,
+  ComboboxAnchor,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
+import {
+  TagsInput,
+  TagsInputInput,
+  TagsInputItem,
+  TagsInputItemDelete,
+  TagsInputItemText,
+} from "@/components/ui/tags-input";
+
 const { isLoggedUser } = useChat();
 const contactNameFilter = ref("");
 const route = useRoute();
@@ -27,6 +44,13 @@ const contacts = computed(() => {
       .toLowerCase()
       .includes(contactNameFilter.value.toLowerCase());
   });
+});
+
+const contactsNotMembers = computed(() => {
+  return contacts.value.filter(
+    (contact) =>
+      !groupMembers.value.some((member) => member.userId === contact.userId)
+  );
 });
 
 // group members to show in the form
@@ -61,6 +85,8 @@ async function removeMember(userId: number) {
 
   await groupStore.deleteGroupMember(group.value.id, userId);
 }
+
+const open = ref(false);
 </script>
 <template>
   <div
@@ -69,39 +95,54 @@ async function removeMember(userId: number) {
     <label for="groupMembers" class="block text-sm text-gray-600 font-semibold"
       >Group members</label
     >
-    <div class="relative">
-      <input
-        id="groupMembers"
-        v-model="contactNameFilter"
-        type="text"
-        placeholder="David, Maria ..."
-        class="bg-gray-200 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-      />
-      <ul
-        v-if="contacts.length && contactNameFilter"
-        class="absolute left-0 right-0 top-full w-full max-w-full border border-gray-300 rounded-md bg-white shadow z-10"
-      >
-        <li
-          v-for="(contact, index) in contacts"
-          :key="index"
-          class="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
-          @click="addMember(contact)"
-        >
-          {{ contact.name }}
-        </li>
-      </ul>
-    </div>
-    <div class="flex flex-wrap gap-2">
-      <span
-        v-for="member in groupMembers"
-        :key="member.userId"
-        class="flex pill pill-primary items-center"
-      >
-        {{ member.userName }}
-        <button @click="removeMember(member.userId)">
-          <X class="cursor-pointer" />
-        </button>
-      </span>
-    </div>
+    <Combobox v-model="contacts" v-model:open="open" :ignore-filter="false">
+      <ComboboxAnchor as-child>
+        <TagsInput v-model="groupMembers" class="bg-gray-200">
+          <TagsInputItem
+            v-for="(member, index) in groupMembers"
+            :key="index"
+            :value="member.userName"
+            class="bg-blue-200 text-blue-500 font-bold text-sm"
+          >
+            <TagsInputItemText />
+            <TagsInputItemDelete @click="removeMember(member.userId)" />
+          </TagsInputItem>
+
+          <ComboboxInput v-model="contactNameFilter" as-child>
+            <TagsInputInput
+              placeholder="Contacts ..."
+              class="min-w-[200px] w-full p-0 border-none focus-visible:ring-0 h-auto"
+              @keydown.enter.prevent
+            />
+          </ComboboxInput>
+        </TagsInput>
+
+        <ComboboxList class="w-[--reka-popper-anchor-width]">
+          <ComboboxEmpty />
+          <ComboboxGroup>
+            <ComboboxItem
+              v-for="contact in contactsNotMembers"
+              :key="contact.userId"
+              :value="contact.name"
+              @select.prevent="
+                (ev) => {
+                  if (typeof ev.detail.value === 'string') {
+                    contactNameFilter = '';
+                    // modelValue.push(ev.detail.value);
+                    addMember(contact);
+                  }
+
+                  if (groupMembers.length === 0) {
+                    open = false;
+                  }
+                }
+              "
+            >
+              {{ contact.name }}
+            </ComboboxItem>
+          </ComboboxGroup>
+        </ComboboxList>
+      </ComboboxAnchor>
+    </Combobox>
   </div>
 </template>

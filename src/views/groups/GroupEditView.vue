@@ -5,6 +5,7 @@ import { useGroupStore } from "@/stores/group";
 import { useRoute, useRouter } from "vue-router";
 import GroupMemberForm from "@/views/groups/components/GroupMemberForm.vue";
 import { useModalStore } from "@/stores/modal";
+import Button from "@/components/ui/button/Button.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -70,10 +71,10 @@ async function deleteGroup() {
     >
       <h1>Edit Group</h1>
       <div class="flex items-center gap-1">
-        <button @click="deleteGroup" class="btn btn-danger btn-sm">
+        <Button size="xs" variant="destructive" @click="deleteGroup">
           DELETE
-        </button>
-        <button @click="saveGroup" class="btn btn-primary btn-sm">SAVE</button>
+        </Button>
+        <Button size="xs" @click="saveGroup">SAVE</Button>
       </div>
     </section>
 
