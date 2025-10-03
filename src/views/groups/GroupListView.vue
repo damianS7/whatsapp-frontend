@@ -4,16 +4,14 @@ import type { Group } from "@/types/Group";
 import { useGroupStore } from "@/stores/group";
 import { useChatStore } from "@/stores/chat";
 import { useRouter } from "vue-router";
-import CustomAlert from "@/components/CustomAlert.vue";
-import CreateGroupPanel from "./components/CreateGroupPanel.vue";
 import { useChat } from "@/composables/useChat";
+import GroupCreatePanel from "./components/GroupCreatePanel.vue";
 const { isLoggedUser, createGroupChat } = useChat();
-// message to show
-const alert = ref();
+
 const router = useRouter();
 const groupStore = useGroupStore();
 const chatStore = useChatStore();
-const groups = computed(() => groupStore.getGroups as Group[]);
+const groups = computed(() => groupStore.groups as Group[]);
 
 // open an existing chat or create a new one if not exists
 function openChat(groupId: number) {
@@ -21,6 +19,7 @@ function openChat(groupId: number) {
   if (!group) {
     return;
   }
+
   const chat = createGroupChat(group);
   const chatExist = chatStore.getChat(chat.id);
 
@@ -41,7 +40,7 @@ function toggleCreateGroupPanel() {
   <div
     class="main-container grid grid-rows-[auto_1fr] shadow-none rounded-none overflow-hidden h-full relative"
   >
-    <CreateGroupPanel
+    <GroupCreatePanel
       :class="createGroupPanelVisible ? 'translate-x-0' : '-translate-x-full'"
       @hidePanel="toggleCreateGroupPanel"
     />
@@ -56,7 +55,6 @@ function toggleCreateGroupPanel() {
     </section>
 
     <section class="flex flex-col container gap-2 overflow-auto h-full">
-      <CustomAlert class="mb-2" ref="alert" />
       <div
         v-for="(group, index) in groups"
         :key="index"

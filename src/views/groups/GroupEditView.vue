@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, type Ref, computed } from "vue";
+import { ref, computed } from "vue";
 import CustomAlert from "@/components/CustomAlert.vue";
 import { useGroupStore } from "@/stores/group";
 import { useRoute, useRouter } from "vue-router";
 import GroupMemberForm from "@/views/groups/components/GroupMemberForm.vue";
 import { useModalStore } from "@/stores/modal";
-import { title } from "process";
 
 const route = useRoute();
 const router = useRouter();
@@ -22,13 +21,7 @@ const group = computed(() =>
   groupStore.getGroup(parseInt(route.params.id as string, 10))
 );
 
-// form interface
-interface FormGroup {
-  name: string;
-  description: string;
-}
-
-const form: Ref<FormGroup> = ref({
+const form = ref({
   name: group.value?.name || "",
   description: group.value?.description || "",
 });
