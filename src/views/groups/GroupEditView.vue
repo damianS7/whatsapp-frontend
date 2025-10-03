@@ -89,10 +89,10 @@ async function deleteGroup() {
           v-model="form.name"
           type="text"
           placeholder="Music"
-          class="bg-gray-200 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          class="bg-gray-200 w-full rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
       </div>
-      <div class="bg-gray-300 border border-gray-200 rounded-xl shadow-sm p-4">
+      <div class="bg-gray-300 rounded shadow-sm p-4">
         <label
           for="groupDescription"
           class="block text-sm text-gray-600 font-semibold mb-1"
