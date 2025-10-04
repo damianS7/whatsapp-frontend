@@ -106,7 +106,6 @@ export function chatUtils() {
 
   return {
     getDestinationUser,
-    isLoggedUser,
     generateChatId,
     generateGroupChatId,
     generatePrivateChatId,

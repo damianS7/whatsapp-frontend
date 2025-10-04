@@ -7,7 +7,9 @@ import { useRouter } from "vue-router";
 import { chatUtils } from "@/utils/chat";
 import GroupCreatePanel from "./components/GroupCreatePanel.vue";
 import Button from "@/components/ui/button/Button.vue";
-const { isLoggedUser, createGroupChat } = chatUtils();
+import { authUtils } from "@/utils/auth";
+const { createGroupChat } = chatUtils();
+const { isLoggedUser } = authUtils();
 
 const router = useRouter();
 const groupStore = useGroupStore();

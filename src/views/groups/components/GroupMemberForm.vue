@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { X } from "lucide-vue-next";
 import { ref, type Ref, computed } from "vue";
 import { useGroupStore } from "@/stores/group";
 import { useContactStore } from "@/stores/contact";
 import type { Contact } from "@/types/Contact";
 import { useRoute } from "vue-router";
-import { chatUtils } from "@/utils/chat";
 import type { GroupMember } from "@/types/GroupMember";
 import {
   Combobox,
@@ -23,8 +21,9 @@ import {
   TagsInputItemDelete,
   TagsInputItemText,
 } from "@/components/ui/tags-input";
+import { authUtils } from "@/utils/auth";
 
-const { isLoggedUser } = chatUtils();
+const { isLoggedUser } = authUtils();
 const contactNameFilter = ref("");
 const route = useRoute();
 

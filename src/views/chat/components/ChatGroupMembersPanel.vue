@@ -13,7 +13,9 @@ import type { ChatParticipant } from "@/types/ChatParticipant";
 import { useGroupStore } from "@/stores/group";
 import { useUserStore } from "@/stores/user";
 import Button from "@/components/ui/button/Button.vue";
-const { isLoggedUser, createPrivateChat } = chatUtils();
+import { authUtils } from "@/utils/auth";
+const { createPrivateChat } = chatUtils();
+const { isLoggedUser } = authUtils();
 
 // router
 const router = useRouter();
