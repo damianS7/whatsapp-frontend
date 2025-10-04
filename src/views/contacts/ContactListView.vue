@@ -84,42 +84,40 @@ async function deleteContact(contact: Contact) {
         <div
           v-for="(contact, index) in contacts"
           :key="index"
-          class="p-4 bg-gray-300 rounded"
+          class="flex gap-2 p-4 bg-gray-300 rounded"
         >
-          <div class="flex gap-1">
-            <!-- Avatar -->
-            <CustomAvatar
-              class="h-12 w-12 text-white font-bold text-xl uppercase"
-              :src="contact.avatarUrl ?? ''"
-              :fallback="contact.name"
-            />
+          <!-- Avatar -->
+          <CustomAvatar
+            class="h-12 w-12 text-white font-bold text-xl uppercase"
+            :src="contact.avatarUrl ?? ''"
+            :fallback="contact.name"
+          />
 
-            <!-- name and Buttons -->
-            <div class="flex-1 flex flex-col gap-1 text-center">
-              <p class="text-sm font-medium text-gray-800 truncate">
-                {{ contact.name }}
-              </p>
+          <!-- name and Buttons -->
+          <div class="flex-1 flex flex-col gap-1">
+            <p class="text-sm font-medium text-gray-800 truncate">
+              {{ contact.name }}
+            </p>
 
-              <div class="flex gap-1 justify-center">
-                <Button
-                  @click="openChat(contact)"
-                  class="btn btn-info btn-sm flex gap-2 items-center justify-between"
-                  size="xs"
-                  variant="success"
-                  title="Open chat"
-                >
-                  <MessageCircle :size="16" />
-                </Button>
-                <Button
-                  @click="deleteContact(contact)"
-                  class="btn btn-danger btn-sm flex gap-2 items-center justify-between"
-                  size="xs"
-                  variant="destructive"
-                  title="Delete contact"
-                >
-                  <UserRoundMinus :size="16" />
-                </Button>
-              </div>
+            <div class="flex gap-1 justify-start">
+              <Button
+                @click="openChat(contact)"
+                class="btn btn-info btn-sm flex gap-2 items-center justify-between"
+                size="xs"
+                variant="success"
+                title="Open chat"
+              >
+                <MessageCircle :size="16" />
+              </Button>
+              <Button
+                @click="deleteContact(contact)"
+                class="btn btn-danger btn-sm flex gap-2 items-center justify-between"
+                size="xs"
+                variant="destructive"
+                title="Delete contact"
+              >
+                <UserRoundMinus :size="16" />
+              </Button>
             </div>
           </div>
         </div>
@@ -127,9 +125,3 @@ async function deleteContact(contact: Contact) {
     </section>
   </div>
 </template>
-<style scoped>
-@reference "tailwindcss";
-.avatar {
-  @apply h-12 w-12;
-}
-</style>
