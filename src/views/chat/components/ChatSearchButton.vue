@@ -23,8 +23,8 @@ const chatSearchPopoverToggle = ref(false);
         <MessageSquarePlus :size="20" />
       </Toggle>
     </PopoverTrigger>
-    <PopoverContent side="bottom" align="center">
-      <ChatContactGroupList />
+    <PopoverContent side="bottom" align="center" class="bg-gray-200">
+      <ChatContactGroupList @closePopover="chatSearchPopoverToggle = false" />
     </PopoverContent>
   </Popover>
 </template>
