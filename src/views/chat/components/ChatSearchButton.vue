@@ -18,7 +18,7 @@ const chatSearchPopoverToggle = ref(false);
         :model-value="chatSearchPopoverToggle"
         variant="default"
         size="sm"
-        class="hover:bg-blue-200 cursor-pointer"
+        class="cursor-pointer"
       >
         <MessageSquarePlus :size="20" />
       </Toggle>
