@@ -16,7 +16,6 @@ const genderOptions = genderTypes.map((value) => ({
   label: value.charAt(0) + value.slice(1).toLowerCase(),
 }));
 
-// TODO add zod validation
 // message to show
 const alert = ref<InstanceType<typeof CustomAlert>>();
 
@@ -217,7 +216,7 @@ async function updateEmail(index: number, newEmail: string) {
       <div class="flex justify-center">
         <ProfilePhoto @update="updatePhoto" />
       </div>
-      <div v-if="userStore.user" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div v-if="userStore.user" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <ProfileEditableField
           v-for="(field, index) in formFields"
           :key="index"
