@@ -31,8 +31,8 @@ export function useChat() {
     }
 
     const destinationCustomer = getDestinationUser(chat) as ChatParticipant;
-    if (destinationCustomer && destinationCustomer.avatarSrc) {
-      return destinationCustomer.avatarSrc;
+    if (destinationCustomer && destinationCustomer.avatarUrl) {
+      return destinationCustomer.avatarUrl;
     }
 
     return "";
@@ -60,12 +60,12 @@ export function useChat() {
         {
           userId: contact.userId,
           userName: contact.name,
-          avatarSrc: contact.avatarUrl,
+          avatarUrl: contact.avatarUrl,
         },
         {
           userId: customerStore.getLoggedUser.id,
           userName: customerStore.getLoggedUser.firstName,
-          avatarSrc: customerStore.getLoggedUser.avatarUrl,
+          avatarUrl: customerStore.getLoggedUser.avatarUrl,
         },
       ],
       imageUrl: contact.avatarUrl,
@@ -102,12 +102,12 @@ export function useChat() {
         {
           userId: message.fromUserId,
           userName: message.fromUserName,
-          avatarSrc: "",
+          avatarUrl: "",
         },
         {
           userId: customerStore.getLoggedUser.id,
           userName: customerStore.getLoggedUser.firstName,
-          avatarSrc: customerStore.getLoggedUser.avatarUrl || "",
+          avatarUrl: customerStore.getLoggedUser.avatarUrl || "",
         },
       ],
     };

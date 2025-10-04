@@ -6,11 +6,11 @@ import type { User } from "@/types/User";
 import { ref, defineProps } from "vue";
 import { useChat } from "@/composables/useChat";
 const { generateChatId, getDestinationUser } = useChat();
-interface Props {
+
+const props = defineProps<{
   fromUser: User;
   chat: Chat;
-}
-const props = defineProps<Props>();
+}>();
 
 const chatStore = useChatStore();
 const textarea = ref("");

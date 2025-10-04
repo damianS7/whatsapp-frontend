@@ -65,7 +65,7 @@ function openChat(chatMember: ChatParticipant) {
     id: 0,
     userId: chatMember.userId,
     name: chatMember.userName,
-    avatarUrl: chatMember.avatarSrc,
+    avatarUrl: chatMember.avatarUrl,
   });
   const existingChat = chatStore.getChat(chat.id);
 
@@ -106,7 +106,7 @@ function openChat(chatMember: ChatParticipant) {
               <!-- Avatar -->
               <CustomAvatar
                 class="h-12 w-12 text-white font-bold text-xl uppercase"
-                :src="member.avatarSrc ?? ''"
+                :src="member.avatarUrl ?? ''"
                 :fallback="member.userName"
               />
 

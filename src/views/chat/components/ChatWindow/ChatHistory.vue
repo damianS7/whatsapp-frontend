@@ -5,12 +5,13 @@ import type { User } from "@/types/User";
 import type { ChatType } from "@/types/Chat";
 import { useChat } from "@/composables/useChat";
 const { isLoggedUser } = useChat();
-interface Props {
+
+const props = defineProps<{
   user: User;
   messages: ChatMessage[];
   chatType: ChatType;
-}
-const props = defineProps<Props>();
+}>();
+
 const chatContainer = ref<HTMLElement | null>(null);
 const scrollToBottom = () => {
   if (chatContainer.value) {
