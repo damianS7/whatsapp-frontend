@@ -25,9 +25,9 @@ export const useGroupStore = defineStore("group", () => {
             groupMember.userId
           );
 
-          groupMember.avatarSrc = URL.createObjectURL(resource);
+          groupMember.avatarUrl = URL.createObjectURL(resource);
         } catch (error) {
-          groupMember.avatarSrc = undefined;
+          groupMember.avatarUrl = undefined;
         }
       }
     }
