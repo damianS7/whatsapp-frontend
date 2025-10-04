@@ -14,7 +14,7 @@ const userStore = useUserStore();
       <CustomAvatar
         :src="userStore.user.avatarUrl"
         :fallback="userStore.user.firstName"
-        class="rounded-full w-6 h-6 bg-gray-300"
+        class="rounded-full w-6 h-6 bg-gray-300 text-white font-bold"
       />
     </span>
   </header>
