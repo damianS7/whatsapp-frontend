@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ref } from "vue";
 import { authService } from "@/services/authService";
-import type { ApiResponse } from "@/types/ApiResponse";
+import type { ApiResponse } from "@/types/response/ApiResponse";
 import CustomAlert from "@/components/CustomAlert.vue";
 
 const alert = ref<InstanceType<typeof CustomAlert>>();

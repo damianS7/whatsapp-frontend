@@ -5,7 +5,7 @@ import AlertDescription from "@/components/ui/alert/AlertDescription.vue";
 import { AlertType } from "@/types/AlertType";
 import { X } from "lucide-vue-next";
 import { ref } from "vue";
-import { ApiResponse } from "@/types/ApiResponse";
+import { ApiResponse } from "@/types/response/ApiResponse";
 
 export interface AlertOptions {
   type?: AlertType;

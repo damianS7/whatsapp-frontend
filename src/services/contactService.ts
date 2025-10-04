@@ -1,4 +1,4 @@
-import { ApiResponse } from "@/types/ApiResponse";
+import { ApiResponse } from "@/types/response/ApiResponse";
 import type { Contact } from "@/types/Contact";
 
 const API = import.meta.env.VITE_APP_API_URL;

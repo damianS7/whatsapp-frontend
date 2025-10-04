@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { ApiResponse } from "@/types/ApiResponse";
+import type { ApiResponse } from "@/types/response/ApiResponse";
 import { useRoute } from "vue-router";
 import CustomAlert from "@/components/CustomAlert.vue";
 
