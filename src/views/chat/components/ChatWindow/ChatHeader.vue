@@ -9,9 +9,7 @@ const props = defineProps<{
 <template>
   <div class="flex items-center gap-2 p-2 border-gray-300">
     <!-- avatar -->
-    <div
-      class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
-    >
+    <div class="w-8 h-8 text-white font-bold">
       <CustomAvatar :src="chat.imageUrl" :fallback="chat.name" />
     </div>
     <!-- chat name -->

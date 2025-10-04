@@ -1,4 +1,3 @@
-// ChatContactGroupPopList
 <script setup lang="ts">
 import { ref, computed, defineEmits } from "vue";
 import { useChatStore } from "@/stores/chat";
@@ -64,11 +63,11 @@ function openChat(chat: Chat) {
       />
     </div>
 
-    <div class="flex-1 overflow-y-auto h-full p-1">
+    <div class="flex-1 space-y-1 overflow-y-auto h-full p-1">
       <div
         v-for="(chat, index) in chats"
         :key="index"
-        class="relative flex gap-2 p-1 items-center cursor-pointer hover:bg-gray-100 hover:rounded-md"
+        class="flex gap-2 p-1 items-center cursor-pointer hover:bg-gray-100 hover:rounded-md"
         @click="openChat(chat)"
       >
         <!-- avatar -->
@@ -76,7 +75,7 @@ function openChat(chat: Chat) {
           <div
             class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
           >
-            <CustomAvatar :src="chat.imageUrl" :fallback="chat.name ?? ''" />
+            <CustomAvatar :src="chat.imageUrl" :fallback="chat.name" />
           </div>
         </div>
         <div class="flex flex-col w-full">
