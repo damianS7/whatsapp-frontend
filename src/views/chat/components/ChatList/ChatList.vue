@@ -44,19 +44,33 @@ function clearChat() {
 }
 
 function addContact() {
-  // TODO
-  // const chat = chatStore.getSelectedChat();
   const selectedChat = chatStore.getSelectedChat;
   if (!selectedChat) {
     return;
   }
 
-  if (selectedChat && selectedChat.type === "PRIVATE") {
+  if (selectedChat.type === "PRIVATE") {
     const destUser = getDestinationUser(selectedChat);
-    if (destUser?.userId) {
+    if (destUser?.userId && !contactStore.isContact(destUser.userId)) {
       contactStore.addContact(destUser.userId);
     }
   }
+}
+
+function isContact() {
+  const selectedChat = chatStore.getSelectedChat;
+  if (!selectedChat) {
+    return false;
+  }
+
+  if (selectedChat.type === "PRIVATE") {
+    const destUser = getDestinationUser(selectedChat);
+    if (destUser?.userId && contactStore.isContact(destUser.userId)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 </script>
 <template>
@@ -72,7 +86,9 @@ function addContact() {
           />
         </ContextMenuTrigger>
         <ContextMenuContent>
-          <ContextMenuItem @click="addContact">Add to contacts</ContextMenuItem>
+          <ContextMenuItem v-if="!isContact()" @click="addContact"
+            >Add to contacts</ContextMenuItem
+          >
           <ContextMenuItem @click="clearChat">Clear chat</ContextMenuItem>
           <ContextMenuItem @click="deleteChat">Delete chat</ContextMenuItem>
         </ContextMenuContent>
