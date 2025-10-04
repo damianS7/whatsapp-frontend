@@ -12,10 +12,6 @@ import type { Chat } from "@/types/Chat";
 
 const { createPrivateChat, createGroupChat } = useChat();
 
-// defineProps<{
-//   open: boolean;
-// }>();
-
 const emit = defineEmits(["toggleContactGroupList"]);
 
 // store
