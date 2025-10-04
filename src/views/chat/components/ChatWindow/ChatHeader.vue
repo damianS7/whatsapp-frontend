@@ -14,8 +14,8 @@ const filename = computed(() => {
     avatarFilename = getDestinationUser(props.chat)?.userAvatarFilename ?? "";
   }
 
-  if (props.chat.type === "GROUP" && props.chat.imageSrc) {
-    avatarFilename = props.chat.imageSrc;
+  if (props.chat.type === "GROUP" && props.chat.imageUrl) {
+    avatarFilename = props.chat.imageUrl;
   }
   return avatarFilename;
 });

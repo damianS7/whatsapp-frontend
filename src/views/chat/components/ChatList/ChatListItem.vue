@@ -33,7 +33,7 @@ function getLastMessageFromChat(chat: Chat) {
       <div
         class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
       >
-        <CustomAvatar :src="chat.imageSrc" :fallback="chat.name" />
+        <CustomAvatar :src="chat.imageUrl" :fallback="chat.name" />
       </div>
     </div>
 
