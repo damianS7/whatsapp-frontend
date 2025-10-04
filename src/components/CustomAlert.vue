@@ -5,7 +5,7 @@ import AlertDescription from "@/components/ui/alert/AlertDescription.vue";
 import { AlertType } from "@/types/AlertType";
 import { X } from "lucide-vue-next";
 import { ref } from "vue";
-import { ApiError } from "@/types/ApiError";
+import { ApiResponse } from "@/types/ApiResponse";
 
 export interface AlertOptions {
   type?: AlertType;
@@ -47,7 +47,7 @@ function error(message: string, options?: AlertOptions) {
 function exception(exception: any, options?: AlertOptions) {
   options = validateOptions(AlertType.ERROR, options);
 
-  if (exception instanceof ApiError) {
+  if (exception instanceof ApiResponse) {
     show(exception.message, options);
     alert.value.errors = exception.errors ?? {};
     return;

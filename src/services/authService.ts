@@ -1,4 +1,4 @@
-import { ApiError } from "@/types/ApiError";
+import { ApiResponse } from "@/types/ApiResponse";
 import type { ApiResponse } from "@/types/ApiResponse";
 import type { UserRegisterRequest } from "@/types/request/UserRegisterRequest";
 const API = import.meta.env.VITE_APP_API_URL;
@@ -14,7 +14,7 @@ export const authService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to login.",
         response.status,
         json.errors
@@ -34,7 +34,7 @@ export const authService = {
     const json = await response.json();
 
     if (response.status !== 201) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Registration failed.",
         response.status,
         json.errors
@@ -70,7 +70,7 @@ export const authService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Cannot activate account.",
         response.status,
         json.errors
@@ -92,7 +92,7 @@ export const authService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to send activation email.",
         response.status,
         json.errors
@@ -115,7 +115,7 @@ export const authService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to send reset password email.",
         response.status,
         json.errors
@@ -141,7 +141,7 @@ export const authService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed reset password.",
         response.status,
         json.errors

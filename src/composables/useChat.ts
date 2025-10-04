@@ -1,14 +1,12 @@
-import { useChatStore } from "@/stores/chat";
 import { useUserStore } from "@/stores/user";
 import { useGroupStore } from "@/stores/group";
 import type { Chat, ChatType } from "@/types/Chat";
-import type { ChatMember } from "@/types/ChatMember";
 import type { ChatMessage } from "@/types/ChatMessage";
 import type { Contact } from "@/types/Contact";
 import type { User } from "@/types/User";
 import type { Group } from "@/types/Group";
+import type { ChatParticipant } from "@/types/ChatParticipant";
 
-// src/composables/useChat.ts
 export function useChat() {
   const isLoggedUser = (userId: number) => {
     const user: User = useUserStore().getLoggedUser;
@@ -18,10 +16,10 @@ export function useChat() {
     return false;
   };
 
-  const getDestinationUser = (chat: Chat): ChatMember | null => {
+  const getDestinationUser = (chat: Chat): ChatParticipant | null => {
     for (const participant of chat.participants) {
       if (participant.userId !== useUserStore().getLoggedUser.id) {
-        return participant as ChatMember;
+        return participant as ChatParticipant;
       }
     }
     return null;
@@ -29,13 +27,14 @@ export function useChat() {
 
   const getAvatarFilenameFromChat = (chat: Chat): string => {
     if (chat.type === "GROUP") {
-      return chat.avatarFilename || "";
+      return chat.imageUrl || "";
     }
 
-    const destinationCustomer = getDestinationUser(chat) as ChatMember;
-    if (destinationCustomer) {
-      return destinationCustomer.userAvatarFilename;
+    const destinationCustomer = getDestinationUser(chat) as ChatParticipant;
+    if (destinationCustomer && destinationCustomer.avatarSrc) {
+      return destinationCustomer.avatarSrc;
     }
+
     return "";
   };
   const generateChatId = (chatType: ChatType, id: number) => {
@@ -61,15 +60,15 @@ export function useChat() {
         {
           userId: contact.userId,
           userName: contact.name,
-          userAvatarFilename: contact.avatarFilename,
+          avatarSrc: contact.avatarUrl,
         },
         {
           userId: customerStore.getLoggedUser.id,
           userName: customerStore.getLoggedUser.firstName,
-          userAvatarFilename: customerStore.getLoggedUser.avatarFilename,
+          avatarSrc: customerStore.getLoggedUser.avatarUrl,
         },
       ],
-      avatarFilename: contact.avatarFilename,
+      imageUrl: contact.avatarUrl,
     };
   };
 
@@ -81,6 +80,7 @@ export function useChat() {
       type: "GROUP",
       history: [],
       participants: group.members,
+      // imageUrl:
     };
   };
 
@@ -102,12 +102,12 @@ export function useChat() {
         {
           userId: message.fromUserId,
           userName: message.fromUserName,
-          userAvatarFilename: "",
+          avatarSrc: "",
         },
         {
           userId: customerStore.getLoggedUser.id,
           userName: customerStore.getLoggedUser.firstName,
-          userAvatarFilename: customerStore.getLoggedUser.avatarFilename || "",
+          avatarSrc: customerStore.getLoggedUser.avatarUrl || "",
         },
       ],
     };

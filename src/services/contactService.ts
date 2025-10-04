@@ -1,4 +1,4 @@
-import { ApiError } from "@/types/ApiError";
+import { ApiResponse } from "@/types/ApiResponse";
 import type { Contact } from "@/types/Contact";
 
 const API = import.meta.env.VITE_APP_API_URL;
@@ -20,7 +20,7 @@ export const contactService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to fetch contacts.",
         response.status,
         json.errors
@@ -39,7 +39,7 @@ export const contactService = {
     const json = await response.json();
 
     if (response.status !== 201) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to add contact.",
         response.status,
         json.errors
@@ -56,7 +56,7 @@ export const contactService = {
 
     if (response.status !== 204) {
       const json = await response.json();
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to delete contact.",
         response.status,
         json.errors

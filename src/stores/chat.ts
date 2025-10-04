@@ -16,6 +16,8 @@ const {
 
 export const useChatStore = defineStore("chat", {
   state: () => ({
+    // privateChats
+    // groupChats
     chats: [] as Chat[],
     selectedChatId: "" as string,
     socket: null as WebSocket | null,
@@ -89,7 +91,7 @@ export const useChatStore = defineStore("chat", {
         `Received message for chat: ${chatMessage.chatId}`,
         chatMessage
       );
-      const customerStore = useUserStore();
+      const userStore = useUserStore();
 
       if (chatMessage.fromUserName === "SYSTEM") {
         // check notification type
@@ -101,7 +103,7 @@ export const useChatStore = defineStore("chat", {
       if (chatMessage.chatType === "PRIVATE" && chatMessage.toUserId) {
         // if the message its sent to the logged customer
         if (
-          chatMessage.toUserId === customerStore.getLoggedUser.id &&
+          chatMessage.toUserId === userStore.getLoggedUser.id &&
           chatMessage.fromUserId
         ) {
           chatMessage.chatId = generateChatId(
@@ -176,7 +178,7 @@ export const useChatStore = defineStore("chat", {
         return;
       }
 
-      const customerStore = useUserStore();
+      const userStore = useUserStore();
 
       // set up WebSocket connection
       this.socket = new SockJS(`${import.meta.env.VITE_APP_WS_URL}`);
@@ -190,14 +192,14 @@ export const useChatStore = defineStore("chat", {
             await this.subscribeToChat(generatePrivateChatId(contact));
           }
 
-          const groups = useGroupStore().getGroups;
+          const groups = useGroupStore().groups;
           for (const group of groups) {
             await this.subscribeToChat(generateGroupChatId(group));
           }
 
           // Subscribe to the logged-in customer's private chat
           await this.subscribeToChat(
-            generateChatId("PRIVATE", customerStore.getLoggedUser.id)
+            generateChatId("PRIVATE", userStore.getLoggedUser.id)
           );
         }
       );

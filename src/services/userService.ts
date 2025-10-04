@@ -1,4 +1,4 @@
-import { ApiError } from "@/types/ApiError";
+import { ApiResponse } from "@/types/ApiResponse";
 import type { User } from "@/types/User";
 
 const API = import.meta.env.VITE_APP_API_URL;
@@ -20,7 +20,7 @@ export const userService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to fetch user.",
         response.status,
         json.errors
@@ -31,14 +31,13 @@ export const userService = {
   },
   async fetchProfileImage(userId: number): Promise<Blob> {
     const response = await fetch(`${API}/users/${userId}/image`, {
-
       method: "GET",
       headers: authHeader(),
     });
 
     if (response.status !== 200) {
       const json = await response.json();
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to fetch user profile image.",
         response.status,
         json.errors
@@ -62,7 +61,7 @@ export const userService = {
 
     if (response.status !== 201) {
       const json = await response.json();
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to upload user profile image.",
         response.status,
         json.errors
@@ -70,7 +69,10 @@ export const userService = {
     }
     return (await response.blob()) as Blob;
   },
-  async updateUser(currentPassword: string, fieldsToUpdate: Record<string, any>): Promise<User> {
+  async updateUser(
+    currentPassword: string,
+    fieldsToUpdate: Record<string, any>
+  ): Promise<User> {
     const response = await fetch(`${API}/users`, {
       method: "PATCH",
       headers: authHeader(),
@@ -80,7 +82,7 @@ export const userService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to update user.",
         response.status,
         json.errors
@@ -99,7 +101,7 @@ export const userService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to update email.",
         response.status,
         json.errors
@@ -117,7 +119,7 @@ export const userService = {
 
     if (response.status !== 200) {
       const json = await response.json();
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to update password.",
         response.status,
         json.errors

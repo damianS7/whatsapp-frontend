@@ -1,4 +1,4 @@
-import { ApiError } from "@/types/ApiError";
+import { ApiResponse } from "@/types/ApiResponse";
 import type { Group } from "@/types/Group";
 import type { GroupMember } from "@/types/GroupMember";
 
@@ -21,7 +21,7 @@ export const groupService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to fetch groups.",
         response.status,
         json.errors
@@ -39,7 +39,7 @@ export const groupService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to fetch group.",
         response.status,
         json.errors
@@ -66,7 +66,7 @@ export const groupService = {
     const json = await response.json();
 
     if (response.status !== 201) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to create group.",
         response.status,
         json.errors
@@ -84,7 +84,7 @@ export const groupService = {
 
     if (response.status !== 204) {
       const json = await response.json();
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to delete group.",
         response.status,
         json.errors
@@ -112,7 +112,7 @@ export const groupService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to update group.",
         response.status,
         json.errors
@@ -133,7 +133,7 @@ export const groupService = {
     const json = await response.json();
 
     if (response.status !== 201) {
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to add group member.",
         response.status,
         json.errors
@@ -150,7 +150,7 @@ export const groupService = {
 
     if (response.status !== 204) {
       const json = await response.json();
-      throw new ApiError(
+      throw new ApiResponse(
         json.message || "Failed to delete member from group.",
         response.status,
         json.errors
