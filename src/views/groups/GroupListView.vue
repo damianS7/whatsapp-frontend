@@ -67,11 +67,8 @@ function toggleCreateGroupPanel() {
         </div>
 
         <div class="flex gap-1">
-          <Button size="xs">
-            <router-link
-              v-if="isLoggedUser(group.owner.userId)"
-              :to="`/groups/${group.id}`"
-              class=""
+          <Button size="xs" v-if="isLoggedUser(group.owner.userId)">
+            <router-link :to="`/groups/${group.id}`" class=""
               >EDIT
             </router-link>
           </Button>
