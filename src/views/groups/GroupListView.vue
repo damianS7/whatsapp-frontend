@@ -4,10 +4,10 @@ import type { Group } from "@/types/Group";
 import { useGroupStore } from "@/stores/group";
 import { useChatStore } from "@/stores/chat";
 import { useRouter } from "vue-router";
-import { useChat } from "@/composables/useChat";
+import { chatUtils } from "@/utils/chat";
 import GroupCreatePanel from "./components/GroupCreatePanel.vue";
 import Button from "@/components/ui/button/Button.vue";
-const { isLoggedUser, createGroupChat } = useChat();
+const { isLoggedUser, createGroupChat } = chatUtils();
 
 const router = useRouter();
 const groupStore = useGroupStore();

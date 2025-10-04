@@ -4,8 +4,8 @@ import type { Chat } from "@/types/Chat";
 import type { ChatMessage } from "@/types/ChatMessage";
 import type { User } from "@/types/User";
 import { ref, defineProps } from "vue";
-import { useChat } from "@/composables/useChat";
-const { generateChatId, getDestinationUser } = useChat();
+import { chatUtils } from "@/utils/chat";
+const { generateChatId, getDestinationUser } = chatUtils();
 
 const props = defineProps<{
   fromUser: User;

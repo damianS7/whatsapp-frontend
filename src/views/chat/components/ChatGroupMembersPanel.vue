@@ -6,14 +6,14 @@ import type { Chat } from "@/types/Chat";
 import { MessageCircle, UserRoundPlus } from "lucide-vue-next";
 import { useContactStore } from "@/stores/contact";
 import CustomAvatar from "@/components/CustomAvatar.vue";
-import { useChat } from "@/composables/useChat";
+import { chatUtils } from "@/utils/chat";
 import { useRouter } from "vue-router";
 import { useChatStore } from "@/stores/chat";
 import type { ChatParticipant } from "@/types/ChatParticipant";
 import { useGroupStore } from "@/stores/group";
 import { useUserStore } from "@/stores/user";
 import Button from "@/components/ui/button/Button.vue";
-const { isLoggedUser, createPrivateChat } = useChat();
+const { isLoggedUser, createPrivateChat } = chatUtils();
 
 // router
 const router = useRouter();

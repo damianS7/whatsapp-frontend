@@ -3,8 +3,8 @@ import { ref, defineProps, onUpdated, onMounted } from "vue";
 import type { ChatMessage } from "@/types/ChatMessage";
 import type { User } from "@/types/User";
 import type { ChatType } from "@/types/Chat";
-import { useChat } from "@/composables/useChat";
-const { isLoggedUser } = useChat();
+import { chatUtils } from "@/utils/chat";
+const { isLoggedUser } = chatUtils();
 
 const props = defineProps<{
   user: User;

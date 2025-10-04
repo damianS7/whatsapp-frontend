@@ -5,7 +5,7 @@ import { useGroupStore } from "@/stores/group";
 import { useContactStore } from "@/stores/contact";
 import type { Contact } from "@/types/Contact";
 import { useRoute } from "vue-router";
-import { useChat } from "@/composables/useChat";
+import { chatUtils } from "@/utils/chat";
 import type { GroupMember } from "@/types/GroupMember";
 import {
   Combobox,
@@ -24,7 +24,7 @@ import {
   TagsInputItemText,
 } from "@/components/ui/tags-input";
 
-const { isLoggedUser } = useChat();
+const { isLoggedUser } = chatUtils();
 const contactNameFilter = ref("");
 const route = useRoute();
 

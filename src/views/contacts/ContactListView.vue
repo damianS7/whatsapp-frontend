@@ -6,11 +6,11 @@ import { useChatStore } from "@/stores/chat";
 import { MessageCircle, UserRoundMinus } from "lucide-vue-next";
 import { useRouter } from "vue-router";
 import CustomAlert from "@/components/CustomAlert.vue";
-import { useChat } from "@/composables/useChat";
+import { chatUtils } from "@/utils/chat";
 import CustomAvatar from "@/components/CustomAvatar.vue";
 import { useModalStore } from "@/stores/modal";
 import Button from "@/components/ui/button/Button.vue";
-const { createPrivateChat } = useChat();
+const { createPrivateChat } = chatUtils();
 
 // router
 const router = useRouter();

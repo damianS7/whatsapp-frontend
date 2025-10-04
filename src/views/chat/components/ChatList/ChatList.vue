@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { useChatStore } from "@/stores/chat";
 import type { ChatMessage } from "@/types/ChatMessage";
-import { useChat } from "@/composables/useChat";
+import { chatUtils } from "@/utils/chat";
 import { useContactStore } from "@/stores/contact";
 import ChatListItem from "./ChatListItem.vue";
 import {
@@ -12,7 +12,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import type { Chat } from "@/types/Chat";
-const { getDestinationUser } = useChat();
+const { getDestinationUser } = chatUtils();
 
 defineProps<{
   chats: Chat[];

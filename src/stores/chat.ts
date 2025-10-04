@@ -4,7 +4,7 @@ import { CompatClient, Stomp } from "@stomp/stompjs";
 import type { Chat } from "@/types/Chat";
 import type { ChatMessage } from "@/types/ChatMessage";
 import { useUserStore } from "@/stores/user";
-import { useChat } from "@/composables/useChat";
+import { chatUtils } from "@/utils/chat";
 import { useGroupStore } from "./group";
 import { useContactStore } from "./contact";
 const {
@@ -12,7 +12,7 @@ const {
   generateGroupChatId,
   generatePrivateChatId,
   createChatFromMessage,
-} = useChat();
+} = chatUtils();
 
 export const useChatStore = defineStore("chat", {
   state: () => ({

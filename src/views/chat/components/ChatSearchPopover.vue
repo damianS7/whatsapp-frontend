@@ -2,14 +2,14 @@
 import { ref, computed, defineEmits } from "vue";
 import { useChatStore } from "@/stores/chat";
 import CustomAvatar from "@/components/CustomAvatar.vue";
-import { useChat } from "@/composables/useChat";
+import { chatUtils } from "@/utils/chat";
 import type { Group } from "@/types/Group";
 import type { Contact } from "@/types/Contact";
 import { useContactStore } from "@/stores/contact";
 import { useGroupStore } from "@/stores/group";
 import type { Chat } from "@/types/Chat";
 
-const { createPrivateChat, createGroupChat } = useChat();
+const { createPrivateChat, createGroupChat } = chatUtils();
 
 const emit = defineEmits(["closePopover"]);
 
