@@ -12,7 +12,7 @@ import type { Chat } from "@/types/Chat";
 
 const { createPrivateChat, createGroupChat } = useChat();
 
-const emit = defineEmits(["toggleContactGroupList"]);
+const emit = defineEmits(["closePopover"]);
 
 // store
 const chatStore = useChatStore();
@@ -50,11 +50,11 @@ function openChat(chat: Chat) {
   }
 
   chatStore.selectChat(chat.id);
-  emit("toggleContactGroupList");
+  emit("closePopover");
 }
 </script>
 <template>
-  <div id="contactGroupList">
+  <div class="flex flex-col max-h-64">
     <div class="p-2 border-b-2 border-gray-400">
       <input
         class="rounded-md w-full bg-gray-50 px-3 py-1 text-xs border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm transition duration-200"
@@ -76,7 +76,7 @@ function openChat(chat: Chat) {
           <div
             class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
           >
-            <CustomAvatar :fallback="chat.name ?? ''" />
+            <CustomAvatar :src="chat.imageUrl" :fallback="chat.name ?? ''" />
           </div>
         </div>
         <div class="flex flex-col w-full">
@@ -88,11 +88,3 @@ function openChat(chat: Chat) {
     </div>
   </div>
 </template>
-<style scoped>
-@reference "tailwindcss";
-
-#contactGroupList {
-  @apply flex flex-col;
-  @apply max-h-64;
-}
-</style>
