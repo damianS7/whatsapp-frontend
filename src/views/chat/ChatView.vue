@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import ChatInputBox from "@/views/chat/components/ChatInputBox.vue";
-import ChatHistory from "@/views/chat/components/ChatHistory.vue";
-import ChatList from "@/views/chat/components/ChatList.vue";
-import ChatHeader from "@/views/chat/components/ChatHeader.vue";
+import ChatInputBox from "@/views/chat/components/ChatWindow/ChatInputBox.vue";
+import ChatHistory from "@/views/chat/components/ChatWindow/ChatHistory.vue";
+import ChatList from "@/views/chat/components/ChatList/ChatList.vue";
+import ChatHeader from "@/views/chat/components/ChatWindow/ChatHeader.vue";
 import { useUserStore } from "@/stores/user";
 import { ref, computed } from "vue";
 import { useChatStore } from "@/stores/chat";
-import ChatGroupMembersPanel from "./components/ChatGroupMembersPanel.vue";
+import ChatGroupMembersPanel from "@/views/chat/components/ChatGroupMembersPanel.vue";
 const chatStore = useChatStore();
 const userStore = useUserStore();
 const currentChat = computed(() => {
@@ -16,6 +16,7 @@ const currentChat = computed(() => {
 function selectChat(chatId: string) {
   chatStore.selectChat(chatId);
 }
+
 const groupMemberPanelVisible = ref(false);
 function toggleGroupMemberPanel() {
   groupMemberPanelVisible.value = !groupMemberPanelVisible.value;
@@ -23,7 +24,7 @@ function toggleGroupMemberPanel() {
 </script>
 <template>
   <div class="grid grid-cols-[14rem_1fr] h-full">
-    <div class="hidden md:block overflow-hidden">
+    <div class="md:block overflow-hidden">
       <ChatList @selectChat="selectChat" />
     </div>
 

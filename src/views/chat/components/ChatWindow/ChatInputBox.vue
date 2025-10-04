@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useChatStore } from "@/stores/chat";
 import type { Chat } from "@/types/Chat";
-import { ChatMessage } from "@/types/ChatMessage";
+import type { ChatMessage } from "@/types/ChatMessage";
 import type { User } from "@/types/User";
 import { ref, defineProps } from "vue";
 import { useChat } from "@/composables/useChat";

@@ -3,7 +3,7 @@ import { computed, defineProps } from "vue";
 import type { Chat } from "@/types/Chat";
 import { useChat } from "@/composables/useChat";
 const { getDestinationUser } = useChat();
-import CustomerAvatar from "@/components/CustomerAvatar.vue";
+import CustomAvatar from "@/components/CustomAvatar.vue";
 interface Props {
   chat: Chat;
 }
@@ -14,8 +14,8 @@ const filename = computed(() => {
     avatarFilename = getDestinationUser(props.chat)?.userAvatarFilename ?? "";
   }
 
-  if (props.chat.type === "GROUP" && props.chat.avatarFilename) {
-    avatarFilename = props.chat.avatarFilename;
+  if (props.chat.type === "GROUP" && props.chat.imageSrc) {
+    avatarFilename = props.chat.imageSrc;
   }
   return avatarFilename;
 });
@@ -26,10 +26,7 @@ const filename = computed(() => {
     <div
       class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
     >
-      <CustomerAvatar
-        :userId="getDestinationUser(props.chat)?.userId"
-        :fallbackString="chat.name"
-      />
+      <CustomAvatar :fallback="chat.name" />
     </div>
     <!-- chat name -->
     <div>

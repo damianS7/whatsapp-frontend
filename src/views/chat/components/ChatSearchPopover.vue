@@ -1,14 +1,21 @@
+// ChatContactGroupPopList
 <script setup lang="ts">
 import { ref, computed, defineEmits } from "vue";
 import { useChatStore } from "@/stores/chat";
-import CustomerAvatar from "@/components/CustomerAvatar.vue";
+import CustomAvatar from "@/components/CustomAvatar.vue";
 import { useChat } from "@/composables/useChat";
 import type { Group } from "@/types/Group";
 import type { Contact } from "@/types/Contact";
 import { useContactStore } from "@/stores/contact";
 import { useGroupStore } from "@/stores/group";
 import type { Chat } from "@/types/Chat";
-const { createPrivateChat, createGroupChat, getDestinationUser } = useChat();
+
+const { createPrivateChat, createGroupChat } = useChat();
+
+// defineProps<{
+//   open: boolean;
+// }>();
+
 const emit = defineEmits(["toggleContactGroupList"]);
 
 // store
@@ -17,8 +24,8 @@ const groupStore = useGroupStore();
 const contactStore = useContactStore();
 
 // data
-const groups = computed(() => groupStore.getGroups as Group[]);
-const contacts = computed(() => contactStore.getContacts as Contact[]);
+const groups = computed(() => groupStore.groups as Group[]);
+const contacts = computed(() => contactStore.contacts as Contact[]);
 const chats = computed(() => {
   const chats = [] as Chat[];
 
@@ -29,6 +36,7 @@ const chats = computed(() => {
   contacts.value.map((contact) => {
     chats.push(createPrivateChat(contact));
   });
+
   return chats.filter((chat) => {
     return chat.name.toLowerCase().includes(searchFilter.value.toLowerCase());
   });
@@ -72,10 +80,7 @@ function openChat(chat: Chat) {
           <div
             class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold uppercase"
           >
-            <CustomerAvatar
-              :userId="getDestinationUser(chat)?.userId ?? -1"
-              :fallbackString="chat.name ?? ''"
-            />
+            <CustomAvatar :fallback="chat.name ?? ''" />
           </div>
         </div>
         <div class="flex flex-col w-full">
@@ -92,8 +97,6 @@ function openChat(chat: Chat) {
 
 #contactGroupList {
   @apply flex flex-col;
-  @apply w-52 max-h-64 right-2 top-8 absolute z-10;
-  @apply bg-blue-100 p-0 border-2 border-gray-300;
-  @apply rounded-br-md rounded-bl-md rounded-tl-md;
+  @apply max-h-64;
 }
 </style>

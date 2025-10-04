@@ -5,12 +5,13 @@ import CustomAlert from "@/components/CustomAlert.vue";
 import type { Chat } from "@/types/Chat";
 import { MessageCircle, UserRoundPlus } from "lucide-vue-next";
 import { useContactStore } from "@/stores/contact";
-import CustomerAvatar from "@/components/CustomerAvatar.vue";
+import CustomAvatar from "@/components/CustomAvatar.vue";
 import { useChat } from "@/composables/useChat";
 import { useRouter } from "vue-router";
 import { useChatStore } from "@/stores/chat";
-import type { ChatMember } from "@/types/ChatMember";
+import type { ChatMember } from "@/types/ChatParticipant";
 import { useGroupStore } from "@/stores/group";
+import { useUserStore } from "@/stores/user";
 const { isLoggedUser, createPrivateChat } = useChat();
 
 // router
@@ -20,6 +21,7 @@ const router = useRouter();
 const emit = defineEmits(["hidePanel"]);
 
 // store
+const userStore = useUserStore();
 const chatStore = useChatStore();
 const contactStore = useContactStore();
 const groupStore = useGroupStore();
@@ -106,10 +108,7 @@ function openChat(chatMember: ChatMember) {
               <div
                 class="flex items-center justify-center text-white font-bold uppercase"
               >
-                <CustomerAvatar
-                  :userId="member.userId"
-                  :fallbackString="member.userName ?? ''"
-                />
+                <CustomAvatar :fallback="member.userName ?? ''" />
               </div>
               <div>
                 <p class="text-sm font-medium text-gray-800 truncate">
