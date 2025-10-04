@@ -32,7 +32,7 @@ const formField = reactive({
 });
 
 function updateField() {
-  emit("update", props.index, {
+  emit("update", {
     name: formField.name,
     value: formField.value,
   });
@@ -45,7 +45,7 @@ function updatePassword() {
     return;
   }
 
-  emit("update", props.index, {
+  emit("update", {
     name: formField.name,
     value: newPassword.value,
   });

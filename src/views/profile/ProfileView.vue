@@ -89,19 +89,16 @@ const formFields = computed(() => [
 ]);
 
 // update a single field
-async function updateField(
-  index: number,
-  field: { name: string; value: string }
-) {
+async function updateField(field: { name: string; value: string }) {
   // updating email requires a different method
   if (field.name == "email") {
-    updateEmail(index, field.value);
+    updateEmail(field.value);
     return;
   }
 
   // updating password requires a different method
   if (field.name == "password") {
-    updatePassword(index, field.value);
+    updatePassword(field.value);
     return;
   }
 
@@ -109,6 +106,8 @@ async function updateField(
   const currentPassword = (await modalStore.open("ConfirmPassword", {
     title: "Confirm Password",
   })) as string;
+
+  console.log(currentPassword);
 
   // nothing to update
   if (field.value.length == 0 || !currentPassword) {
@@ -129,10 +128,10 @@ async function updateField(
 }
 
 // change the password
-async function updatePassword(index: number, newPassword: string) {
+async function updatePassword(newPassword: string) {
   // wait for the user to input his password
   const currentPassword = (await modalStore.open("ConfirmPassword", {
-    title: "Confirm Password",
+    title: "Confirm current password",
   })) as string;
 
   // nothing to update
@@ -174,7 +173,7 @@ async function updatePhoto(photo: any) {
 }
 
 // upade email field
-async function updateEmail(index: number, newEmail: string) {
+async function updateEmail(newEmail: string) {
   const confirmed = await modalStore.open("ConfirmMessage", {
     title: "Confirm Email Change",
     message: "Session will be closed after you change your email.",

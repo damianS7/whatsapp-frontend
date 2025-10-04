@@ -16,11 +16,15 @@ defineProps<{
 
 const fields = ref({
   password: "",
+  repeatPassword: "",
 });
 
 const modalStore = useModalStore();
 
 function onSubmit() {
+  if (fields.value.password !== fields.value.repeatPassword) {
+    return;
+  }
   modalStore.resolve(fields.value.password);
 }
 </script>
@@ -29,7 +33,7 @@ function onSubmit() {
     <DialogHeader>
       <DialogTitle>{{ title }}</DialogTitle>
     </DialogHeader>
-    <form id="passwordForm" @submit.prevent="onSubmit" class="space-y-4">
+    <form id="repeatPasswordForm" @submit.prevent="onSubmit" class="space-y-4">
       <div class="flex flex-col">
         <label for="password" class="text-gray-400 mb-1 text-sm font-medium"
           >Password</label
@@ -43,12 +47,28 @@ function onSubmit() {
           class="w-full rounded border border-gray-300 px-3 py-2"
         />
       </div>
+
+      <div class="flex flex-col">
+        <label
+          for="repeatPassword"
+          class="text-gray-400 mb-1 text-sm font-medium"
+          >Repeat your password</label
+        >
+        <input
+          id="repeatPassword"
+          type="password"
+          v-model="fields.repeatPassword"
+          placeholder="Repeat your password"
+          required
+          class="w-full rounded border border-gray-300 px-3 py-2"
+        />
+      </div>
     </form>
     <DialogFooter>
       <DialogClose asChild>
         <Button variant="secondary">Cancel</Button>
       </DialogClose>
-      <Button type="submit" form="passwordForm">Confirm</Button>
+      <Button type="submit" form="repeatPasswordForm">Confirm</Button>
     </DialogFooter>
   </DialogContent>
 </template>

@@ -4,11 +4,13 @@ import { Dialog } from "@/components/ui/dialog";
 import { useModalStore } from "@/stores/modal";
 import ConfirmMessage from "@/components/modal/ConfirmMessageModal.vue";
 import ConfirmPassword from "@/components/modal/ConfirmPasswordModal.vue";
+import ConfirmNewPassword from "@/views/profile/components/ProfileNewPasswordConfirmModal.vue";
 const modalStore = useModalStore();
 
 const modals = {
   ConfirmMessage,
   ConfirmPassword,
+  ConfirmNewPassword,
 };
 
 function handleUpdateOpen() {
