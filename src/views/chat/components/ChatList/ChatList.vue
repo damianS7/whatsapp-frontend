@@ -43,17 +43,6 @@ function clearChat() {
   }
 }
 
-function isContact() {
-  // const chat = chatStore.getChat(clickedChatId);
-  // if (chat && chat.type === "PRIVATE") {
-  //   const destUser = getDestinationUser(chat);
-  //   if (destUser?.userId) {
-  //     return contactStore.isContact(destUser.userId);
-  //   }
-  // }
-  // return true;
-}
-
 function addContact() {
   // TODO
   // const chat = chatStore.getSelectedChat();
