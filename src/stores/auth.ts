@@ -1,5 +1,5 @@
 import type { JwtPayload } from "@/types/JwtPayload";
-import type { UserRegisterRequest } from "@/types/UserRegisterRequest";
+import type { UserRegisterRequest } from "@/types/request/UserRegisterRequest";
 import { jwtDecode } from "jwt-decode";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -67,7 +67,6 @@ export const useAuthStore = defineStore("auth", () => {
     isTokenValid,
   };
 });
-
 
 // export const useAuthStore = defineStore("auth", {
 

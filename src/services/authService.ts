@@ -1,6 +1,6 @@
 import { ApiError } from "@/types/ApiError";
 import type { ApiResponse } from "@/types/ApiResponse";
-import type { UserRegisterRequest } from "@/types/UserRegisterRequest";
+import type { UserRegisterRequest } from "@/types/request/UserRegisterRequest";
 const API = import.meta.env.VITE_APP_API_URL;
 
 export const authService = {
@@ -14,7 +14,11 @@ export const authService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(json.message || "Failed to login.", response.status, json.errors);
+      throw new ApiError(
+        json.message || "Failed to login.",
+        response.status,
+        json.errors
+      );
     }
 
     return json.token;
@@ -30,7 +34,11 @@ export const authService = {
     const json = await response.json();
 
     if (response.status !== 201) {
-      throw new ApiError(json.message || "Registration failed.", response.status, json.errors);
+      throw new ApiError(
+        json.message || "Registration failed.",
+        response.status,
+        json.errors
+      );
     }
 
     return json;
@@ -62,7 +70,11 @@ export const authService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(json.message || "Cannot activate account.", response.status, json.errors);
+      throw new ApiError(
+        json.message || "Cannot activate account.",
+        response.status,
+        json.errors
+      );
     }
 
     return json;
@@ -114,7 +126,10 @@ export const authService = {
 
     // return (await response.json()) as ApiResponse;
   },
-  async resetPasswordSet(password: string, token: string): Promise<ApiResponse> {
+  async resetPasswordSet(
+    password: string,
+    token: string
+  ): Promise<ApiResponse> {
     const response = await fetch(`${API}/accounts/reset-password/${token}`, {
       method: "POST",
       headers: {
@@ -126,7 +141,11 @@ export const authService = {
     const json = await response.json();
 
     if (response.status !== 200) {
-      throw new ApiError(json.message || "Failed reset password.", response.status, json.errors);
+      throw new ApiError(
+        json.message || "Failed reset password.",
+        response.status,
+        json.errors
+      );
     }
 
     return json;

@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { ref } from "vue";
 import { z } from "zod";
 import type { GenderType } from "@/types/User";
-import type { UserRegisterRequest } from "@/types/UserRegisterRequest";
+import type { UserRegisterRequest } from "@/types/request/UserRegisterRequest";
 import { useAuthStore } from "@/stores/auth";
 
 const alert = ref<InstanceType<typeof CustomAlert>>();
