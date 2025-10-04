@@ -7,6 +7,8 @@ import { useUserStore } from "@/stores/user";
 import { chatUtils } from "@/utils/chat";
 import { useGroupStore } from "./group";
 import { useContactStore } from "./contact";
+import { userService } from "@/services/userService";
+import { authUtils } from "@/utils/auth";
 const {
   generateChatId,
   generateGroupChatId,
@@ -169,6 +171,24 @@ export const useChatStore = defineStore("chat", {
         this.chats = JSON.parse(storedChats);
       }
 
+      for (const chat of this.chats) {
+        if (chat.type === "GROUP") {
+          continue;
+        }
+
+        try {
+          const destinationCustomer = chatUtils().getDestinationUser(chat);
+          if (destinationCustomer) {
+            const resource = await userService.fetchProfileImage(
+              destinationCustomer?.userId
+            );
+            chat.imageUrl = URL.createObjectURL(resource);
+          }
+        } catch (error) {
+          chat.imageUrl = undefined;
+        }
+      }
+
       if (storedSelectedChatId) {
         this.selectedChatId = storedSelectedChatId;
       }
@@ -195,6 +215,24 @@ export const useChatStore = defineStore("chat", {
           const groups = useGroupStore().groups;
           for (const group of groups) {
             await this.subscribeToChat(generateGroupChatId(group));
+          }
+
+          // subscribe to chats that are not contacts
+          for (const chat of this.chats) {
+            if (chat.type === "GROUP") {
+              // useGroupStore().groupExists(chat.groupId)
+              continue;
+            }
+
+            if (chat.type === "PRIVATE") {
+              const destinationUser = chatUtils().getDestinationUser(chat);
+              if (destinationUser) {
+                await this.subscribeToChat(
+                  generateChatId("PRIVATE", destinationUser.userId)
+                );
+              }
+              continue;
+            }
           }
 
           // Subscribe to the logged-in customer's private chat
