@@ -60,7 +60,7 @@ function addContact() {
 }
 </script>
 <template>
-  <div class="flex flex-col border-r-2 border-gray-300 h-full">
+  <div class="flex flex-col h-full">
     <div class="overflow-y-auto p-2 h-full">
       <ContextMenu v-model:open="menuVisible">
         <ContextMenuTrigger class="flex flex-col gap-1">

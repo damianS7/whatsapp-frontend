@@ -20,7 +20,7 @@ function toggleGroupMemberPanel() {
 </script>
 <template>
   <div class="grid grid-cols-[14rem_1fr] h-full">
-    <div class="md:block overflow-hidden">
+    <div class="md:block overflow-hidden border-r-2 border-gray-300">
       <ChatListPanel />
     </div>
 
