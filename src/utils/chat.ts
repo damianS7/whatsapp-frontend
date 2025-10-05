@@ -1,10 +1,11 @@
 import { useUserStore } from "@/stores/user";
 import { useGroupStore } from "@/stores/group";
 import type { Chat, ChatType } from "@/types/Chat";
-import type { ChatMessage } from "@/types/ChatMessage";
 import type { Contact } from "@/types/Contact";
 import type { Group } from "@/types/Group";
 import type { ChatParticipant } from "@/types/ChatParticipant";
+import type { ChatMessageRequest } from "@/types/request/ChatMessageRequest";
+import type { ChatMessageResponse } from "@/types/response/ChatMessageResponse";
 
 export function chatUtils() {
   const getDestinationUser = (chat: Chat): ChatParticipant | null => {
@@ -16,7 +17,7 @@ export function chatUtils() {
     return null;
   };
 
-  const getAvatarFilenameFromChat = (chat: Chat): string => {
+  const getAvatarUrlFromChat = (chat: Chat): string => {
     if (chat.type === "GROUP") {
       return chat.imageUrl || "";
     }
@@ -28,8 +29,9 @@ export function chatUtils() {
 
     return "";
   };
+
   const generateChatId = (chatType: ChatType, id: number) => {
-    return `${chatType}${id}`;
+    return `${chatType}_${id}`;
   };
 
   const generatePrivateChatId = (contact: Contact) => {
@@ -41,9 +43,9 @@ export function chatUtils() {
   };
 
   const createPrivateChat = (contact: Contact): Chat => {
-    const customerStore = useUserStore();
+    const userStore = useUserStore();
     return {
-      id: generatePrivateChatId(contact),
+      id: generateChatId("PRIVATE", contact.userId),
       name: contact.name,
       type: "PRIVATE",
       history: [],
@@ -54,9 +56,9 @@ export function chatUtils() {
           avatarUrl: contact.avatarUrl,
         },
         {
-          userId: customerStore.getLoggedUser.id,
-          userName: customerStore.getLoggedUser.firstName,
-          avatarUrl: customerStore.getLoggedUser.avatarUrl,
+          userId: userStore.getLoggedUser.id,
+          userName: userStore.getLoggedUser.firstName,
+          avatarUrl: userStore.getLoggedUser.avatarUrl,
         },
       ],
       imageUrl: contact.avatarUrl,
@@ -65,7 +67,7 @@ export function chatUtils() {
 
   const createGroupChat = (group: Group): Chat => {
     return {
-      id: generateGroupChatId(group),
+      id: generateChatId("GROUP", group.id),
       groupId: group.id,
       name: group.name,
       type: "GROUP",
@@ -75,19 +77,22 @@ export function chatUtils() {
     };
   };
 
-  const createChatFromMessage = async (message: ChatMessage): Promise<Chat> => {
-    const customerStore = useUserStore();
+  const createChatFromMessage = async (
+    message: ChatMessageResponse
+  ): Promise<Chat> => {
+    const userStore = useUserStore();
     const groupStore = useGroupStore();
 
-    if (message.chatType === "GROUP" && message.groupId) {
-      const group = await groupStore.fetchGroup(message.groupId);
+    if (message.chatType === "GROUP" && message.toId) {
+      const group = await groupStore.fetchGroup(message.toId);
       return createGroupChat(group);
     }
 
     return {
-      id: message.chatId,
-      name: message.fromUserName,
+      id: generateChatId("PRIVATE", message.toId),
       type: message.chatType,
+      userId: message.toId,
+      name: message.fromUserName,
       history: [],
       participants: [
         {
@@ -96,20 +101,44 @@ export function chatUtils() {
           avatarUrl: "",
         },
         {
-          userId: customerStore.getLoggedUser.id,
-          userName: customerStore.getLoggedUser.firstName,
-          avatarUrl: customerStore.getLoggedUser.avatarUrl || "",
+          userId: userStore.getLoggedUser.id,
+          userName: userStore.getLoggedUser.firstName,
+          avatarUrl: userStore.getLoggedUser.avatarUrl || "",
         },
       ],
     };
   };
 
+  const createMessage = (chat: Chat, message: string): ChatMessageRequest => {
+    if (chat.type === "GROUP" && chat.groupId) {
+      return {
+        chatType: chat.type,
+        toId: chat.groupId,
+        message,
+      };
+    }
+
+    if (chat.type === "PRIVATE") {
+      const destinationUser = getDestinationUser(chat);
+      if (destinationUser) {
+        return {
+          chatType: chat.type,
+          toId: destinationUser.userId,
+          message,
+        };
+      }
+    }
+
+    throw new Error("Failed to create chat message");
+  };
+
   return {
+    createMessage,
     getDestinationUser,
     generateChatId,
     generateGroupChatId,
     generatePrivateChatId,
-    getAvatarFilenameFromChat,
+    getAvatarFilenameFromChat: getAvatarUrlFromChat,
     createGroupChat,
     createPrivateChat,
     createChatFromMessage,

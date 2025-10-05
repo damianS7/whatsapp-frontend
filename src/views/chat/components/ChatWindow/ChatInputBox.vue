@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useChatStore } from "@/stores/chat";
 import type { Chat } from "@/types/Chat";
-import type { ChatMessage } from "@/types/ChatMessage";
 import type { User } from "@/types/User";
 import { ref, defineProps } from "vue";
 import { chatUtils } from "@/utils/chat";
-const { generateChatId, getDestinationUser } = chatUtils();
+import type { ChatMessageRequest } from "@/types/request/ChatMessageRequest";
+const { createMessage } = chatUtils();
 
 const props = defineProps<{
   fromUser: User;
@@ -19,29 +19,7 @@ function send() {
     return;
   }
 
-  const message = {
-    chatId: "",
-    fromUserId: props.fromUser.id,
-    fromUserName: props.fromUser.firstName,
-    chatType: props.chat.type,
-    message: textarea.value,
-    timestamp: new Date(),
-  } as ChatMessage;
-
-  if (props.chat.type === "GROUP" && props.chat.groupId) {
-    message.groupId = props.chat.groupId;
-    message.chatId = generateChatId("GROUP", message.groupId);
-  }
-
-  if (props.chat.type === "PRIVATE") {
-    const destinationUser = getDestinationUser(props.chat);
-    if (!destinationUser) {
-      return;
-    }
-    message.toUserId = destinationUser.userId;
-    message.chatId = generateChatId("PRIVATE", destinationUser.userId);
-  }
-
+  const message: ChatMessageRequest = createMessage(props.chat, textarea.value);
   chatStore.sendMessage(message);
   textarea.value = "";
 }
