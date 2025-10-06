@@ -1,248 +1,214 @@
 import { defineStore } from "pinia";
 import SockJS from "sockjs-client";
-import { CompatClient, Stomp } from "@stomp/stompjs";
-import type { Chat } from "@/types/Chat";
-import type { ChatMessage } from "@/types/ChatMessage";
+import { Client } from "@stomp/stompjs";
+import type { Chat, ChatType } from "@/types/Chat";
 import { useUserStore } from "@/stores/user";
 import { chatUtils } from "@/utils/chat";
 import { useGroupStore } from "./group";
-import { useContactStore } from "./contact";
 import { userService } from "@/services/userService";
-import { authUtils } from "@/utils/auth";
-const {
-  generateChatId,
-  generateGroupChatId,
-  generatePrivateChatId,
-  createChatFromMessage,
-} = chatUtils();
+import type { ChatMessageRequest } from "@/types/request/ChatMessageRequest";
+import type { ChatMessageResponse } from "@/types/response/ChatMessageResponse";
+import { computed, ref, type Ref } from "vue";
+const { generateChatId, createChatFromMessage, generateChatIdFromMessage } =
+  chatUtils();
 
-export const useChatStore = defineStore("chat", {
-  state: () => ({
-    // privateChats
-    // groupChats
-    chats: [] as Chat[],
-    selectedChatId: "" as string,
-    socket: null as WebSocket | null,
-    stompClient: null as CompatClient | null,
-    subscriptions: new Map<string, string>(),
-    // initialized: false,
-  }),
+export const useChatStore = defineStore("chat", () => {
+  const chats = ref<Chat[]>([]);
+  const selectedChatId = ref<string>("");
+  const subscriptions = new Map<string, string>();
+  const initialized = ref(false);
+  const token = localStorage.getItem("token");
+  const client = new Client({
+    webSocketFactory: () =>
+      new SockJS(`${import.meta.env.VITE_APP_WS_URL}?token=${token}`),
+    reconnectDelay: 5000,
+    connectHeaders: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
-  getters: {
-    getSelectedChat(): Chat | undefined {
-      return this.getChat(this.selectedChatId);
-    },
-    getSelectedChatName(): string | undefined {
-      return this.getChat(this.selectedChatId)?.name;
-    },
-    getChats: (state): Chat[] => {
-      return state.chats;
-    },
-    getChat: (state) => {
-      return (id: string) => {
-        return state.chats.find((chat) => {
-          return chat.id === id;
-        });
-      };
-    },
-    getChatByName: (state) => {
-      return (name: string) => {
-        return state.chats.find((chat) => chat.name === name);
-      };
-    },
-  },
-  actions: {
-    saveChatState() {
-      localStorage.setItem("chats", JSON.stringify(this.chats));
-      localStorage.setItem("selectedChatId", this.selectedChatId);
-    },
-    selectChat(chatId: string) {
-      this.selectedChatId = chatId;
-      this.saveChatState();
-    },
-    async addChat(newChat: Chat) {
-      const chatExists = this.chats.find((chat) => chat.id === newChat.id);
-      if (chatExists) {
-        return;
-      }
+  const getSelectedChat = computed(() => {
+    return getChat(selectedChatId.value);
+  });
 
-      await this.subscribeToChat(newChat.id);
-      this.chats.push(newChat);
-      this.saveChatState();
-    },
-    async deleteChat(chatId: string) {
-      // await this.unSuscribeFromChat(chatId);
-      const index = this.chats.findIndex((chat) => chat.id === chatId);
-      this.chats.splice(index, 1);
-      this.saveChatState();
-    },
-    async sendMessage(message: ChatMessage) {
-      if (!this.stompClient) {
-        return;
-      }
+  function getChat(id: string): Chat | undefined {
+    return chats.value.find((chat) => chat.id === id);
+  }
 
-      this.stompClient.send(
-        `/app/chat.send.${message.chatId}`,
-        {},
-        JSON.stringify(message)
+  function saveChatState() {
+    localStorage.setItem("chats", JSON.stringify(chats.value));
+    localStorage.setItem("selectedChatId", selectedChatId.value);
+  }
+
+  function selectChat(chatId: string) {
+    selectedChatId.value = chatId;
+    saveChatState();
+  }
+
+  async function addChat(newChat: Chat) {
+    const chatExists = getChat(newChat.id);
+    if (chatExists) {
+      return;
+    }
+
+    if (newChat.type == "GROUP" && newChat.groupId) {
+      await subscribeToChat("GROUP", newChat.groupId);
+    }
+
+    // fetch the user avatar
+    if (newChat.type == "PRIVATE" && newChat.userId && !newChat.imageUrl) {
+      newChat.imageUrl = URL.createObjectURL(
+        await userService.fetchProfileImage(newChat.userId)
       );
-      this.saveChatState();
-    },
-    async handleMessage(chatMessage: ChatMessage) {
-      console.log(
-        `Received message for chat: ${chatMessage.chatId}`,
-        chatMessage
-      );
-      const userStore = useUserStore();
+    }
 
-      if (chatMessage.fromUserName === "SYSTEM") {
-        // check notification type
-        // do something
-        // send a message
-      }
+    chats.value.push(newChat);
+    saveChatState();
+  }
+  async function deleteChat(chatId: string) {
+    const index = chats.value.findIndex((chat) => chat.id === chatId);
+    chats.value.splice(index, 1);
+    saveChatState();
+  }
+  async function sendMessage(message: ChatMessageRequest) {
+    if (!client.connected) {
+      return;
+    }
 
-      // if chatMessage its a private message ...
-      if (chatMessage.chatType === "PRIVATE" && chatMessage.toUserId) {
-        // if the message its sent to the logged customer
-        if (
-          chatMessage.toUserId === userStore.getLoggedUser.id &&
-          chatMessage.fromUserId
-        ) {
-          chatMessage.chatId = generateChatId(
-            "PRIVATE",
-            chatMessage.fromUserId
-          );
-        }
-      }
+    const chat = getChat(generateChatId("PRIVATE", message.toId));
+    chat?.history.push({
+      fromUserName: useUserStore().user.userName,
+      fromUserId: useUserStore().user.id,
+      message: message.message,
+      timestamp: new Date(),
+    });
 
-      // Create a new chat if it doesn't exist
-      if (!this.getChat(chatMessage.chatId)) {
-        const newChat: Chat = await createChatFromMessage(chatMessage);
-        await this.addChat(newChat);
-      }
+    client.publish({
+      destination: "/app/chat",
+      body: JSON.stringify(message),
+      // headers: {
+      //   Authorization: `Bearer ${token}`,
+      // },
+    });
+    saveChatState();
+  }
+  async function handleMessage(chatMessage: ChatMessageResponse) {
+    console.log(`Received message `, chatMessage);
+    const chatId = generateChatIdFromMessage(chatMessage);
+    const chat: Ref<Chat | undefined> = ref(getChat(chatId));
 
-      this.getChat(chatMessage.chatId)?.history.push(chatMessage);
-      this.saveChatState();
-    },
-    async subscribeToChat(chatId: string) {
-      if (!this.stompClient) {
+    // create chat
+    if (!chat.value) {
+      // when chat does not exist we created with the id of the sender
+      chat.value = await createChatFromMessage(chatMessage);
+      await addChat(chat.value);
+    }
+
+    chat.value.history.push(chatMessage);
+    saveChatState();
+  }
+
+  async function subscribeToChat(chatType: ChatType, id: number) {
+    const chatId = generateChatId(chatType, id);
+    if (!client.connected) {
+      return;
+    }
+
+    // check if subscription already exists
+    if (subscriptions.get(chatId)) {
+      return;
+    }
+
+    let subscribePath = `/topic/chat/${chatType}/${id}`;
+    if (chatType === "PRIVATE") {
+      subscribePath = `/user/queue/messages`;
+    }
+
+    const sub = client.subscribe(subscribePath, (message) => {
+      const chatMessage: ChatMessageResponse = JSON.parse(message.body);
+      if (!chatMessage.toId) {
         return;
       }
+      handleMessage(chatMessage);
+    });
 
-      // check if subscription already exists
-      if (this.subscriptions.get(chatId)) {
-        return;
+    // add the subscription
+    subscriptions.set(chatId, sub.id);
+  }
+
+  async function unSuscribeFromChat(chatId: string) {
+    if (!client.connected) {
+      return;
+    }
+
+    // get the sub id for the chatId
+    const subId = subscriptions.get(chatId);
+
+    // if the subscription exists
+    if (subId) {
+      // unsubscribe
+      client.unsubscribe(subId);
+      // delete the sub
+      subscriptions.delete(chatId);
+    }
+  }
+
+  async function initialize() {
+    const storedChats = localStorage.getItem("chats") ?? "";
+    if (storedChats) {
+      chats.value = JSON.parse(storedChats);
+    }
+
+    selectedChatId.value = localStorage.getItem("selectedChatId") ?? "";
+
+    for (const chat of chats.value) {
+      if (chat.type === "GROUP") {
+        continue;
       }
 
-      const sub = this.stompClient.subscribe(
-        `/topic/chat.${chatId}`,
-        (message) => {
-          const chatMessage = JSON.parse(message.body) as ChatMessage;
-          if (!chatMessage.chatId) {
-            return;
-          }
-          this.handleMessage(chatMessage);
+      try {
+        if (chat.userId) {
+          const resource = await userService.fetchProfileImage(chat.userId);
+          chat.imageUrl = URL.createObjectURL(resource);
         }
-      );
+      } catch (error) {
+        chat.imageUrl = undefined;
+      }
+    }
 
-      // add the subscription
-      this.subscriptions.set(chatId, sub.id);
-    },
-    async unSuscribeFromChat(chatId: string) {
-      if (!this.stompClient) {
-        return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+
+    const userStore = useUserStore();
+
+    client.onConnect = async (frame) => {
+      const groups = useGroupStore().groups;
+      for (const group of groups) {
+        await subscribeToChat("GROUP", group.id);
       }
 
-      // get the sub id for the chatId
-      const subId = this.subscriptions.get(chatId);
+      // Subscribe to the logged-in customer's private chat
+      await subscribeToChat("PRIVATE", userStore.getLoggedUser.id);
+    };
 
-      // if the subscription exists
-      if (subId) {
-        // unsubscribe
-        this.stompClient.unsubscribe(subId);
-        // delete the sub
-        this.subscriptions.delete(chatId);
-      }
-    },
-    async initialize() {
-      const storedChats = localStorage.getItem("chats");
-      const storedSelectedChatId = localStorage.getItem("selectedChatId");
-      if (storedChats) {
-        this.chats = JSON.parse(storedChats);
-      }
+    client.activate();
 
-      for (const chat of this.chats) {
-        if (chat.type === "GROUP") {
-          continue;
-        }
+    // initialized = true;
+  }
 
-        try {
-          const destinationCustomer = chatUtils().getDestinationUser(chat);
-          if (destinationCustomer) {
-            const resource = await userService.fetchProfileImage(
-              destinationCustomer?.userId
-            );
-            chat.imageUrl = URL.createObjectURL(resource);
-          }
-        } catch (error) {
-          chat.imageUrl = undefined;
-        }
-      }
-
-      if (storedSelectedChatId) {
-        this.selectedChatId = storedSelectedChatId;
-      }
-
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return;
-      }
-
-      const userStore = useUserStore();
-
-      // set up WebSocket connection
-      this.socket = new SockJS(`${import.meta.env.VITE_APP_WS_URL}`);
-      this.stompClient = Stomp.over(this.socket);
-
-      this.stompClient.connect(
-        { Authorization: `Bearer ${token}` },
-        async () => {
-          const contacts = useContactStore().contacts;
-          for (const contact of contacts) {
-            await this.subscribeToChat(generatePrivateChatId(contact));
-          }
-
-          const groups = useGroupStore().groups;
-          for (const group of groups) {
-            await this.subscribeToChat(generateGroupChatId(group));
-          }
-
-          // subscribe to chats that are not contacts
-          for (const chat of this.chats) {
-            if (chat.type === "GROUP") {
-              // useGroupStore().groupExists(chat.groupId)
-              continue;
-            }
-
-            if (chat.type === "PRIVATE") {
-              const destinationUser = chatUtils().getDestinationUser(chat);
-              if (destinationUser) {
-                await this.subscribeToChat(
-                  generateChatId("PRIVATE", destinationUser.userId)
-                );
-              }
-              continue;
-            }
-          }
-
-          // Subscribe to the logged-in customer's private chat
-          await this.subscribeToChat(
-            generateChatId("PRIVATE", userStore.getLoggedUser.id)
-          );
-        }
-      );
-
-      // this.initialized = true;
-    },
-  },
+  return {
+    chats,
+    subscribeToChat,
+    unSuscribeFromChat,
+    initialize,
+    initialized,
+    sendMessage,
+    deleteChat,
+    selectChat,
+    getSelectedChat,
+    getChat,
+    addChat,
+  };
 });
