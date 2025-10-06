@@ -1,5 +1,4 @@
 import { ApiResponse } from "@/types/response/ApiResponse";
-import type { ApiResponse } from "@/types/response/ApiResponse";
 import type { UserRegisterRequest } from "@/types/request/UserRegisterRequest";
 const API = import.meta.env.VITE_APP_API_URL;
 

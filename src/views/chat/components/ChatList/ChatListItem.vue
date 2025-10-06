@@ -3,19 +3,19 @@ import type { Chat } from "@/types/Chat";
 import { useChatStore } from "@/stores/chat";
 import CustomAvatar from "@/components/CustomAvatar.vue";
 
-defineProps<{
+const props = defineProps<{
   chat: Chat;
 }>();
 
 // store
 const chatStore = useChatStore();
 
-function getLastMessageFromChat(chat: Chat) {
-  const lastMessageIndex = chat.history.length - 1;
+function lastMessage() {
+  const lastMessageIndex = props.chat.history.length - 1;
   if (lastMessageIndex < 0) {
     return;
   }
-  return chat.history[lastMessageIndex].message;
+  return props.chat.history[lastMessageIndex].message;
 }
 </script>
 <template>
@@ -41,7 +41,7 @@ function getLastMessageFromChat(chat: Chat) {
     <div class="flex flex-col w-full">
       <span class="font-semibold text-sm text-gray-800">{{ chat.name }}</span>
       <span class="text-gray-500 text-xs truncate max-w-[160px]">
-        {{ getLastMessageFromChat(chat) || "&nbsp;" }}
+        {{ lastMessage() || "&nbsp;" }}
       </span>
     </div>
   </div>

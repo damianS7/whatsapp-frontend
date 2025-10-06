@@ -2,7 +2,7 @@
 import { ref, computed } from "vue";
 import { useChatStore } from "@/stores/chat";
 import ChatSearchButton from "@/views/chat/components/ChatSearchButton.vue";
-import ChatList from "./ChatList.vue";
+import ChatList from "@/views/chat/components/ChatList/ChatList.vue";
 
 // store
 const chatStore = useChatStore();
