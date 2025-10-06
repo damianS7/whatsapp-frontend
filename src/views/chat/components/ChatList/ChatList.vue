@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import { useChatStore } from "@/stores/chat";
 import type { ChatMessage } from "@/types/ChatMessage";
-import { chatUtils } from "@/utils/chat";
 import { useContactStore } from "@/stores/contact";
 import ChatListItem from "./ChatListItem.vue";
 import {
@@ -12,7 +11,6 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import type { Chat } from "@/types/Chat";
-const { getDestinationUser } = chatUtils();
 
 defineProps<{
   chats: Chat[];
@@ -50,9 +48,8 @@ function addContact() {
   }
 
   if (selectedChat.type === "PRIVATE") {
-    const destUser = getDestinationUser(selectedChat);
-    if (destUser?.userId && !contactStore.isContact(destUser.userId)) {
-      contactStore.addContact(destUser.userId);
+    if (selectedChat?.userId && !contactStore.isContact(selectedChat.userId)) {
+      contactStore.addContact(selectedChat.userId);
     }
   }
 }
@@ -64,8 +61,7 @@ function isContact() {
   }
 
   if (selectedChat.type === "PRIVATE") {
-    const destUser = getDestinationUser(selectedChat);
-    if (destUser?.userId && contactStore.isContact(destUser.userId)) {
+    if (selectedChat?.userId && contactStore.isContact(selectedChat.userId)) {
       return true;
     }
   }

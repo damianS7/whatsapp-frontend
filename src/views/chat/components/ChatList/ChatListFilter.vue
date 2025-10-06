@@ -3,7 +3,6 @@ import { ref, computed, defineEmits } from "vue";
 import { useChatStore } from "@/stores/chat";
 import { MessageSquarePlus } from "lucide-vue-next";
 import type { ChatMessage } from "@/types/ChatMessage";
-import { chatUtils } from "@/utils/chat";
 import ChatContactGroupList from "./ChatContactGroupList.vue";
 import { useContactStore } from "@/stores/contact";
 import ChatListItem from "./ChatListItem.vue";
@@ -18,7 +17,6 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-const { getDestinationUser } = chatUtils();
 
 // store
 const chatStore = useChatStore();
@@ -74,9 +72,8 @@ function addContact() {
   }
 
   if (selectedChat && selectedChat.type === "PRIVATE") {
-    const destUser = getDestinationUser(selectedChat);
-    if (destUser?.userId) {
-      contactStore.addContact(destUser.userId);
+    if (selectedChat?.userId) {
+      contactStore.addContact(selectedChat.userId);
     }
   }
 }
