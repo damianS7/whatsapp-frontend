@@ -64,15 +64,13 @@ function addContact(userId: number) {
 // Open chat with the contact
 function openChat(chatMember: ChatParticipant) {
   const chat = createPrivateChat({
-    id: 0,
     userId: chatMember.userId,
     name: chatMember.userName,
     avatarUrl: chatMember.avatarUrl,
   });
-  const existingChat = chatStore.getChat(chat.id);
 
   // if the chat not exists, create a new one
-  if (!existingChat) {
+  if (!chatStore.chatExists(chat.id)) {
     chatStore.addChat(chat);
   }
 
