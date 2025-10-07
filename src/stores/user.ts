@@ -27,8 +27,14 @@ export const useUserStore = defineStore("user", () => {
     return user;
   }
 
-  async function updateUser(currentPassword: string, fieldsToUpdate: Record<string, any>): Promise<User> {
-    const updatedUser: User = await userService.updateUser(currentPassword, fieldsToUpdate);
+  async function updateUser(
+    currentPassword: string,
+    fieldsToUpdate: Record<string, any>
+  ): Promise<User> {
+    const updatedUser: User = await userService.updateUser(
+      currentPassword,
+      fieldsToUpdate
+    );
 
     // set the current avatar for the updated user
     updatedUser.avatarUrl = user.value.avatarUrl;
@@ -36,8 +42,14 @@ export const useUserStore = defineStore("user", () => {
     return updatedUser;
   }
 
-  async function updateEmail(currentPassword: string, newEmail: string): Promise<User> {
-    const updatedUser = await userService.updateEmail(currentPassword, newEmail);
+  async function updateEmail(
+    currentPassword: string,
+    newEmail: string
+  ): Promise<User> {
+    const updatedUser = await userService.updateEmail(
+      currentPassword,
+      newEmail
+    );
     user.value.email = updatedUser.email;
     return updatedUser;
   }
@@ -54,26 +66,20 @@ export const useUserStore = defineStore("user", () => {
     return await userService.fetchProfileImage(userId);
   }
 
-  async function uploadPhoto(currentPassword: string, file: any): Promise<Blob> {
+  async function uploadPhoto(
+    currentPassword: string,
+    file: any
+  ): Promise<Blob> {
     const blob = await userService.uploadProfileImage(currentPassword, file);
     user.value.avatarUrl = URL.createObjectURL(blob);
     return blob;
   }
 
   async function initialize() {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      return;
-    }
-
-    await fetchUser()
-      .then((fuser) => {
-        user.value = fuser;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
+    await fetchUser().then((fuser) => {
+      user.value = fuser;
+    });
+    // TODO remove this?
     if (!user.value.avatarUrl) {
       return;
     }
@@ -81,5 +87,17 @@ export const useUserStore = defineStore("user", () => {
     initialized.value = true;
   }
 
-  return { initialized, user, getLoggedUser, getFullName, fetchUser, updateUser, updateEmail, updatePassword, getPhoto, uploadPhoto, initialize }
+  return {
+    initialized,
+    user,
+    getLoggedUser,
+    getFullName,
+    fetchUser,
+    updateUser,
+    updateEmail,
+    updatePassword,
+    getPhoto,
+    uploadPhoto,
+    initialize,
+  };
 });

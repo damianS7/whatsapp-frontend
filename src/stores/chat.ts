@@ -212,6 +212,7 @@ export const useChatStore = defineStore("chat", () => {
     initialize,
     initialized,
     sendMessage,
+    chatExists,
     deleteChat,
     selectChat,
     getSelectedChat,
