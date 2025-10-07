@@ -53,7 +53,7 @@ export const authService = {
     });
 
     if (response.status !== 200) {
-      return false;
+      throw new Error("Invalid token.");
     }
 
     return true;
