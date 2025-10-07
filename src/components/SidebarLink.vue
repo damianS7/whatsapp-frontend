@@ -1,3 +1,12 @@
+<script setup lang="ts">
+import { defineProps } from "vue";
+defineProps<{
+  to?: string;
+  icon?: unknown;
+  label: string;
+}>();
+</script>
+
 <template>
   <RouterLink v-slot="{ isActive }" :to="to">
     <div
@@ -16,11 +25,3 @@
     </div>
   </RouterLink>
 </template>
-<script setup lang="ts">
-import { defineProps } from "vue";
-defineProps<{
-  to: string;
-  icon?: unknown;
-  label: string;
-}>();
-</script>
