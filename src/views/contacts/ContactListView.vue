@@ -67,9 +67,7 @@ async function deleteContact(contact: Contact) {
 }
 </script>
 <template>
-  <div
-    class="main-container grid grid-rows-[auto_1fr] shadow-none rounded-none overflow-hidden h-full"
-  >
+  <div class="main-container grid grid-rows-[auto_1fr] h-full">
     <section
       class="sm:flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >

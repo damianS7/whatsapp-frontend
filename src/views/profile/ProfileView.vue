@@ -203,9 +203,9 @@ async function updateEmail(newEmail: string) {
 }
 </script>
 <template>
-  <div class="main-container grid overflow-hidden h-full">
+  <div class="main-container grid grid-rows-[auto_1fr] h-full">
     <section
-      class="sm:flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
+      class="flex gap-1 items-center text-2xl font-bold border-b border-gray-300 p-1"
     >
       <h1>Profile</h1>
     </section>

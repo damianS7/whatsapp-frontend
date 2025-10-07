@@ -40,16 +40,14 @@ function toggleCreateGroupPanel() {
 }
 </script>
 <template>
-  <div
-    class="main-container grid grid-rows-[auto_1fr] shadow-none rounded-none overflow-hidden h-full relative"
-  >
+  <div class="main-container grid grid-rows-[auto_1fr] h-full">
     <GroupCreatePanel
       :class="createGroupPanelVisible ? 'translate-x-0' : '-translate-x-full'"
       @hidePanel="toggleCreateGroupPanel"
     />
 
     <section
-      class="sm:flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
+      class="flex items-center justify-between text-2xl font-bold border-b border-gray-300 p-1 px-2"
     >
       <h1>Groups</h1>
       <Button size="xs" @click="toggleCreateGroupPanel"> CREATE GROUP </Button>
