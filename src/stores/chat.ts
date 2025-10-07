@@ -49,6 +49,11 @@ export const useChatStore = defineStore("chat", () => {
     saveChatState();
   }
 
+  function clearChats() {
+    localStorage.setItem("chats", "");
+    chats.value = [];
+  }
+
   async function initialize() {
     const storedChats = localStorage.getItem("chats") ?? "";
     if (storedChats) {
@@ -217,6 +222,7 @@ export const useChatStore = defineStore("chat", () => {
     selectChat,
     getSelectedChat,
     getChat,
+    clearChats,
     addChat,
   };
 });
