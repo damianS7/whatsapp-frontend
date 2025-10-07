@@ -15,7 +15,7 @@ const props = defineProps<{
     <!-- chat name -->
     <div>
       <h2 class="text-md font-semibold text-gray-800">
-        {{ chat.name }} {{ chat.id }} // {{ chat.userId }}
+        {{ chat.name }}
       </h2>
     </div>
   </div>
