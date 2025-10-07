@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-const props = defineProps<{
+defineProps<{
   src?: string;
   fallback?: string;
 }>();

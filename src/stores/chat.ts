@@ -78,7 +78,7 @@ export const useChatStore = defineStore("chat", () => {
       }
     }
 
-    client.onConnect = async (frame) => {
+    client.onConnect = async (_frame) => {
       const groups = useGroupStore().groups;
       for (const group of groups) {
         await subscribeToChat("GROUP", group.id);

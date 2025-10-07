@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
 defineProps<{
-  to?: string;
+  to: string;
   icon?: unknown;
   label: string;
 }>();

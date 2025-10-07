@@ -29,8 +29,19 @@ const genderOptions = genderTypes.map((value) => ({
   label: value.charAt(0) + value.slice(1).toLowerCase(),
 }));
 
+type FieldItem = {
+  type: "text" | "email" | "password" | "select" | "date";
+  placeholder: string;
+  value: string;
+  options?: { value: any; label: any }[];
+};
+
+type Field = {
+  [key: string]: FieldItem;
+};
+
 // form fields
-const form = ref({
+const form = ref<Field>({
   email: {
     type: "email",
     placeholder: "Email",
@@ -162,7 +173,9 @@ const onFormSubmit = async () => {
           :key="fieldKey"
           class="grid gap-2"
         >
-          <Label :for="fieldKey" class="capitalize">{{ fieldKey }}</Label>
+          <Label :for="String(fieldKey)" class="capitalize">{{
+            fieldKey
+          }}</Label>
           <Input
             v-if="field.type !== 'select'"
             v-model="field.value"
@@ -174,21 +187,21 @@ const onFormSubmit = async () => {
           <select
             v-if="field.type === 'select'"
             v-model="field.value"
-            :name="fieldKey"
+            :name="String(fieldKey)"
             class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             <option
-              v-for="option in field.options"
-              :key="option.value"
-              :value="option.value"
+              v-for="(option, index) in field.options"
+              :key="index"
+              :value="option"
             >
               {{ option.label }}
             </option>
           </select>
           <p
             v-if="formErrors[fieldKey]"
-            v-for="(error, index) in formErrors[fieldKey]"
-            :key="index"
+            v-for="(error, eIndex) in formErrors[fieldKey]"
+            :key="eIndex"
             class="text-sm text-red-500 ml-2"
           >
             {{ error }}

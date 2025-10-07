@@ -11,7 +11,6 @@ import { useRouter } from "vue-router";
 import { useChatStore } from "@/stores/chat";
 import type { ChatParticipant } from "@/types/ChatParticipant";
 import { useGroupStore } from "@/stores/group";
-import { useUserStore } from "@/stores/user";
 import Button from "@/components/ui/button/Button.vue";
 import { authUtils } from "@/utils/auth";
 const { createPrivateChat } = chatUtils();
@@ -24,7 +23,6 @@ const router = useRouter();
 const emit = defineEmits(["hidePanel"]);
 
 // store
-const userStore = useUserStore();
 const chatStore = useChatStore();
 const contactStore = useContactStore();
 const groupStore = useGroupStore();

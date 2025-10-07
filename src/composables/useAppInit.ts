@@ -62,7 +62,7 @@ export function useAppInit() {
     screenSpinner.hide();
   });
   onUnmounted(() => {
-    // clearInterval(interval);
+    clearInterval(interval);
   });
 
   return { isInitialized };

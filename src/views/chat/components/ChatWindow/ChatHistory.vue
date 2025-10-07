@@ -6,7 +6,7 @@ import type { ChatType } from "@/types/Chat";
 import { authUtils } from "@/utils/auth";
 const { isLoggedUser } = authUtils();
 
-const props = defineProps<{
+defineProps<{
   user: User;
   messages: ChatMessage[];
   chatType: ChatType;

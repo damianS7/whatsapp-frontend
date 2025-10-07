@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-  Landmark as Home,
   UserPen as Profile,
   Settings,
   LogOut,

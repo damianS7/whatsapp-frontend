@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ArrowLeft } from "lucide-vue-next";
-import { ref, defineEmits, type Ref } from "vue";
+import { ref, defineEmits } from "vue";
 import CustomAlert from "@/components/CustomAlert.vue";
 import { useGroupStore } from "@/stores/group";
 import { useRouter } from "vue-router";

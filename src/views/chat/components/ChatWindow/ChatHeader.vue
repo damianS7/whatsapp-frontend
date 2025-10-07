@@ -2,7 +2,7 @@
 import { defineProps } from "vue";
 import type { Chat } from "@/types/Chat";
 import CustomAvatar from "@/components/CustomAvatar.vue";
-const props = defineProps<{
+defineProps<{
   chat: Chat;
 }>();
 </script>

@@ -119,7 +119,7 @@ async function updateField(field: { name: string; value: string }) {
     .updateUser(currentPassword, {
       [field.name]: field.value,
     })
-    .then((profile) => {
+    .then((_profile) => {
       alert.value?.success("Field successfully updated.");
     })
     .catch((error) => {
@@ -164,7 +164,7 @@ async function updatePhoto(photo: any) {
 
   await userStore
     .uploadPhoto(password, photo)
-    .then((blob) => {
+    .then((_blob) => {
       alert.value?.success("Photo successfully updated.");
     })
     .catch((error) => {
@@ -194,7 +194,7 @@ async function updateEmail(newEmail: string) {
   // request for update
   await userStore
     .updateEmail(currentPassword, newEmail)
-    .then((user) => {
+    .then((_user) => {
       alert.value?.success("Field successfully updated.");
     })
     .catch((error) => {
