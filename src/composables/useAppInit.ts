@@ -5,9 +5,9 @@ import { useContactStore } from "@/stores/contact";
 import { useChatStore } from "@/stores/chat";
 import { useUserStore } from "@/stores/user";
 import { useSpinnerStore } from "@/stores/spinner";
-import { useRouter } from "vue-router";
 // import { useSettingStore } from "@/stores/setting";
 // import { useNotificationStore } from "@/stores/notification";
+import { authService } from "@/services/authService";
 
 export function useAppInit() {
   const screenSpinner = useSpinnerStore();
@@ -18,7 +18,6 @@ export function useAppInit() {
   const contactStore = useContactStore();
   // const settingStore = useSettingStore();
   // const notificationStore = useNotificationStore();
-  const router = useRouter();
   const tokenValidationInterval = 60 * 1000; // 60s
   let interval: NodeJS.Timeout;
   let initialized = ref(false);
@@ -26,13 +25,13 @@ export function useAppInit() {
   // functions
   async function checkIfTokenIsValid() {
     const token = authStore.token;
-    const isTokenValid = await authStore.isTokenValid(token);
-
-    if (!isTokenValid) {
+    // const token = "bad-token";
+    try {
+      await authService.validateToken(token);
+    } catch (error) {
       initialized.value = false;
       await authStore.logout();
       await wait(100);
-      router.push("/auth/login");
     }
   }
 
@@ -53,7 +52,6 @@ export function useAppInit() {
     interval = setInterval(async () => {
       await checkIfTokenIsValid();
     }, tokenValidationInterval);
-
     await userStore.initialize();
     await groupStore.initialize();
     await contactStore.initialize();
@@ -64,7 +62,7 @@ export function useAppInit() {
     screenSpinner.hide();
   });
   onUnmounted(() => {
-    clearInterval(interval);
+    // clearInterval(interval);
   });
 
   return { isInitialized };
