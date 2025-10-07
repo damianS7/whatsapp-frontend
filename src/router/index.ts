@@ -1,4 +1,8 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router";
+import {
+  createRouter,
+  createWebHistory,
+  type RouteRecordRaw,
+} from "vue-router";
 import LoginView from "@/views/auth/LoginView.vue";
 import MainLayout from "@/layouts/MainLayout.vue";
 import AuthLayout from "@/layouts/AuthLayout.vue";
@@ -113,9 +117,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, _from, next) => {
   const authStore = useAuthStore();
-  if (!authStore.initialized) {
-    await authStore.initialize();
-  }
+  await authStore.initialize();
   const isAuthenticated = authStore.isAuthenticated;
 
   // if authentication is required but you are not logged
