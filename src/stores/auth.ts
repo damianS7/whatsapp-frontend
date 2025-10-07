@@ -4,26 +4,25 @@ import { jwtDecode } from "jwt-decode";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { authService } from "@/services/authService";
+import router from "@/router";
 
 export const useAuthStore = defineStore("auth", () => {
   const token = ref("");
   const initialized = ref(false);
 
-  const isAuthenticated = computed(() => token.value !== "");
+  const isAuthenticated = computed(
+    () => token.value !== "" && initialized.value === true
+  );
 
   async function initialize() {
-    const storedToken = localStorage.getItem("token");
-    if (!storedToken) {
-      return;
+    const storedToken = localStorage.getItem("token") ?? "";
+    try {
+      await authService.validateToken(storedToken);
+      token.value = storedToken;
+      initialized.value = true;
+    } catch (error) {
+      // logout();
     }
-
-    if (!authService.validateToken(storedToken)) {
-      logout();
-      return;
-    }
-
-    token.value = storedToken;
-    initialized.value = true;
   }
 
   async function login(email: string, password: string) {
@@ -40,14 +39,11 @@ export const useAuthStore = defineStore("auth", () => {
     return await authService.register(fields);
   }
 
-  async function isTokenValid(token: string): Promise<boolean> {
-    return await authService.validateToken(token);
-  }
-
   async function logout() {
     token.value = "";
     initialized.value = false;
-    localStorage.clear();
+    localStorage.setItem("token", "");
+    router.push("/auth/login");
   }
 
   function getPayload() {
@@ -64,115 +60,5 @@ export const useAuthStore = defineStore("auth", () => {
     logout,
     initialize,
     getPayload,
-    isTokenValid,
   };
 });
-
-// export const useAuthStore = defineStore("auth", {
-
-//   actions: {
-//     async login(email: string, password: string) {
-//       try {
-//         const response = await fetch(
-//           `${API}/auth/login`,
-//           {
-//             method: "POST",
-//             headers: {
-//               "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify({ email, password }),
-//           }
-//         );
-
-//         // if response is not 200, throw an error
-//         if (response.status !== 200) {
-//           const error = await response.json();
-//           throw new Error(error.message || "Invalid credentials.");
-//         }
-
-//         const data = await response.json();
-//         this.token = data.token;
-//         localStorage.setItem("token", this.token);
-//       } catch (error) {
-//         if (error instanceof Error) {
-//           throw error;
-//         }
-//         throw new Error("Invalid credentials.");
-//       }
-//     },
-//     async register(fields: UserRegisterRequest) {
-//       try {
-//         const response = await fetch(
-//           `${API}/auth/register`,
-//           {
-//             method: "POST",
-//             headers: {
-//               "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify(fields),
-//           }
-//         );
-
-//         // if response is not 201, throw an error
-//         if (response.status !== 201) {
-//           const error = await response.json();
-//           throw new Error(error.message || "Registration failed.");
-//         }
-
-//         const data = await response.json();
-//         return { status: response.status, data };
-//       } catch (error) {
-//         if (error instanceof Error) {
-//           throw error;
-//         }
-//         throw new Error("Registration failed.");
-//       }
-//     },
-//     async isTokenValid(token: string) {
-//       try {
-//         const response = await fetch(
-//           `${API}/auth/token/validate`,
-//           {
-//             method: "GET",
-//             headers: {
-//               "Content-Type": "application/json",
-//               Authorization: `Bearer ${token}`,
-//             },
-//           }
-//         );
-
-//         // if response is not 200, throw an error
-//         if (response.status !== 200) {
-//           const error = await response.json();
-//           throw new Error(error.message || "Token validation failed.");
-//         }
-//       } catch (error) {
-//         if (error instanceof Error) {
-//           throw error;
-//         }
-//         throw new Error("Token validation failed.");
-//       }
-//     },
-//     async logout() {
-//       this.token = "";
-//       this.initialized = false;
-//       localStorage.clear();
-//     },
-//     getPayload() {
-//     const token = localStorage.getItem("token");
-//     return token ? jwtDecode<JwtPayload>(token) : null;
-//   },
-//     async initialize() {
-//       const savedToken = localStorage.getItem("token");
-//       if (savedToken) {
-//         this.token = savedToken;
-
-//         await this.isTokenValid(savedToken).catch(() => {
-//           this.logout();
-//           return;
-//         });
-//       }
-//       this.initialized = true;
-//     },
-//   },
-// });
