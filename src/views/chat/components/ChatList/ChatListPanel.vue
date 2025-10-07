@@ -29,6 +29,6 @@ const searchFilter = ref("");
       <ChatSearchButton />
     </div>
 
-    <ChatList :chats />
+    <ChatList :chats="chats" />
   </div>
 </template>

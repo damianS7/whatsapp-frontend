@@ -77,8 +77,8 @@ function isContact() {
           <ChatListItem
             @openMenu="openContextMenu"
             v-for="(chat, index) in chats"
-            :key="index"
-            :chat
+            :key="chat.id"
+            :chat="chat"
           />
         </ContextMenuTrigger>
         <ContextMenuContent>
