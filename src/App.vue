@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
-import { useAuthStore } from "@/stores/auth";
 import ModalManager from "@/components/modal/ModalManager.vue";
-const authStore = useAuthStore();
-onMounted(() => {
-  authStore.initialize();
-});
 </script>
 <template>
   <ModalManager />
