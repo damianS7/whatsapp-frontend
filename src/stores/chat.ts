@@ -112,9 +112,11 @@ export const useChatStore = defineStore("chat", () => {
 
     // if its a private chat fetch the user avatar
     if (newChat.type == "PRIVATE" && newChat.userId && !newChat.imageUrl) {
-      newChat.imageUrl = URL.createObjectURL(
-        await userService.fetchProfileImage(newChat.userId)
-      );
+      // await userService.fetchProfileImage(newChat.userId)
+      userService
+        .fetchProfileImage(newChat.userId)
+        .then((blob) => (newChat.imageUrl = URL.createObjectURL(blob)))
+        .catch((error) => (newChat.imageUrl = undefined));
     }
 
     chats.value.push(newChat);
@@ -226,6 +228,7 @@ export const useChatStore = defineStore("chat", () => {
     chatExists,
     deleteChat,
     selectChat,
+    selectedChatId,
     getSelectedChat,
     getChat,
     clearChats,
