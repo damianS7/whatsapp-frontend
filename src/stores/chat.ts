@@ -59,7 +59,16 @@ export const useChatStore = defineStore("chat", () => {
     chats.value = [];
   }
 
+  function $reset() {
+    initialized.value = false;
+    chats.value = [];
+    selectedChatId.value = "";
+    subscriptions.clear();
+  }
+
   async function initialize() {
+    $reset();
+
     const storedChats = localStorage.getItem(userStoragePath("chats")) ?? "";
     if (storedChats) {
       chats.value = JSON.parse(storedChats);
