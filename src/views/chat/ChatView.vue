@@ -15,6 +15,10 @@ const currentChat = computed(() => {
 
 const groupMemberPanelVisible = ref(false);
 function toggleGroupMemberPanel() {
+  if (currentChat.value?.type === "PRIVATE") {
+    return;
+  }
+
   groupMemberPanelVisible.value = !groupMemberPanelVisible.value;
 }
 </script>
