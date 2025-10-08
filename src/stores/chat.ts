@@ -116,7 +116,7 @@ export const useChatStore = defineStore("chat", () => {
       userService
         .fetchProfileImage(newChat.userId)
         .then((blob) => (newChat.imageUrl = URL.createObjectURL(blob)))
-        .catch((error) => (newChat.imageUrl = undefined));
+        .catch((_error) => (newChat.imageUrl = undefined));
     }
 
     chats.value.push(newChat);
