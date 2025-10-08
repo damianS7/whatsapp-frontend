@@ -79,10 +79,6 @@ export const useUserStore = defineStore("user", () => {
     await fetchUser().then((fuser) => {
       user.value = fuser;
     });
-    // TODO remove this?
-    if (!user.value.avatarUrl) {
-      return;
-    }
 
     initialized.value = true;
   }
