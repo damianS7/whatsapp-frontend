@@ -10,7 +10,7 @@ defineProps<{
   <div class="flex items-center gap-2 p-2 border-gray-300">
     <!-- avatar -->
     <div class="w-8 h-8 text-white font-bold">
-      <CustomAvatar :src="chat.imageUrl" :fallback="chat.name" />
+      <CustomAvatar :key="chat.id" :src="chat.imageUrl" :fallback="chat.name" />
     </div>
     <!-- chat name -->
     <div>
