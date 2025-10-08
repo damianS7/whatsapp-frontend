@@ -9,6 +9,8 @@ import { userService } from "@/services/userService";
 import type { ChatMessageRequest } from "@/types/request/ChatMessageRequest";
 import type { ChatMessageResponse } from "@/types/response/ChatMessageResponse";
 import { computed, ref, type Ref } from "vue";
+import { userUtils } from "@/utils/user";
+const { userStoragePath } = userUtils();
 const { generateChatId, createChatFromMessage, generateChatIdFromMessage } =
   chatUtils();
 
@@ -40,8 +42,11 @@ export const useChatStore = defineStore("chat", () => {
   }
 
   function saveChatState() {
-    localStorage.setItem("chats", JSON.stringify(chats.value));
-    localStorage.setItem("selectedChatId", selectedChatId.value);
+    localStorage.setItem(userStoragePath("chats"), JSON.stringify(chats.value));
+    localStorage.setItem(
+      userStoragePath("selectedChatId"),
+      selectedChatId.value
+    );
   }
 
   function selectChat(chatId: string) {
@@ -50,17 +55,18 @@ export const useChatStore = defineStore("chat", () => {
   }
 
   function clearChats() {
-    localStorage.setItem("chats", "");
+    localStorage.setItem(userStoragePath("chats"), "");
     chats.value = [];
   }
 
   async function initialize() {
-    const storedChats = localStorage.getItem("chats") ?? "";
+    const storedChats = localStorage.getItem(userStoragePath("chats")) ?? "";
     if (storedChats) {
       chats.value = JSON.parse(storedChats);
     }
 
-    selectedChatId.value = localStorage.getItem("selectedChatId") ?? "";
+    selectedChatId.value =
+      localStorage.getItem(userStoragePath("selectedChatId")) ?? "";
 
     for (const chat of chats.value) {
       if (chat.type === "GROUP") {
