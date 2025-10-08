@@ -65,8 +65,8 @@ function openChat(chat: Chat) {
 
     <div class="flex-1 space-y-1 overflow-y-auto h-full p-1">
       <div
-        v-for="(chat, index) in chats"
-        :key="index"
+        v-for="(chat, _index) in chats"
+        :key="chat.id"
         class="flex gap-2 p-1 items-center cursor-pointer hover:bg-gray-100 hover:rounded-md"
         @click="openChat(chat)"
       >
